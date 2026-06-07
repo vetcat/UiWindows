@@ -164,7 +164,10 @@ Future AI chat workflow:
 3. Open Linear issue `UIW-1`.
 4. Review child issues ordered by numeric prefix.
 5. Pick the first child issue that is not `Done` or `Canceled`, unless Vitaly explicitly chooses another task.
-6. Work only on that issue's scope, verify its acceptance criteria, then update Linear status and notes.
+6. Start from the latest `main`, then create a dedicated branch for that Linear issue.
+7. Use the Linear-generated branch name when available; if not available, use `<issue-id>-<normalized-task-title>` so the branch name matches the task identity without unsafe Git characters.
+8. Work only on that issue's scope, verify its acceptance criteria, then update Linear status and notes.
+9. After the task is accepted/closed, merge the task branch back into `main` and push `main` so the next task starts from the integrated state.
 
 Current child issue sequence:
 
@@ -244,3 +247,4 @@ Dependency and patch rules:
 - Treat `UI.Windows` lifecycle and pooling as the source of truth.
 - Prefer project-owned adapter code over modifying third-party package internals unless a package compatibility fix is unavoidable.
 - Before editing files, check git status and avoid overwriting unrelated user changes.
+- Implement Linear tasks in dedicated branches from latest `main`, then merge completed task work back to `main` after acceptance.

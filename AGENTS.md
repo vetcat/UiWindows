@@ -79,6 +79,10 @@ The local `.ai/mcp/mcp.json` file is currently empty, but Linear tools were avai
 ## Repository Hygiene
 
 - Check `git status --short --branch` before editing.
+- Implement each Linear task in its own branch created from the latest `main`.
+- Use the Linear-generated branch name for the task when available because it encodes the issue ID and task title; if unavailable, use `<issue-id>-<normalized-task-title>`.
+- Do not implement task work directly on `main`, except for explicitly requested repository-maintenance changes.
+- After a task is accepted/closed, merge its branch back into `main` and push `main` so the next task starts from the latest integrated state.
 - Do not overwrite unrelated user changes.
 - Keep third-party package internals unchanged unless a compatibility fix is unavoidable.
 - Prefer a small vertical slice before broad migration work.
