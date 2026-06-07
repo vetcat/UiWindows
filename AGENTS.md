@@ -15,7 +15,7 @@ This Unity project is an investigation and implementation workspace for building
 Core direction:
 
 - Use `UI.Windows-submodule` for window lifecycle, loading, unloading, layouts, pooling, and resource management.
-- Add a project-owned MVP adapter layer without mandatory Zenject or UniRx.
+- Use and extend the project-owned MVP adapter layer without mandatory Zenject or UniRx.
 - Use `Cysharp/R3` as the explicit reactive foundation for MVP state, event streams, operators, timers, frame streams, and subscription ownership.
 - Use a simple scene `CompositionRoot` for dependency wiring.
 - Port most `OpenUI` examples and layouts onto the new approach after a small vertical slice is proven.
@@ -75,6 +75,20 @@ R3 usage rules:
 - Show-scoped UI subscriptions must be disposed on hide/pool cleanup, not only on final `OnDeInit`.
 - Do not introduce UniRx or a project-owned custom Rx framework in parallel with R3.
 
+## UI.Windows MVP Architecture Skill
+
+Before designing, implementing, or reviewing UI.Windows MVP presenters, views, model/read-model ports, R3 UI bindings, OpenUI example ports, show/hide subscription lifetimes, or decisions about where UI logic belongs, use:
+
+- `.agents/skills/uiwindows-mvp-architecture/SKILL.md`
+
+The skill records the project-wide MVP interpretation and current `UIW-5` adapter API:
+
+- UI.Windows owns window lifecycle, loading, unloading, layouts, pooling, and resource cleanup.
+- Presenters own view binding and UI behavior.
+- Models may be saves, services, controllers, ECS adapters, or combinations exposed through explicit ports.
+- R3 show-scoped subscriptions must be cleaned on hide or pool return.
+- The initial adapter lives under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter`.
+
 ## Linear
 
 Linear MCP access was verified on 2026-06-06.
@@ -118,7 +132,7 @@ Current child issue sequence:
 - `UIW-13` - `03 - Integrate R3 reactive foundation for MVP`
 - `UIW-4` - `03x - Canceled: custom reactive primitives superseded by R3`
 - `UIW-5` - `04 - Implement MVP presenter lifecycle adapter for UI.Windows with R3`
-- `UIW-6` - `05 - Port Player model/service from OpenUI with R3`
+- `UIW-6` - `05 - Port Player model/service from OpenUI with R3` - next active task after `UIW-5` closure
 - `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3`
 - `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows`
 - `UIW-9` - `08 - Port settings and localization slice with R3`

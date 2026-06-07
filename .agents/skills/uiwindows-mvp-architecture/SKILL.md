@@ -7,7 +7,7 @@ description: Project-specific UI.Windows MVP architecture guidance for the UiWin
 
 ## Purpose
 
-Use this skill to keep project UI architecture consistent across implementation chats. It captures the project-wide MVP interpretation before `UIW-5` creates the first concrete adapter API.
+Use this skill to keep project UI architecture consistent across implementation chats. It captures the project-wide MVP interpretation and the current UI.Windows presenter adapter API.
 
 Treat this as architecture guidance. `UIW-5` established the initial adapter API names and lifecycle details below.
 
