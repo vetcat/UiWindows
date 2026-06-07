@@ -202,6 +202,39 @@ The future implementation should preserve these OpenUI behaviors where practical
 - Zenject replacement is straightforward but touches constructors, factories, installer assets, initialization order, and tests.
 - UniRx replacement is broader because it touches model properties, button observables, signal streams, timers, frame updates, and subscription disposal.
 
+## UIW-2 Compatibility Policy
+
+When starting `UIW-2`, add the fork-pinned Unity Package Manager dependency first and use Unity Package Manager resolution plus Unity Console/compiler output as the source of truth.
+
+Preferred initial dependency target:
+
+```json
+"com.me.ui.windows": "https://github.com/vetcat/UI.Windows-submodule.git#60a4bf6e47c85ad57935f633a53fc3ca8b707167"
+```
+
+Do not preemptively rewrite package metadata or runtime code before observing actual Unity `6000.4.4f1` resolution/compile failures.
+
+Dependency and patch rules:
+
+- Let Unity resolve transitive package dependencies first.
+- Add explicit project-level dependencies only when Unity resolution or compiler errors prove they are required.
+- Keep `Packages/manifest.json` changes limited to package references and versions needed for compilation.
+- If `FMODUnity` asmdef references block compilation, patch the fork rather than adding FMOD to this project by default.
+- Prefer minimal compatibility patches in the fork: package metadata, asmdef references, optional integration guards, or narrow runtime compatibility fixes.
+- Do not put MVP adapter, CompositionRoot, OpenUI ports, project models, presenters, or sample UI behavior into the fork.
+- Document every fork compatibility patch with the upstream commit, reason, exact files changed, and Unity verification result.
+
+`UIW-2` verification gate:
+
+- Unity Package Manager resolves the fork-pinned dependency without package-resolution errors.
+- Editor compilation completes with zero errors.
+- Unity Console has no package or compile errors after import/refresh.
+- `com.me.ui.windows` is present in resolved packages.
+- Key UI.Windows runtime assemblies/types are available to project scripts, for example `WindowSystem`, `WindowBase`, and `LayoutWindowType` or their actual discovered equivalents.
+- Any remaining warnings must be documented and classified as non-blocking.
+- If availability cannot be reliably verified through Unity MCP/editor reflection, add only a minimal compile-only smoke test or editor check that references public UI.Windows API. Do not create MVP, scenes, windows, OpenUI ports, or vertical-slice behavior in `UIW-2`.
+- If a fork compatibility patch is required, update the project dependency pin to the resulting fork commit or immutable tag and document before/after verification.
+
 ## Rules For Future AI Agents
 
 - Do not start by importing all OpenUI code blindly.
