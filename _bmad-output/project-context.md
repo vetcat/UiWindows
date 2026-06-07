@@ -25,6 +25,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - Unity version: `6000.4.4f1` from `ProjectSettings/ProjectVersion.txt`.
 - Current repository is a mostly empty Unity project with base `Assets`, `Packages`, and `ProjectSettings` only.
 - `UI.Windows-submodule` is integrated as a fork-pinned UPM Git dependency.
+- R3 is integrated as the explicit reactive foundation for the MVP layer through NuGetForUnity plus the R3.Unity UPM package.
 - No OpenUI code has been imported into this project yet.
 - `.ai/mcp/mcp.json` is currently empty.
 - Working tree was clean after the repository investigation.
@@ -33,6 +34,8 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 
 Current local Unity packages from `Packages/manifest.json`:
 
+- `com.cysharp.r3`: Git dependency `https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.3.1`
+- `com.github-glitchenzo.nugetforunity`: Git dependency `https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity#v4.5.0`
 - `com.unity.inputsystem`: `1.19.0`
 - `com.unity.render-pipelines.universal`: `17.4.0`
 - `com.unity.ugui`: `2.0.0`
@@ -46,6 +49,16 @@ Unity-resolved transitive packages for `com.me.ui.windows` include:
 - `com.unity.addressables`: resolved to `2.9.1`
 - `com.unity.localization`: resolved to `1.5.8`
 - `com.unity.ui`: resolved to built-in `2.0.0`
+
+NuGetForUnity-restored packages for R3 include:
+
+- `R3`: `1.3.1`
+- `Microsoft.Bcl.AsyncInterfaces`: `6.0.0`
+- `Microsoft.Bcl.TimeProvider`: `8.0.0`
+- `System.ComponentModel.Annotations`: `5.0.0`
+- `System.Runtime.CompilerServices.Unsafe`: `6.0.0`
+- `System.Threading.Channels`: `8.0.0`
+- `System.Threading.Tasks.Extensions`: `4.5.4`
 
 External repositories studied on 2026-06-06:
 
@@ -63,6 +76,28 @@ Reactive library references checked on 2026-06-07:
 
 - `https://github.com/neuecc/UniRx`, HEAD `6baeccf6c544c155497164327cca72f28163a578`; GitHub marks the repository as archived, and its README points users to `Cysharp/R3` instead of UniRx.
 - `https://github.com/Cysharp/R3`, HEAD `3fed50ae5c7e123073f6e50218b2a0e6310d50b4`; GitHub marks the repository as not archived, and the project supports Unity.
+
+R3 integration decision checked on 2026-06-07:
+
+- `NuGetForUnity` tag `v4.5.0` exists at commit `a7c6b49a0141a5bff9b1983e38137522ef61977d`.
+- `R3` tag `1.3.1` exists at commit `f6eed2dd4208dc4ae171c601e799e85f82aca25e`.
+- NuGet package `R3` version `1.3.1` exists on nuget.org.
+- Official R3 Unity installation requires the NuGet `R3` package plus the `R3.Unity` Unity package.
+- `R3.Unity.asmdef` on tag `1.3.1` references precompiled `R3.dll`, `Microsoft.Bcl.TimeProvider.dll`, and `Microsoft.Bcl.AsyncInterfaces.dll`, so Git/OpenUPM Unity package content alone is not enough without the NuGet side.
+- `Microsoft.Bcl.AsyncInterfaces` is pinned to NuGet package `6.0.0` because `Microsoft.Bcl.TimeProvider 8.0.0` references assembly version `6.0.0.0`.
+- Project restore config and restored artifacts live under `Packages/nuget-packages`, using NuGetForUnity `InPackagesFolder` placement and a dummy embedded `package.json`.
+
+UIW-13 R3 integration snapshot on 2026-06-07:
+
+- `Packages/manifest.json` pins `com.github-glitchenzo.nugetforunity` to Git tag `v4.5.0`.
+- `Packages/manifest.json` pins `com.cysharp.r3` to the R3.Unity Git UPM path at tag `1.3.1`.
+- `Packages/packages-lock.json` resolves `com.github-glitchenzo.nugetforunity` to commit `a7c6b49a0141a5bff9b1983e38137522ef61977d`.
+- `Packages/packages-lock.json` resolves `com.cysharp.r3` to commit `f6eed2dd4208dc4ae171c601e799e85f82aca25e`.
+- `Packages/packages-lock.json` includes embedded package `nuget-packages`.
+- `Packages/nuget-packages/InstalledPackages` contains committed restored NuGet artifacts and Unity `.meta` import settings.
+- Unity `6000.4.4f1` refresh/compile completed with zero Console errors and zero warnings after R3/NuGet integration.
+- Compile smoke `UiWindowsMvp.Reactive.R3MvpSmokeCheck.CanCreateReadOnlySurface()` returned `true`.
+- No UniRx package dependency was added.
 
 UI.Windows fork workflow established on 2026-06-07:
 
@@ -99,8 +134,10 @@ UIW-3 architecture skeleton snapshot on 2026-06-07:
 - Sample bootstrap code lives under `Assets/Scripts/CompositionRoot/Samples` and does not depend on OpenUI or UI.Windows.
 - PlayMode lifecycle verification lives under `Assets/Scripts/CompositionRoot/Tests/PlayMode` in assembly `CompositionRoot.Tests.PlayMode`.
 - Future UI.Windows presenter adapter code is reserved under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` in assembly `UiWindowsMvp.UIAdapter`; this assembly may depend on `CompositionRoot.Runtime` and `UI.Windows`, while `CompositionRoot.Runtime` must not depend on `UiWindowsMvp` or `UI.Windows`.
+- R3 compile/convention plumbing lives under `Assets/Scripts/UiWindowsMvp/Runtime/R3Integration` in assembly `UiWindowsMvp.Reactive`; this assembly may depend on `R3` and `R3.Unity`.
 - Presenter lifecycle adapter work is still deferred to `UIW-5`.
 - Code organization, CompositionRoot mechanics, bootstrap path, failure behavior, and ownership rules are documented in `docs/project-architecture-skeleton.md`.
+- R3 MVP usage boundaries, dependency pins, and restore workflow are documented in `docs/r3-mvp-conventions.md`.
 
 ## Project Goal
 
@@ -111,8 +148,8 @@ Target direction:
 - Use `UI.Windows-submodule` for window lifecycle, loading, unloading, layout, pooling, and resource management.
 - Port most `OpenUI` examples, including prefab/layout content, to the new approach.
 - Replace Zenject with a simple scene `CompositionRoot`.
-- Start by replacing UniRx with minimal local primitives only where needed, such as simple observable properties, event streams, and disposable collections.
-- Treat R3 (`Cysharp/R3`) as an acceptable future alternative to expanding a project-owned reactive layer if the MVP port starts requiring timers, frame streams, operators, event composition, or async reactive flows. Vitaly has prior positive experience with R3.
+- Replace UniRx with R3 (`Cysharp/R3`) as the deliberate reactive foundation for MVP state, event streams, operators, timers, frame streams, and subscription ownership.
+- Do not implement a broad project-owned custom Rx-like framework in parallel with R3.
 - Keep DOTween usage acceptable for animation examples unless later explicitly removed.
 
 ## Repository Research Summary
@@ -187,11 +224,12 @@ Future ECS integration rules:
 Confirmed from UniRx and R3 review on 2026-06-07:
 
 - Do not integrate UniRx by default. The `UniRx` repository is archived, and its README directs users to `Cysharp/R3` instead.
-- Keep `UIW-4` small if the MVP port only needs `ObservableProperty<T>`, simple event streams, and disposable collections.
-- Do not grow a large custom Rx-like library inside the project by default. If implementation starts needing timers, frame-based streams, throttling/debouncing, merging/combining streams, async reactive flows, or broader operator composition, evaluate R3 before adding those features manually.
-- If R3 is adopted, make it an explicit project dependency decision and verify Unity compilation/package resolution. Do not introduce it as incidental OpenUI copy-paste.
-- Prefer project-owned public ports for presenter/model boundaries. Avoid leaking R3-specific types through domain or presenter contracts unless the project deliberately accepts that coupling.
-- `IDisposable` remains the common subscription ownership boundary and should work with either minimal local primitives or R3.
+- R3 is now the selected reactive foundation for MVP work. Do not implement `ObservableProperty<T>`, custom event streams, or disposable collections as a parallel framework unless a narrow project-owned adapter is explicitly justified later.
+- Prefer read-only reactive surfaces for presenter/model boundaries, normally `ReadOnlyReactiveProperty<T>` for state with current value and `Observable<T>` for event/request streams.
+- Keep mutable R3 primitives such as `ReactiveProperty<T>` and `Subject<T>` inside their owning object.
+- Use command methods for mutations instead of exposing mutable properties across boundaries.
+- `IDisposable` remains the common subscription ownership boundary.
+- Show-scoped subscriptions must be disposed on hide/pool cleanup, not only on final `OnDeInit`.
 
 ## Proposed Architecture Direction
 
@@ -204,7 +242,7 @@ Suggested layer names are provisional:
 - `UiPresenter<TWindow>` or `WindowPresenter<TWindow>`: base class for presenter logic bound to a `WindowBase` or `LayoutWindowType` instance.
 - `WindowPresenterBinder`: attaches a presenter to a loaded/shown UI.Windows window and disposes show-scoped state on hide/pool.
 - `SimpleSignalBus`: minimal replacement for Zenject `SignalBus`.
-- `ObservableProperty<T>` and `DisposableBag`: minimal replacement for the small subset of UniRx used by the first examples, unless R3 is explicitly selected because the reactive scope grows.
+- R3 (`ReadOnlyReactiveProperty<T>`, `Observable<T>`, `ReactiveProperty<T>`, `Subject<T>`, `DisposableBag`, `CompositeDisposable` where appropriate): deliberate replacement for UniRx. Mutable R3 primitives remain owner-private.
 - `IPlayerReadModel` and `IPlayerCommands` or equivalent ports: expose player state and mutations to UI without binding presenters to a future ECS world/store.
 - `IUiEffectRequests` or equivalent: allows domain/application services to request visual feedback without depending on UI presenter implementations.
 
@@ -224,7 +262,7 @@ Preferred implementation sequence:
 
 1. Import or reference `UI.Windows-submodule` and verify compilation in Unity `6000.4.4f1`.
 2. Fix package compatibility issues before writing MVP code.
-3. Create the minimal CompositionRoot and local event/disposable primitives.
+3. Create the minimal CompositionRoot and integrate R3 as the reactive foundation.
 4. Create one vertical slice based on OpenUI's `UiTopLeftView` and player model.
 5. Verify that a UI.Windows window can load, attach presenter, show, update from model, hide, return to pool, and show again without duplicate subscriptions.
 6. Port `UiTopRightView`, `UiDownRightView`, `UiSettingsView`, and localization behavior.
@@ -320,7 +358,7 @@ The future implementation should preserve these OpenUI behaviors where practical
 - OpenUI view prefabs use MonoBehaviours derived from `UiView`; these must be adapted to UI.Windows roots/components before they can be used directly.
 - Zenject replacement is straightforward but touches constructors, factories, installer assets, initialization order, and tests.
 - UniRx replacement is broader because it touches model properties, button observables, signal streams, timers, frame updates, and subscription disposal.
-- A small local reactive layer is acceptable for the first vertical slice, but it can become accidental framework work. If reactive requirements move beyond simple value notification and subscription disposal, R3 is the preferred evaluation candidate before implementing more custom operators.
+- R3 package availability depends on committed `Packages/nuget-packages/InstalledPackages` artifacts or NuGetForUnity restore. If artifacts are absent on a fresh checkout, Unity may compile before NuGet restore; use NuGetForUnity CLI restore before first Unity launch when available, or let Unity/NuGetForUnity restore and recompile after ignoring the initial missing-assembly prompt.
 - Future ECS selection is intentionally unresolved. Friflo.Engine.ECS, EcsLite/EcsProto, Svelto, or another ECS should be hidden behind project-owned ports so UI code does not need to be rewritten when the ECS choice is made.
 - LeoECS classic (`https://github.com/Leopotam/ecs`) is marked by its author as discontinued; use it as a lifecycle reference only unless Vitaly explicitly chooses it despite that status.
 - OpenUI contains useful behavior examples but also contains a domain-to-UI dependency in `PlayerService` for FX. Preserve the behavior through events/ports, not the dependency direction.
@@ -362,8 +400,8 @@ Dependency and patch rules:
 
 - Do not start by importing all OpenUI code blindly.
 - Do not reintroduce mandatory Zenject or UniRx unless Vitaly explicitly changes the requirement.
-- Do not treat "without UniRx" as "must write a full custom reactive framework". Start with minimal primitives, and evaluate R3 explicitly if operators, timers, frame streams, or reactive composition become substantial.
-- If R3 is introduced, keep the dependency deliberate and localized; prefer project-owned ports and `IDisposable` ownership boundaries over leaking R3 types everywhere.
+- Do not treat "without UniRx" as "must write a full custom reactive framework". R3 is the selected reactive foundation; avoid parallel custom Rx primitives.
+- Keep R3 usage deliberate and localized; prefer read-only reactive surfaces, command methods for mutations, and `IDisposable` ownership boundaries over leaking mutable R3 types everywhere.
 - Do not bypass `WindowSystem.Show/Hide` for window lifecycle.
 - Keep the first implementation as a small vertical slice before porting all examples.
 - Treat `UI.Windows` lifecycle and pooling as the source of truth.
