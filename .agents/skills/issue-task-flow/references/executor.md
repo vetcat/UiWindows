@@ -18,6 +18,7 @@ If local changes already exist, do not overwrite them. Stop and ask how to proce
 - Work only on the selected issue.
 - Keep changes minimal and aligned with existing project patterns.
 - Do not broaden scope to adjacent tasks.
+- When implementation changes the repository's factual baseline, update the canonical local context or project docs referenced by local instructions before finalizing. Examples include new dependencies, verified environment state, architecture decisions, workflow changes, or completed setup that makes earlier context stale.
 - Do not close the issue unless explicitly asked.
 - Do not merge into the integration branch unless explicitly asked.
 - Update the issue tracker with meaningful notes after implementation and verification.
