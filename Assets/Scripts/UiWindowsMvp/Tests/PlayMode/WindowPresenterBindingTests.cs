@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using UiWindowsMvp.UIAdapter;
 using UnityEngine;
@@ -60,9 +61,11 @@ namespace UiWindowsMvp.Tests.PlayMode
             try
             {
                 var binding = WindowPresenterBinder.Bind(window, presenter);
+                var lifecycleSubscription = GetLifecycleSubscription(binding);
 
                 binding.Dispose();
 
+                AssertSubscriptionReleasedStrongReferences(lifecycleSubscription);
                 Assert.DoesNotThrow(() => WindowSystem.RaiseEvent(window, WindowEvent.OnHideEnd));
                 Assert.That(presenter.HideEndCount, Is.EqualTo(0));
 
@@ -291,6 +294,27 @@ namespace UiWindowsMvp.Tests.PlayMode
 
             gameObject.SetActive(true);
             return gameObject;
+        }
+
+        private static object GetLifecycleSubscription<TWindow>(WindowPresenterBinding<TWindow> binding)
+            where TWindow : WindowBase
+        {
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var field = typeof(WindowPresenterBinding<TWindow>).GetField("lifecycleSubscription", flags);
+            Assert.That(field, Is.Not.Null);
+            return field.GetValue(binding);
+        }
+
+        private static void AssertSubscriptionReleasedStrongReferences(object lifecycleSubscription)
+        {
+            Assert.That(lifecycleSubscription, Is.Not.Null);
+
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var type = lifecycleSubscription.GetType();
+
+            Assert.That(type.GetField("binding", flags)?.GetValue(lifecycleSubscription), Is.Null);
+            Assert.That(type.GetField("window", flags)?.GetValue(lifecycleSubscription), Is.Null);
+            Assert.That(type.GetField("events", flags)?.GetValue(lifecycleSubscription), Is.Null);
         }
     }
 }

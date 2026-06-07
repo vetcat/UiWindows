@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Runtime.CompilerServices;
 using UnityEngine.UI.Windows;
@@ -8,9 +10,9 @@ namespace UiWindowsMvp.UIAdapter
     internal sealed class WindowPresenterEventSubscription<TWindow> : IDisposable, IEquatable<WindowPresenterEventSubscription<TWindow>>
         where TWindow : WindowBase
     {
-        private readonly WindowPresenterBinding<TWindow> binding;
-        private readonly TWindow window;
-        private readonly WindowSystemEvents events;
+        private WindowPresenterBinding<TWindow>? binding;
+        private TWindow? window;
+        private WindowSystemEvents? events;
         private bool isDisposed;
 
         public WindowPresenterEventSubscription(WindowPresenterBinding<TWindow> binding)
@@ -27,12 +29,12 @@ namespace UiWindowsMvp.UIAdapter
             Register(WindowEvent.OnDeInitialized, OnDeInitialized);
         }
 
-        public bool Equals(WindowPresenterEventSubscription<TWindow> other)
+        public bool Equals(WindowPresenterEventSubscription<TWindow>? other)
         {
             return ReferenceEquals(this, other);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return ReferenceEquals(this, obj);
         }
@@ -44,12 +46,22 @@ namespace UiWindowsMvp.UIAdapter
 
         public void Dispose()
         {
+            if (isDisposed)
+            {
+                return;
+            }
+
             isDisposed = true;
+            binding = null;
+            window = null;
+            events = null;
         }
 
         private void Register(WindowEvent windowEvent, Action<WindowObject, WindowPresenterEventSubscription<TWindow>> callback)
         {
-            events.Register(this, window, windowEvent, callback);
+            var eventRegistry = events ?? throw new ObjectDisposedException(nameof(WindowPresenterEventSubscription<TWindow>));
+            var targetWindow = window ?? throw new ObjectDisposedException(nameof(WindowPresenterEventSubscription<TWindow>));
+            eventRegistry.Register(this, targetWindow, windowEvent, callback);
         }
 
         private static void OnInitialized(WindowObject windowObject, WindowPresenterEventSubscription<TWindow> subscription)
@@ -59,7 +71,7 @@ namespace UiWindowsMvp.UIAdapter
                 return;
             }
 
-            subscription.binding.OnWindowInitialized();
+            subscription.binding?.OnWindowInitialized();
         }
 
         private static void OnShowBegin(WindowObject windowObject, WindowPresenterEventSubscription<TWindow> subscription)
@@ -69,7 +81,7 @@ namespace UiWindowsMvp.UIAdapter
                 return;
             }
 
-            subscription.binding.OnWindowShowBegin();
+            subscription.binding?.OnWindowShowBegin();
         }
 
         private static void OnShowEnd(WindowObject windowObject, WindowPresenterEventSubscription<TWindow> subscription)
@@ -79,7 +91,7 @@ namespace UiWindowsMvp.UIAdapter
                 return;
             }
 
-            subscription.binding.OnWindowShowEnd();
+            subscription.binding?.OnWindowShowEnd();
         }
 
         private static void OnHideBegin(WindowObject windowObject, WindowPresenterEventSubscription<TWindow> subscription)
@@ -89,7 +101,7 @@ namespace UiWindowsMvp.UIAdapter
                 return;
             }
 
-            subscription.binding.OnWindowHideBegin();
+            subscription.binding?.OnWindowHideBegin();
         }
 
         private static void OnHideEnd(WindowObject windowObject, WindowPresenterEventSubscription<TWindow> subscription)
@@ -99,7 +111,7 @@ namespace UiWindowsMvp.UIAdapter
                 return;
             }
 
-            subscription.binding.OnWindowHideEnd();
+            subscription.binding?.OnWindowHideEnd();
         }
 
         private static void OnDeInitialized(WindowObject windowObject, WindowPresenterEventSubscription<TWindow> subscription)
@@ -109,8 +121,9 @@ namespace UiWindowsMvp.UIAdapter
                 return;
             }
 
+            var binding = subscription.binding;
             subscription.Dispose();
-            subscription.binding.OnWindowDeInitialized();
+            binding?.OnWindowDeInitialized();
         }
     }
 }
