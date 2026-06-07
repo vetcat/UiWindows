@@ -58,6 +58,7 @@ Main Linear task-plan:
 
 Current child issue sequence:
 
+- `UIW-12` - `00 - Establish UI.Windows fork and pinned UPM dependency workflow`
 - `UIW-2` - `01 - Integrate UI.Windows-submodule and resolve Unity compatibility`
 - `UIW-3` - `02 - Create project architecture skeleton and scene CompositionRoot`
 - `UIW-4` - `03 - Implement minimal event, observable, and disposable primitives`

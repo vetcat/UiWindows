@@ -42,6 +42,16 @@ External repositories studied on 2026-06-06:
 - `https://github.com/chromealex/UI.Windows-submodule`, commit `60a4bf6e47c85ad57935f633a53fc3ca8b707167`, dated 2026-05-18.
 - `https://github.com/vetcat/OpenUI`, commit `f29fca04343c38b79a6dd8aed66e538cfbe8b232`, dated 2026-02-06.
 
+UI.Windows fork workflow established on 2026-06-07:
+
+- Project fork: `https://github.com/vetcat/UI.Windows-submodule`
+- Upstream remote: `https://github.com/chromealex/UI.Windows-submodule`
+- Compatibility branch: `unity6000-compat`
+- Initial pinned commit: `60a4bf6e47c85ad57935f633a53fc3ca8b707167`
+- `package.json` is at the repository root, so `?path=` is not required.
+- Committed Unity Package Manager target format for `UIW-2`: `"com.me.ui.windows": "https://github.com/vetcat/UI.Windows-submodule.git#60a4bf6e47c85ad57935f633a53fc3ca8b707167"`
+- Full workflow documentation: `docs/ui-windows-fork-workflow.md`
+
 ## Project Goal
 
 Build a Unity UI approach based primarily on `UI.Windows-submodule`, adding a Model-View-View-Presenter / MVP-style architecture similar to `OpenUI`, but without mandatory Zenject and UniRx dependencies.
@@ -158,6 +168,7 @@ Future AI chat workflow:
 
 Current child issue sequence:
 
+- `UIW-12` - `00 - Establish UI.Windows fork and pinned UPM dependency workflow`
 - `UIW-2` - `01 - Integrate UI.Windows-submodule and resolve Unity compatibility`
 - `UIW-3` - `02 - Create project architecture skeleton and scene CompositionRoot`
 - `UIW-4` - `03 - Implement minimal event, observable, and disposable primitives`
