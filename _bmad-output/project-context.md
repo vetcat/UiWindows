@@ -30,6 +30,12 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `.ai/mcp/mcp.json` is currently empty.
 - Working tree was clean after the repository investigation.
 
+## Project Skills
+
+- Use `.agents/skills/uiwindows-mvp-architecture/SKILL.md` before designing, implementing, or reviewing UI.Windows MVP presenters, views, model/read-model ports, R3 UI bindings, OpenUI example ports, show/hide subscription lifetimes, or decisions about where UI logic belongs.
+- The skill captures the project-wide MVP interpretation: UI.Windows owns window lifecycle; presenters own view binding and UI behavior; models may be saves, services, controllers, ECS adapters, or combinations exposed through explicit ports; R3 show-scoped subscriptions must be cleaned on hide or pool return.
+- Treat the skill as seed architecture guidance before `UIW-5`. After `UIW-5`, update it with the actual adapter class/interface names and verified lifecycle details.
+
 ## Technology Stack
 
 Current local Unity packages from `Packages/manifest.json`:

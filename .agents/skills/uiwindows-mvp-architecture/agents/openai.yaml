@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI.Windows MVP Architecture"
+  short_description: "Guide UI.Windows MVP boundaries"
+  default_prompt: "Use $uiwindows-mvp-architecture to design or review UI.Windows MVP presenter, view, model-port, and R3 lifecycle boundaries."
