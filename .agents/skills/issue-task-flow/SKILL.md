@@ -21,8 +21,11 @@ Before planning or editing, read the repository's local instructions when presen
 - project context files referenced by `AGENTS.md`
 - issue/task plan files referenced by the project
 - the selected issue and relevant comments from the available issue tracker
+- blocker, predecessor, or setup issues and their relevant comments when they affect the selected issue
 
 Treat local project instructions as authoritative over this generic skill.
+
+When a project uses ordered issue titles or numeric prefixes, sort issues by that explicit project ordering. Do not rely on tracker API return order unless the project says API order is authoritative.
 
 ## Mode Routing
 
