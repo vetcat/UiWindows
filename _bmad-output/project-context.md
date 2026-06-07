@@ -282,8 +282,8 @@ Use the Linear team `UiWindows` for implementation tracking:
 
 Main parent issue:
 
-- `UIW-1` - `[Plan] UI.Windows MVP migration without mandatory Zenject/UniRx`
-- URL: https://linear.app/white-rabbits-rabbit-hole/issue/UIW-1/plan-uiwindows-mvp-migration-without-mandatory-zenjectunirx
+- `UIW-1` - `[Plan] UI.Windows MVP migration with R3, without Zenject/UniRx`
+- URL: https://linear.app/white-rabbits-rabbit-hole/issue/UIW-1/plan-uiwindows-mvp-migration-with-r3-without-zenjectunirx
 
 Future AI chat workflow:
 
@@ -302,14 +302,15 @@ Current child issue sequence:
 - `UIW-12` - `00 - Establish UI.Windows fork and pinned UPM dependency workflow`
 - `UIW-2` - `01 - Integrate UI.Windows-submodule and resolve Unity compatibility`
 - `UIW-3` - `02 - Create project architecture skeleton and scene CompositionRoot`
-- `UIW-4` - `03 - Implement minimal event, observable, and disposable primitives`
-- `UIW-5` - `04 - Implement MVP presenter lifecycle adapter for UI.Windows`
-- `UIW-6` - `05 - Port Player model/service from OpenUI without UniRx`
-- `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP`
-- `UIW-8` - `07 - Verify pooling and resource lifecycle for MVP windows`
-- `UIW-9` - `08 - Port settings and localization slice`
-- `UIW-10` - `09 - Port shop and collection pooling slice`
-- `UIW-11` - `10 - Port modal, hints, FX examples and finalize migration docs`
+- `UIW-13` - `03 - Integrate R3 reactive foundation for MVP`
+- `UIW-4` - `03x - Canceled: custom reactive primitives superseded by R3`
+- `UIW-5` - `04 - Implement MVP presenter lifecycle adapter for UI.Windows with R3`
+- `UIW-6` - `05 - Port Player model/service from OpenUI with R3`
+- `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3`
+- `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows`
+- `UIW-9` - `08 - Port settings and localization slice with R3`
+- `UIW-10` - `09 - Port shop and collection pooling slice with R3`
+- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs`
 
 ## AI Role Workflow
 
