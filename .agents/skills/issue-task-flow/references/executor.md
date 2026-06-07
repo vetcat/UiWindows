@@ -8,7 +8,7 @@ Use Executor mode to implement exactly one selected issue.
 2. Open the selected issue and relevant comments.
 3. Check `git status --short --branch` before changes.
 4. Fetch the integration branch.
-5. Create a dedicated task branch from the latest integration branch.
+5. Create a dedicated task branch from the latest integration branch using the `feature/` namespace. If the tracker-generated branch is `owner/issue-slug`, replace the leading namespace and create `feature/issue-slug`; if no tracker slug exists, create `feature/<issue-id>-<normalized-title>`.
 6. Restate the issue scope, non-goals, acceptance criteria, and verification plan before substantial edits.
 
 If local changes already exist, do not overwrite them. Stop and ask how to proceed unless they are clearly your own current-turn changes.

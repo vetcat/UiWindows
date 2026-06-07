@@ -39,7 +39,9 @@ Prefer the project's configured issue tracker and branch naming conventions. If 
 
 - Issue tracker priority: Linear MCP, GitHub Issues/Projects, Jira, then user-provided issue text.
 - Branch base: latest `main` unless the project names another integration branch.
-- Branch name: tracker-generated branch name when available; otherwise `<issue-id>-<normalized-title>`.
+- Executor branch namespace: `feature/`.
+- Executor branch name: use the tracker-generated issue slug when available, but replace any leading personal/org namespace with `feature/`. For example, `owner/issue-slug` becomes `feature/issue-slug`.
+- If no tracker-generated branch slug is available, use `feature/<issue-id>-<normalized-title>`.
 - One task equals one branch.
 - Executors do not merge or close tasks unless the user explicitly asks.
 - Orchestrators merge/close only after acceptance and verification are satisfied, and only when the user asks to complete closure.

@@ -165,7 +165,7 @@ Future AI chat workflow:
 4. Review child issues ordered by numeric prefix.
 5. Pick the first child issue that is not `Done` or `Canceled`, unless Vitaly explicitly chooses another task.
 6. Start from the latest `main`, then create a dedicated branch for that Linear issue.
-7. Use the Linear-generated branch name when available; if not available, use `<issue-id>-<normalized-task-title>` so the branch name matches the task identity without unsafe Git characters.
+7. Use `feature/<issue-slug>` for Executor task branches. When Linear provides a generated branch name such as `owner/uiw-2-task-title`, preserve the generated issue slug but replace the leading owner namespace with `feature/`, for example `feature/uiw-2-task-title`. If no generated slug is available, use `feature/<issue-id>-<normalized-task-title>`.
 8. Work only on that issue's scope, verify its acceptance criteria, then update Linear status and notes.
 9. After the task is accepted/closed, merge the task branch back into `main` and push `main` so the next task starts from the integrated state.
 
@@ -202,7 +202,7 @@ Executor mode:
 
 - Use when Vitaly provides a specific task or an Executor prompt.
 - Work on exactly one Linear issue.
-- Start from latest `main`, create a dedicated branch, and use the Linear-generated branch name when available.
+- Start from latest `main`, create a dedicated `feature/<issue-slug>` branch, and derive the issue slug from the Linear-generated branch name when available by replacing its leading owner namespace with `feature/`.
 - Stay within the issue scope.
 - Run verification from the issue and project context.
 - Update Linear with implementation notes and verification results.
@@ -273,4 +273,4 @@ Dependency and patch rules:
 - Treat `UI.Windows` lifecycle and pooling as the source of truth.
 - Prefer project-owned adapter code over modifying third-party package internals unless a package compatibility fix is unavoidable.
 - Before editing files, check git status and avoid overwriting unrelated user changes.
-- Implement Linear tasks in dedicated branches from latest `main`, then merge completed task work back to `main` after acceptance.
+- Implement Linear tasks in dedicated `feature/<issue-slug>` branches from latest `main`, then merge completed task work back to `main` after acceptance.

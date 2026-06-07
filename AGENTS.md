@@ -87,7 +87,7 @@ The Orchestrator should:
 - Verify blocker status before preparing implementation work.
 - Avoid implementing the task directly unless Vitaly explicitly asks it to.
 - Write a focused Executor prompt for exactly one Linear issue.
-- Require the Executor to create a dedicated branch from latest `main`, using the Linear-generated branch name when available.
+- Require the Executor to create a dedicated branch from latest `main` using `feature/<issue-slug>`.
 - After Executor completion, review git diff, acceptance criteria, verification evidence, Linear comments, and branch hygiene.
 - Only recommend merging/closing when acceptance criteria and verification are satisfied.
 - After acceptance, merge the task branch into `main`, push `main`, and ensure Linear status/notes are updated when Vitaly asks the Orchestrator to complete the closure.
@@ -115,7 +115,7 @@ The local `.ai/mcp/mcp.json` file is currently empty, but Linear tools were avai
 
 - Check `git status --short --branch` before editing.
 - Implement each Linear task in its own branch created from the latest `main`.
-- Use the Linear-generated branch name for the task when available because it encodes the issue ID and task title; if unavailable, use `<issue-id>-<normalized-task-title>`.
+- Use `feature/<issue-slug>` for Executor task branches. When Linear provides a generated branch name such as `owner/uiw-2-task-title`, preserve the generated issue slug but replace the leading owner namespace with `feature/`, for example `feature/uiw-2-task-title`. If no generated slug is available, use `feature/<issue-id>-<normalized-task-title>`.
 - Do not implement task work directly on `main`, except for explicitly requested repository-maintenance changes.
 - After a task is accepted/closed, merge its branch back into `main` and push `main` so the next task starts from the latest integrated state.
 - Do not overwrite unrelated user changes.

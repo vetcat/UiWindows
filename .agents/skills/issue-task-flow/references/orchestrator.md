@@ -11,7 +11,7 @@ Use Orchestrator mode to coordinate issue work without doing the implementation 
 5. If the project uses ordered titles or numeric prefixes, sort by that explicit order instead of tracker API return order.
 6. Verify blockers, status, labels, comments, and acceptance criteria.
 7. Read relevant comments on completed blockers, predecessor tasks, or setup tasks when they define workflow or constraints for the selected issue.
-8. Confirm the branch naming convention and integration branch.
+8. Confirm the branch naming convention and integration branch. For Executor work, default to `feature/<issue-slug>` unless local project instructions say otherwise.
 
 If the next task is unclear, report the ambiguity and ask for a choice instead of guessing.
 
@@ -34,7 +34,7 @@ Read first:
 
 Branch workflow:
 - Start from latest <integration-branch>.
-- Create branch: <tracker-generated-branch-or-issue-slug>.
+- Create branch: feature/<tracker-generated-issue-slug-without-leading-owner-namespace>.
 - Do not work directly on <integration-branch>.
 
 Scope:
