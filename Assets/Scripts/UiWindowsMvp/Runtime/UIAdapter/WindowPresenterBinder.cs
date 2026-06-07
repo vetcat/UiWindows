@@ -12,6 +12,11 @@ namespace UiWindowsMvp.UIAdapter
             bool subscribeToWindowSystemEvents = true)
             where TWindow : WindowBase
         {
+            if (window == null)
+            {
+                throw new ArgumentNullException(nameof(window));
+            }
+
             if (factory == null)
             {
                 throw new ArgumentNullException(nameof(factory));

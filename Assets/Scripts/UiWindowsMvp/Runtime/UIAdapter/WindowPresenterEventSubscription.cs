@@ -12,7 +12,6 @@ namespace UiWindowsMvp.UIAdapter
         private readonly TWindow window;
         private readonly WindowSystemEvents events;
         private bool isDisposed;
-        private bool unregisterOnDispose = true;
 
         public WindowPresenterEventSubscription(WindowPresenterBinding<TWindow> binding)
         {
@@ -45,22 +44,7 @@ namespace UiWindowsMvp.UIAdapter
 
         public void Dispose()
         {
-            if (isDisposed)
-            {
-                return;
-            }
-
             isDisposed = true;
-
-            if (unregisterOnDispose)
-            {
-                Unregister(WindowEvent.OnInitialized, OnInitialized);
-                Unregister(WindowEvent.OnShowBegin, OnShowBegin);
-                Unregister(WindowEvent.OnShowEnd, OnShowEnd);
-                Unregister(WindowEvent.OnHideBegin, OnHideBegin);
-                Unregister(WindowEvent.OnHideEnd, OnHideEnd);
-                Unregister(WindowEvent.OnDeInitialized, OnDeInitialized);
-            }
         }
 
         private void Register(WindowEvent windowEvent, Action<WindowObject, WindowPresenterEventSubscription<TWindow>> callback)
@@ -68,39 +52,63 @@ namespace UiWindowsMvp.UIAdapter
             events.Register(this, window, windowEvent, callback);
         }
 
-        private void Unregister(WindowEvent windowEvent, Action<WindowObject, WindowPresenterEventSubscription<TWindow>> callback)
-        {
-            events.UnRegister(this, window, windowEvent, callback);
-        }
-
         private static void OnInitialized(WindowObject windowObject, WindowPresenterEventSubscription<TWindow> subscription)
         {
+            if (subscription.isDisposed)
+            {
+                return;
+            }
+
             subscription.binding.OnWindowInitialized();
         }
 
         private static void OnShowBegin(WindowObject windowObject, WindowPresenterEventSubscription<TWindow> subscription)
         {
+            if (subscription.isDisposed)
+            {
+                return;
+            }
+
             subscription.binding.OnWindowShowBegin();
         }
 
         private static void OnShowEnd(WindowObject windowObject, WindowPresenterEventSubscription<TWindow> subscription)
         {
+            if (subscription.isDisposed)
+            {
+                return;
+            }
+
             subscription.binding.OnWindowShowEnd();
         }
 
         private static void OnHideBegin(WindowObject windowObject, WindowPresenterEventSubscription<TWindow> subscription)
         {
+            if (subscription.isDisposed)
+            {
+                return;
+            }
+
             subscription.binding.OnWindowHideBegin();
         }
 
         private static void OnHideEnd(WindowObject windowObject, WindowPresenterEventSubscription<TWindow> subscription)
         {
+            if (subscription.isDisposed)
+            {
+                return;
+            }
+
             subscription.binding.OnWindowHideEnd();
         }
 
         private static void OnDeInitialized(WindowObject windowObject, WindowPresenterEventSubscription<TWindow> subscription)
         {
-            subscription.unregisterOnDispose = false;
+            if (subscription.isDisposed)
+            {
+                return;
+            }
+
             subscription.Dispose();
             subscription.binding.OnWindowDeInitialized();
         }
