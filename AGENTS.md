@@ -21,6 +21,33 @@ Core direction:
 
 Do not import all OpenUI code blindly. Do not bypass `WindowSystem.Show/Hide` for UI.Windows lifecycle.
 
+## Code Organization And CompositionRoot
+
+All project-owned C# code belongs under `Assets/Scripts`. This is the explicit code search scope for programmers and AI agents.
+
+Keep view assets, prefabs, art, textures, scenes, settings, and other non-code Unity assets outside `Assets/Scripts`.
+
+Reusable scene composition infrastructure lives in:
+
+- `Assets/Scripts/CompositionRoot`
+
+UI.Windows-specific MVP adapter code lives in:
+
+- `Assets/Scripts/UiWindowsMvp`
+
+`CompositionRoot` is a reusable scene bootstrap/lifecycle primitive, not a UI concept:
+
+- `SceneCompositionRoot` is intended to be reusable for any scene.
+- Each scene should provide scene-specific `ICompositionInstaller` components.
+- `ServiceRegistry` initializes `IInitializable` services in registration order.
+- `ServiceRegistry` disposes `IDisposable` services once in reverse registration order.
+- Failed bootstrap must dispose the temporary registry, leave the root not bootstrapped, and rethrow the original exception.
+- `CompositionRoot.Runtime` must not depend on `UiWindowsMvp`, `UI.Windows`, OpenUI, Zenject, or UniRx.
+
+Before changing `CompositionRoot`, scene bootstrap behavior, or code folder organization, read:
+
+- `docs/project-architecture-skeleton.md`
+
 ## Linear
 
 Linear MCP access was verified on 2026-06-06.

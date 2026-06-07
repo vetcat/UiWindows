@@ -76,15 +76,17 @@ UIW-2 integration snapshot on 2026-06-07:
 UIW-3 architecture skeleton snapshot on 2026-06-07:
 
 - All project-owned C# code lives under `Assets/Scripts`.
+- `Assets/Scripts` is the explicit search/edit scope for project logic; view assets, prefabs, art, textures, scenes, settings, and other non-code Unity assets should stay outside it.
 - Reusable CompositionRoot runtime code lives under `Assets/Scripts/CompositionRoot/Runtime` in assembly `CompositionRoot.Runtime`.
 - `SceneCompositionRoot` is the scene bootstrap component for explicit service/model registration without Zenject, UniRx, UI.Windows, MVP, OpenUI, or a generic DI framework dependency.
+- `SceneCompositionRoot` is intended to be reusable for any scene; scene-specific setup belongs in `ICompositionInstaller` components.
 - `ServiceRegistry` initializes `IInitializable` services in registration order and disposes `IDisposable` services once in reverse registration order.
 - Failed bootstrap disposes the temporary `ServiceRegistry`, leaves `SceneCompositionRoot` not bootstrapped, and rethrows the original exception.
 - Sample bootstrap code lives under `Assets/Scripts/CompositionRoot/Samples` and does not depend on OpenUI or UI.Windows.
 - PlayMode lifecycle verification lives under `Assets/Scripts/CompositionRoot/Tests/PlayMode` in assembly `CompositionRoot.Tests.PlayMode`.
 - Future UI.Windows presenter adapter code is reserved under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` in assembly `UiWindowsMvp.UIAdapter`; this assembly may depend on `CompositionRoot.Runtime` and `UI.Windows`, while `CompositionRoot.Runtime` must not depend on `UiWindowsMvp` or `UI.Windows`.
 - Presenter lifecycle adapter work is still deferred to `UIW-5`.
-- Ownership rules are documented in `docs/project-architecture-skeleton.md`.
+- Code organization, CompositionRoot mechanics, bootstrap path, failure behavior, and ownership rules are documented in `docs/project-architecture-skeleton.md`.
 
 ## Project Goal
 

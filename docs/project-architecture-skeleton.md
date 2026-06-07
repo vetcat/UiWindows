@@ -6,6 +6,8 @@ This document records the `UIW-3` architecture boundary for reusable scene compo
 
 All project-owned C# code belongs under `Assets/Scripts`.
 
+Use `Assets/Scripts` as the default search and edit scope for project logic. Keep view assets, prefabs, art, textures, scenes, settings, and other non-code Unity assets outside this tree.
+
 CompositionRoot is reusable infrastructure. It must not depend on UI, MVP, UI.Windows, OpenUI, Zenject, or UniRx.
 
 UiWindowsMvp is the UI.Windows-specific layer. It may depend on `CompositionRoot.Runtime`; `CompositionRoot.Runtime` must not depend on `UiWindowsMvp`.
@@ -28,6 +30,29 @@ UiWindowsMvp is the UI.Windows-specific layer. It may depend on `CompositionRoot
 - UI.Windows owns windows, layouts, loading, unloading, show/hide lifecycle, pooling, and resource management through `WindowSystem.Show/Hide` and package lifecycle hooks.
 - Future presenters will own UI behavior and model binding for loaded UI.Windows windows. Presenters are intentionally not implemented in `UIW-3`.
 - Project code must not instantiate or destroy UI.Windows windows directly when that would bypass UI.Windows lifecycle, loading, pooling, or resource cleanup.
+
+## CompositionRoot Mechanics
+
+`SceneCompositionRoot` is intended to be reusable for any scene. Scene-specific behavior belongs in one or more `ICompositionInstaller` components, not in `SceneCompositionRoot` subclasses or UI-specific code.
+
+Startup sequence:
+
+1. Unity calls `SceneCompositionRoot.Awake()`.
+2. `Bootstrap()` creates a temporary `ServiceRegistry`.
+3. `SceneCompositionRoot` collects installers from the serialized list, or from the same GameObject when the list is empty.
+4. Each installer registers concrete services and models into the registry.
+5. `ServiceRegistry.InitializeAll()` calls `IInitializable.Initialize()` in registration order.
+6. The root stores the initialized registry only after successful initialization.
+
+Shutdown sequence:
+
+1. Unity calls `SceneCompositionRoot.OnDestroy()`, or project code calls `Shutdown()`.
+2. `ServiceRegistry.Dispose()` disposes registered `IDisposable` services once in reverse registration order.
+3. The root clears its registry reference and is no longer bootstrapped.
+
+Failure rule:
+
+If installer execution or service initialization throws, `SceneCompositionRoot` disposes the temporary registry, keeps `IsBootstrapped == false`, does not expose the failed registry through `Services`, and rethrows the original exception.
 
 ## Bootstrap Path
 
