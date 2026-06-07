@@ -1,0 +1,16 @@
+{
+  "name": "UiWindowsMvp.Samples.CompositionRoot",
+  "rootNamespace": "UiWindowsMvp.Samples.CompositionRootSample",
+  "references": [
+    "UiWindowsMvp.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -73,6 +73,16 @@ UIW-2 integration snapshot on 2026-06-07:
   - `UnityEngine.UI.Windows.WindowTypes.LayoutWindowType`
   - `UnityEngine.UI.Windows.WindowComponent`
 
+UIW-3 architecture skeleton snapshot on 2026-06-07:
+
+- Project-owned runtime composition code lives under `Assets/UiWindowsMvp/Runtime/Composition` in assembly `UiWindowsMvp.Runtime`.
+- `SceneCompositionRoot` is the scene bootstrap component for explicit service/model registration without Zenject, UniRx, or a generic DI framework.
+- `ServiceRegistry` initializes `IInitializable` services in registration order and disposes `IDisposable` services once in reverse registration order.
+- Future UI.Windows presenter adapter code is reserved under `Assets/UiWindowsMvp/Runtime/UIAdapter` in assembly `UiWindowsMvp.UIAdapter`; presenter lifecycle adapter work is still deferred to `UIW-5`.
+- Sample bootstrap code lives under `Assets/UiWindowsMvp/Samples/CompositionRootSample` and does not depend on OpenUI.
+- PlayMode lifecycle verification lives under `Assets/UiWindowsMvp/Tests/PlayMode`.
+- Ownership rules are documented in `docs/project-architecture-skeleton.md`.
+
 ## Project Goal
 
 Build a Unity UI approach based primarily on `UI.Windows-submodule`, adding a Model-View-View-Presenter / MVP-style architecture similar to `OpenUI`, but without mandatory Zenject and UniRx dependencies.
