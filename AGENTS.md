@@ -72,6 +72,41 @@ Current child issue sequence:
 
 Task creation should use the Linear `save_issue` tool with `team: "UiWindows"`. Do not create test issues just to verify write permission unless the user explicitly asks.
 
+## AI Role Modes
+
+Use explicit role modes when the user wants orchestration or delegated execution.
+
+### Orchestrator
+
+Use this mode when the user says the chat is an orchestrator, asks to delegate a task to another chat, asks for task setup, asks for review/control of an implementation, or asks what should be done next.
+
+The Orchestrator should:
+
+- Read `AGENTS.md`, `_bmad-output/project-context.md`, `UIW-1`, and the relevant child issue.
+- Pick the first child issue under `UIW-1` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
+- Verify blocker status before preparing implementation work.
+- Avoid implementing the task directly unless Vitaly explicitly asks it to.
+- Write a focused Executor prompt for exactly one Linear issue.
+- Require the Executor to create a dedicated branch from latest `main`, using the Linear-generated branch name when available.
+- After Executor completion, review git diff, acceptance criteria, verification evidence, Linear comments, and branch hygiene.
+- Only recommend merging/closing when acceptance criteria and verification are satisfied.
+- After acceptance, merge the task branch into `main`, push `main`, and ensure Linear status/notes are updated when Vitaly asks the Orchestrator to complete the closure.
+
+### Executor
+
+Use this mode when the user gives a specific Linear issue to implement or provides an Executor prompt.
+
+The Executor should:
+
+- Work on exactly one Linear issue.
+- Start from latest `main` and create a dedicated task branch.
+- Stay inside the selected issue scope.
+- Make code/config/docs changes needed for that issue.
+- Run the issue's verification steps.
+- Update Linear with implementation notes and verification results.
+- Return changed files, branch name, commits, verification results, and any unresolved risks.
+- Not merge to `main` or close the task unless Vitaly explicitly asks.
+
 ## Local MCP Notes
 
 The local `.ai/mcp/mcp.json` file is currently empty, but Linear tools were available in the session environment when checked. If a future agent does not see Linear tools, report that MCP availability differs from the prior session instead of assuming Linear is unavailable globally.

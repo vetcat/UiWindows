@@ -183,6 +183,32 @@ Current child issue sequence:
 - `UIW-10` - `09 - Port shop and collection pooling slice`
 - `UIW-11` - `10 - Port modal, hints, FX examples and finalize migration docs`
 
+## AI Role Workflow
+
+Future chats should use explicit role modes when possible.
+
+Orchestrator mode:
+
+- Use when Vitaly asks a chat to coordinate, delegate, prepare prompts, review another chat's work, or decide the next task.
+- Do not implement the selected task directly unless Vitaly explicitly asks.
+- Read `AGENTS.md`, this context file, `UIW-1`, and the relevant child issue.
+- Pick the first child issue under `UIW-1` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
+- Verify blockers before creating implementation prompts.
+- Create one focused Executor prompt for one Linear issue.
+- After Executor completion, review diff, acceptance criteria, verification evidence, Linear notes, branch name, and git hygiene.
+- After acceptance, merge the task branch into `main`, push `main`, and update Linear only when Vitaly asks to complete closure.
+
+Executor mode:
+
+- Use when Vitaly provides a specific task or an Executor prompt.
+- Work on exactly one Linear issue.
+- Start from latest `main`, create a dedicated branch, and use the Linear-generated branch name when available.
+- Stay within the issue scope.
+- Run verification from the issue and project context.
+- Update Linear with implementation notes and verification results.
+- Return changed files, branch name, commits, verification results, and unresolved risks.
+- Do not merge to `main` or close the task unless Vitaly explicitly asks.
+
 ## Acceptance Targets
 
 The future implementation should preserve these OpenUI behaviors where practical:
