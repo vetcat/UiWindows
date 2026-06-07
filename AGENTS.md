@@ -180,6 +180,17 @@ The Executor should:
 
 The local `.ai/mcp/mcp.json` file is currently empty, but Linear tools were available in the session environment when checked. If a future agent does not see Linear tools, report that MCP availability differs from the prior session instead of assuming Linear is unavailable globally.
 
+## IDE And Unity MCP Verification
+
+When changing project-owned C# code, use Rider MCP when it is available:
+
+- Run Rider `get_file_problems` on changed `.cs` files after edits.
+- Run Rider `build_solution` after C# changes when practical, or explicitly report why Unity compile was used instead.
+- Use Rider `rename_refactoring` for programmatic symbol renames instead of manual text replacement.
+- Use Rider `reformat_file` for edited C# files when formatting changed and the file belongs to the opened solution.
+
+Unity MCP remains the source of truth for Unity editor refresh/compile, PlayMode verification, Unity Console state, and reflection against live Unity/UI.Windows APIs. If Rider MCP or Unity MCP is unavailable, times out, or does not see the opened project, report that limitation in the Executor result.
+
 ## Repository Hygiene
 
 - Check `git status --short --branch` before editing.

@@ -37,6 +37,16 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - The skill captures the project-wide MVP interpretation: UI.Windows owns window lifecycle; presenters own view binding and UI behavior; models may be saves, services, controllers, ECS adapters, or combinations exposed through explicit ports; R3 show-scoped subscriptions must be cleaned on hide or pool return.
 - The skill now records the initial `UIW-5` adapter API names and verified lifecycle mapping; update it when later tasks materially change presenter/window lifecycle rules.
 
+## IDE And Unity MCP Verification
+
+- When changing project-owned C# code, use Rider MCP when it is available.
+- Run Rider `get_file_problems` on changed `.cs` files after edits.
+- Run Rider `build_solution` after C# changes when practical, or explicitly report why Unity compile was used instead.
+- Use Rider `rename_refactoring` for programmatic symbol renames instead of manual text replacement.
+- Use Rider `reformat_file` for edited C# files when formatting changed and the file belongs to the opened solution.
+- Unity MCP remains the source of truth for Unity editor refresh/compile, PlayMode verification, Unity Console state, and reflection against live Unity/UI.Windows APIs.
+- If Rider MCP or Unity MCP is unavailable, times out, or does not see the opened project, report that limitation in the Executor result.
+
 ## Technology Stack
 
 Current local Unity packages from `Packages/manifest.json`:

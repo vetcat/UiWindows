@@ -93,3 +93,12 @@ When designing or reviewing a UI MVP change, verify:
 - Final cleanup is safe to call once or repeatedly.
 - `CompositionRoot.Runtime` remains independent from UI, UI.Windows, MVP, R3, OpenUI, Zenject, and UniRx.
 - The change is small enough for the current Linear issue and does not import broad OpenUI infrastructure.
+
+## Tooling Checklist
+
+When changing presenter, view, model-port, or R3 UI binding C# files:
+
+- Use Rider `get_file_problems` on changed `.cs` files when Rider MCP is available.
+- Use Rider `build_solution` after C# changes when practical, or report why Unity compile was used instead.
+- Use Rider `rename_refactoring` for programmatic symbol renames.
+- Use Unity MCP for Unity editor refresh/compile, PlayMode verification, and live UI.Windows API reflection.
