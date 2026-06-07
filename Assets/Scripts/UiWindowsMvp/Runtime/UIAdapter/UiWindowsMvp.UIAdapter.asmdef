@@ -1,0 +1,17 @@
+{
+  "name": "UiWindowsMvp.UIAdapter",
+  "rootNamespace": "UiWindowsMvp.UIAdapter",
+  "references": [
+    "CompositionRoot.Runtime",
+    "UI.Windows"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
