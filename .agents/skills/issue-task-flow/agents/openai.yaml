@@ -1,0 +1,4 @@
+interface:
+  display_name: "Issue Task Flow"
+  short_description: "Orchestrate and execute issue-tracked tasks"
+  default_prompt: "Use $issue-task-flow to orchestrate the next issue-tracked task and prepare an executor handoff."
