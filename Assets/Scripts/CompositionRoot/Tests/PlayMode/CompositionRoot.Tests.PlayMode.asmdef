@@ -1,8 +1,8 @@
 {
-  "name": "UiWindowsMvp.Tests.PlayMode",
-  "rootNamespace": "UiWindowsMvp.Tests.PlayMode",
+  "name": "CompositionRoot.Tests.PlayMode",
+  "rootNamespace": "CompositionRoot.Tests.PlayMode",
   "references": [
-    "UiWindowsMvp.Runtime"
+    "CompositionRoot.Runtime"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

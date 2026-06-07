@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace UiWindowsMvp.Runtime.Composition
+namespace CompositionRoot.Runtime
 {
     public sealed class ServiceRegistry : IServiceRegistry, IDisposable
     {

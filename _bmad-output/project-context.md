@@ -75,12 +75,15 @@ UIW-2 integration snapshot on 2026-06-07:
 
 UIW-3 architecture skeleton snapshot on 2026-06-07:
 
-- Project-owned runtime composition code lives under `Assets/UiWindowsMvp/Runtime/Composition` in assembly `UiWindowsMvp.Runtime`.
-- `SceneCompositionRoot` is the scene bootstrap component for explicit service/model registration without Zenject, UniRx, or a generic DI framework.
+- All project-owned C# code lives under `Assets/Scripts`.
+- Reusable CompositionRoot runtime code lives under `Assets/Scripts/CompositionRoot/Runtime` in assembly `CompositionRoot.Runtime`.
+- `SceneCompositionRoot` is the scene bootstrap component for explicit service/model registration without Zenject, UniRx, UI.Windows, MVP, OpenUI, or a generic DI framework dependency.
 - `ServiceRegistry` initializes `IInitializable` services in registration order and disposes `IDisposable` services once in reverse registration order.
-- Future UI.Windows presenter adapter code is reserved under `Assets/UiWindowsMvp/Runtime/UIAdapter` in assembly `UiWindowsMvp.UIAdapter`; presenter lifecycle adapter work is still deferred to `UIW-5`.
-- Sample bootstrap code lives under `Assets/UiWindowsMvp/Samples/CompositionRootSample` and does not depend on OpenUI.
-- PlayMode lifecycle verification lives under `Assets/UiWindowsMvp/Tests/PlayMode`.
+- Failed bootstrap disposes the temporary `ServiceRegistry`, leaves `SceneCompositionRoot` not bootstrapped, and rethrows the original exception.
+- Sample bootstrap code lives under `Assets/Scripts/CompositionRoot/Samples` and does not depend on OpenUI or UI.Windows.
+- PlayMode lifecycle verification lives under `Assets/Scripts/CompositionRoot/Tests/PlayMode` in assembly `CompositionRoot.Tests.PlayMode`.
+- Future UI.Windows presenter adapter code is reserved under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` in assembly `UiWindowsMvp.UIAdapter`; this assembly may depend on `CompositionRoot.Runtime` and `UI.Windows`, while `CompositionRoot.Runtime` must not depend on `UiWindowsMvp` or `UI.Windows`.
+- Presenter lifecycle adapter work is still deferred to `UIW-5`.
 - Ownership rules are documented in `docs/project-architecture-skeleton.md`.
 
 ## Project Goal

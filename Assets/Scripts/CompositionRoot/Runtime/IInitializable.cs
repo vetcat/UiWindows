@@ -1,4 +1,4 @@
-namespace UiWindowsMvp.Runtime.Composition
+namespace CompositionRoot.Runtime
 {
     public interface IInitializable
     {

@@ -1,8 +1,8 @@
 using System;
-using UiWindowsMvp.Runtime.Composition;
+using CompositionRoot.Runtime;
 using UnityEngine;
 
-namespace UiWindowsMvp.Samples.CompositionRootSample
+namespace CompositionRoot.Samples
 {
     public sealed class SampleCompositionInstaller : MonoBehaviour, ICompositionInstaller
     {

@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using UiWindowsMvp.Runtime.Composition;
+using CompositionRoot.Runtime;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace UiWindowsMvp.Tests.PlayMode
+namespace CompositionRoot.Tests.PlayMode
 {
     public sealed class SceneCompositionRootLifecycleTests
     {

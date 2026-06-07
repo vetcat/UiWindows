@@ -403,7 +403,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0bcd98d128ec04a3da854a36a5e6898a, type: 3}
   m_Name:
-  m_EditorClassIdentifier: UiWindowsMvp.Samples.CompositionRoot::UiWindowsMvp.Samples.CompositionRootSample.SampleCompositionInstaller
+  m_EditorClassIdentifier: CompositionRoot.Samples::CompositionRoot.Samples.SampleCompositionInstaller
   modelName: CompositionRoot Sample
 --- !u!114 &769131746
 MonoBehaviour:
@@ -416,7 +416,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f7d5bcd8a08bb41a3bdcf27808e01dde, type: 3}
   m_Name:
-  m_EditorClassIdentifier: UiWindowsMvp.Runtime::UiWindowsMvp.Runtime.Composition.SceneCompositionRoot
+  m_EditorClassIdentifier: CompositionRoot.Runtime::CompositionRoot.Runtime.SceneCompositionRoot
   installComponentsOnSameGameObject: 1
   installers: []
 --- !u!4 &769131747

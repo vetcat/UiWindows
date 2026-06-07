@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UiWindowsMvp.Runtime.Composition
+namespace CompositionRoot.Runtime
 {
     [DefaultExecutionOrder(-10000)]
     public sealed class SceneCompositionRoot : MonoBehaviour
