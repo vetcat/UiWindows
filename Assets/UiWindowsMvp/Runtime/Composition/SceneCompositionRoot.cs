@@ -38,14 +38,22 @@ namespace UiWindowsMvp.Runtime.Composition
             }
 
             var newRegistry = new ServiceRegistry();
-            var orderedInstallers = CollectInstallers();
-            for (var i = 0; i < orderedInstallers.Count; i++)
+            try
             {
-                orderedInstallers[i].Install(newRegistry);
-            }
+                var orderedInstallers = CollectInstallers();
+                for (var i = 0; i < orderedInstallers.Count; i++)
+                {
+                    orderedInstallers[i].Install(newRegistry);
+                }
 
-            newRegistry.InitializeAll();
-            registry = newRegistry;
+                newRegistry.InitializeAll();
+                registry = newRegistry;
+            }
+            catch
+            {
+                newRegistry.Dispose();
+                throw;
+            }
         }
 
         public void Shutdown()

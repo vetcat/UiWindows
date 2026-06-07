@@ -45,6 +45,29 @@ namespace UiWindowsMvp.Tests.PlayMode
             Assert.That(secondService.DisposeCount, Is.EqualTo(1));
         }
 
+        [UnityTest]
+        public IEnumerator SceneCompositionRoot_FailedInitializationDisposesTemporaryRegistryAndDoesNotBootstrap()
+        {
+            var gameObject = new GameObject("Failing Scene Composition Root");
+            gameObject.SetActive(false);
+            var installer = gameObject.AddComponent<FailingCompositionInstaller>();
+            var root = gameObject.AddComponent<SceneCompositionRoot>();
+
+            var exception = Assert.Throws<InvalidOperationException>(() => root.Bootstrap());
+            Assert.That(exception.Message, Is.EqualTo(FailingInitializableService.FailureMessage));
+            Assert.That(root.IsBootstrapped, Is.False);
+            Assert.Throws<InvalidOperationException>(() => _ = root.Services);
+            Assert.That(installer.DisposableService.DisposeCount, Is.EqualTo(1));
+
+            root.Shutdown();
+            Assert.That(installer.DisposableService.DisposeCount, Is.EqualTo(1));
+
+            UnityEngine.Object.Destroy(gameObject);
+            yield return null;
+
+            Assert.That(installer.DisposableService.DisposeCount, Is.EqualTo(1));
+        }
+
         private interface IFirstTrackingService
         {
         }
@@ -67,6 +90,18 @@ namespace UiWindowsMvp.Tests.PlayMode
                 SecondService = new SecondTrackingService(Events);
                 registry.Register<IFirstTrackingService>(FirstService);
                 registry.Register<ISecondTrackingService>(SecondService);
+            }
+        }
+
+        private sealed class FailingCompositionInstaller : MonoBehaviour, ICompositionInstaller
+        {
+            public DisposableOnlyService DisposableService { get; private set; }
+
+            public void Install(IServiceRegistry registry)
+            {
+                DisposableService = new DisposableOnlyService();
+                registry.Register(DisposableService);
+                registry.Register(new FailingInitializableService());
             }
         }
 
@@ -111,6 +146,26 @@ namespace UiWindowsMvp.Tests.PlayMode
             public SecondTrackingService(List<string> events)
                 : base(events, "second")
             {
+            }
+        }
+
+        private sealed class DisposableOnlyService : IDisposable
+        {
+            public int DisposeCount { get; private set; }
+
+            public void Dispose()
+            {
+                DisposeCount++;
+            }
+        }
+
+        private sealed class FailingInitializableService : IInitializable
+        {
+            public const string FailureMessage = "Intentional composition initialization failure.";
+
+            public void Initialize()
+            {
+                throw new InvalidOperationException(FailureMessage);
             }
         }
     }
