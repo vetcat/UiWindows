@@ -23,9 +23,10 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 
 - Local project path: `/Users/vitaly/Projects/UiWindows`.
 - Unity version: `6000.4.4f1` from `ProjectSettings/ProjectVersion.txt`.
-- Current repository is a mostly empty Unity project with base `Assets`, `Packages`, and `ProjectSettings` only.
+- Current repository is a Unity project with base project settings plus project-owned CompositionRoot, R3 integration, and UI.Windows MVP adapter code under `Assets/Scripts`.
 - `UI.Windows-submodule` is integrated as a fork-pinned UPM Git dependency.
 - R3 is integrated as the explicit reactive foundation for the MVP layer through NuGetForUnity plus the R3.Unity UPM package.
+- The minimal UI.Windows MVP presenter lifecycle adapter is implemented under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter`.
 - No OpenUI code has been imported into this project yet.
 - `.ai/mcp/mcp.json` is currently empty.
 - Working tree was clean after the repository investigation.
@@ -34,7 +35,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 
 - Use `.agents/skills/uiwindows-mvp-architecture/SKILL.md` before designing, implementing, or reviewing UI.Windows MVP presenters, views, model/read-model ports, R3 UI bindings, OpenUI example ports, show/hide subscription lifetimes, or decisions about where UI logic belongs.
 - The skill captures the project-wide MVP interpretation: UI.Windows owns window lifecycle; presenters own view binding and UI behavior; models may be saves, services, controllers, ECS adapters, or combinations exposed through explicit ports; R3 show-scoped subscriptions must be cleaned on hide or pool return.
-- Treat the skill as seed architecture guidance before `UIW-5`. After `UIW-5`, update it with the actual adapter class/interface names and verified lifecycle details.
+- The skill now records the initial `UIW-5` adapter API names and verified lifecycle mapping; update it when later tasks materially change presenter/window lifecycle rules.
 
 ## Technology Stack
 
@@ -139,11 +140,26 @@ UIW-3 architecture skeleton snapshot on 2026-06-07:
 - Failed bootstrap disposes the temporary `ServiceRegistry`, leaves `SceneCompositionRoot` not bootstrapped, and rethrows the original exception.
 - Sample bootstrap code lives under `Assets/Scripts/CompositionRoot/Samples` and does not depend on OpenUI or UI.Windows.
 - PlayMode lifecycle verification lives under `Assets/Scripts/CompositionRoot/Tests/PlayMode` in assembly `CompositionRoot.Tests.PlayMode`.
-- Future UI.Windows presenter adapter code is reserved under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` in assembly `UiWindowsMvp.UIAdapter`; this assembly may depend on `CompositionRoot.Runtime` and `UI.Windows`, while `CompositionRoot.Runtime` must not depend on `UiWindowsMvp` or `UI.Windows`.
+- UI.Windows presenter adapter code lives under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` in assembly `UiWindowsMvp.UIAdapter`; this assembly may depend on `CompositionRoot.Runtime` and `UI.Windows`, while `CompositionRoot.Runtime` must not depend on `UiWindowsMvp` or `UI.Windows`.
 - R3 compile/convention plumbing lives under `Assets/Scripts/UiWindowsMvp/Runtime/R3Integration` in assembly `UiWindowsMvp.Reactive`; this assembly may depend on `R3` and `R3.Unity`.
-- Presenter lifecycle adapter work is still deferred to `UIW-5`.
 - Code organization, CompositionRoot mechanics, bootstrap path, failure behavior, and ownership rules are documented in `docs/project-architecture-skeleton.md`.
 - R3 MVP usage boundaries, dependency pins, and restore workflow are documented in `docs/r3-mvp-conventions.md`.
+
+UIW-5 MVP presenter adapter snapshot on 2026-06-08:
+
+- Minimal project-owned UI.Windows MVP adapter lives under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` in assembly `UiWindowsMvp.UIAdapter`.
+- `IUiPresenter` defines presenter initialization, show/hide hooks, and final `IDisposable` cleanup.
+- `IWindowPresenter<TWindow>` binds a presenter to a concrete `WindowBase` subtype.
+- `IWindowPresenterFactory<TWindow>` creates presenters through explicit dependencies or narrow ports.
+- `WindowPresenterBinder.Bind(window, factory)` attaches one presenter binding to a UI.Windows window instance after UI.Windows has produced that instance, normally from a `WindowSystem.Show` or `WindowSystem.ShowSync` callback.
+- `WindowPresenterBinding<TWindow>` owns presenter lifecycle forwarding and idempotent final cleanup.
+- `IUiShowScope` and `WindowPresenterShowScope` own show-scoped `IDisposable` subscriptions.
+- UI.Windows lifecycle mapping is documented in `.agents/skills/uiwindows-mvp-architecture/SKILL.md` and `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md`.
+- The adapter intentionally uses `IDisposable` as the subscription boundary instead of depending directly on R3; R3 subscriptions can be added to `IUiShowScope`.
+- `WindowPresenterEventSubscription<TWindow>` avoids UI.Windows generic `UnRegister` because that API leaves null delegates that can crash later event dispatch; disposed subscriptions become no-op and release strong references until UI.Windows clears the event registry.
+- PlayMode tests live under `Assets/Scripts/UiWindowsMvp/Tests/PlayMode` in assembly `UiWindowsMvp.Tests.PlayMode`.
+- Verified during review: Unity compile had zero errors/warnings, full PlayMode suite passed `8/8`, R3 smoke returned `True`, no UniRx/Zenject/OpenUI dependencies were added, and `CompositionRoot.Runtime` remained independent.
+- No real UI.Windows prefab/window was opened through `WindowSystem.Show` yet; first real visible slice is deferred to later issues.
 
 ## Project Goal
 
@@ -311,7 +327,7 @@ Current child issue sequence:
 - `UIW-13` - `03 - Integrate R3 reactive foundation for MVP`
 - `UIW-4` - `03x - Canceled: custom reactive primitives superseded by R3`
 - `UIW-5` - `04 - Implement MVP presenter lifecycle adapter for UI.Windows with R3`
-- `UIW-6` - `05 - Port Player model/service from OpenUI with R3`
+- `UIW-6` - `05 - Port Player model/service from OpenUI with R3` - next active task after `UIW-5` closure
 - `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3`
 - `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows`
 - `UIW-9` - `08 - Port settings and localization slice with R3`

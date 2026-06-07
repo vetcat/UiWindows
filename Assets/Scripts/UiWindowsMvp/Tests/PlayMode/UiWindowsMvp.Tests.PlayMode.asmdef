@@ -1,0 +1,20 @@
+{
+  "name": "UiWindowsMvp.Tests.PlayMode",
+  "rootNamespace": "UiWindowsMvp.Tests.PlayMode",
+  "references": [
+    "UiWindowsMvp.UIAdapter",
+    "UI.Windows"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

@@ -7,9 +7,31 @@ description: Project-specific UI.Windows MVP architecture guidance for the UiWin
 
 ## Purpose
 
-Use this skill to keep project UI architecture consistent across implementation chats. It captures the project-wide MVP interpretation before `UIW-5` creates the first concrete adapter API.
+Use this skill to keep project UI architecture consistent across implementation chats. It captures the project-wide MVP interpretation and the current UI.Windows presenter adapter API.
 
-Treat this as architecture guidance, not a frozen class-name specification. After `UIW-5`, update this skill with the actual adapter names and verified lifecycle details.
+Treat this as architecture guidance. `UIW-5` established the initial adapter API names and lifecycle details below.
+
+## Current Adapter API
+
+The minimal project-owned adapter lives under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` in assembly `UiWindowsMvp.UIAdapter`.
+
+- `IUiPresenter` defines presenter initialization, show/hide hooks, and final `IDisposable` cleanup.
+- `IWindowPresenter<TWindow>` binds a presenter to a concrete `WindowBase` subtype.
+- `IWindowPresenterFactory<TWindow>` creates presenters with explicit constructor dependencies or narrow ports.
+- `WindowPresenterBinder.Bind(window, factory)` attaches one presenter binding to a UI.Windows window instance, normally from a `WindowSystem.Show` or `WindowSystem.ShowSync` callback.
+- `WindowPresenterBinding<TWindow>` owns presenter lifecycle forwarding and idempotent final cleanup.
+- `IUiShowScope` / `WindowPresenterShowScope` own show-scoped `IDisposable` subscriptions.
+
+Verified lifecycle mapping:
+
+- `WindowEvent.OnInitialized` maps to `IUiPresenter.Initialize()`.
+- `WindowEvent.OnShowBegin` creates a new show scope and calls `IUiPresenter.OnShowBegin(scope)`.
+- `WindowEvent.OnShowEnd` maps to `IUiPresenter.OnShowEnd()`.
+- `WindowEvent.OnHideBegin` maps to `IUiPresenter.OnHideBegin()`.
+- `WindowEvent.OnHideEnd` maps to `IUiPresenter.OnHideEnd()`, then disposes the show scope.
+- `WindowEvent.OnDeInitialized` disposes the binding and presenter idempotently.
+
+The adapter uses `IDisposable` as the runtime subscription boundary rather than depending directly on R3. R3 subscriptions are expected to be added to `IUiShowScope` and are therefore disposed on hide completion or final cleanup.
 
 ## Load First
 
