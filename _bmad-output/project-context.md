@@ -8,9 +8,11 @@ sections_completed:
   - repository_research
   - implementation_plan
   - linear_task_plan
+  - architecture_follow_up
+  - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: ui-windows-package-integrated
+status: compositionroot-ecs-reactive-followup-recorded
 ---
 
 # Project Context for AI Agents
@@ -49,6 +51,18 @@ External repositories studied on 2026-06-06:
 
 - `https://github.com/chromealex/UI.Windows-submodule`, commit `60a4bf6e47c85ad57935f633a53fc3ca8b707167`, dated 2026-05-18.
 - `https://github.com/vetcat/OpenUI`, commit `f29fca04343c38b79a6dd8aed66e538cfbe8b232`, dated 2026-02-06.
+
+Architecture references reviewed on 2026-06-07:
+
+- `https://github.com/sebas77/Svelto.ECS`, commit `15c336fd1d01be086d0bccde64395e3eab1d834d`, dated 2025-05-01.
+- `https://github.com/vetcat/OpenUI`, commit `f29fca04343c38b79a6dd8aed66e538cfbe8b232`, dated 2026-02-06.
+- `https://github.com/friflo/Friflo.Engine.ECS`, commit `25dc91b4a6981df2e5500e4bca7fa764430d0b30`, dated 2026-05-01.
+- `https://github.com/Leopotam/ecs`, commit `b256e570bdb15a0bea9e664af32953068a2ac1e5`, dated 2025-11-29.
+
+Reactive library references checked on 2026-06-07:
+
+- `https://github.com/neuecc/UniRx`, HEAD `6baeccf6c544c155497164327cca72f28163a578`; GitHub marks the repository as archived, and its README points users to `Cysharp/R3` instead of UniRx.
+- `https://github.com/Cysharp/R3`, HEAD `3fed50ae5c7e123073f6e50218b2a0e6310d50b4`; GitHub marks the repository as not archived, and the project supports Unity.
 
 UI.Windows fork workflow established on 2026-06-07:
 
@@ -97,7 +111,8 @@ Target direction:
 - Use `UI.Windows-submodule` for window lifecycle, loading, unloading, layout, pooling, and resource management.
 - Port most `OpenUI` examples, including prefab/layout content, to the new approach.
 - Replace Zenject with a simple scene `CompositionRoot`.
-- Replace UniRx with minimal local primitives only where needed, such as simple observable properties, event streams, and disposable collections.
+- Start by replacing UniRx with minimal local primitives only where needed, such as simple observable properties, event streams, and disposable collections.
+- Treat R3 (`Cysharp/R3`) as an acceptable future alternative to expanding a project-owned reactive layer if the MVP port starts requiring timers, frame streams, operators, event composition, or async reactive flows. Vitaly has prior positive experience with R3.
 - Keep DOTween usage acceptable for animation examples unless later explicitly removed.
 
 ## Repository Research Summary
@@ -115,12 +130,17 @@ Confirmed from cloned repository `f29fca0`:
 - Views are ordinary prefab hierarchies under `Assets/Prefabs/UiPrefabs/SampleSceneWindows`.
 - OpenUI examples include player data UI, settings, language selection, shop/items, hints, FX, modal windows, localization, collections, and tests.
 - OpenUI's UI optimization is limited because most UI views are instantiated through the installer and then shown/hidden, rather than being loaded/unloaded through a resource-aware window system.
+- OpenUI is a useful behavior donor for presenter contracts, schemes, window coordination, player HUD, settings, localization, shop collections, hints, FX, modal windows, and selective tests.
+- OpenUI is not a good infrastructure donor for this project because its view creation, presenter discovery, signals, initialization, disposal, and tests are tightly coupled to Zenject and UniRx.
+- OpenUI `PlayerService` directly depends on UI presenters for FX behavior. Do not preserve that direction. Domain/model services should publish state or effect requests, and the UI layer should decide how to render them.
 
 Important OpenUI constraints:
 
 - Zenject is used not only for dependency injection but also for prefab instantiation, factories, initializable/disposable lifecycle, and resolving all `IUiPresenter` instances.
 - UniRx is used for reactive model properties, button observables, presenter show/hide streams, signal streams, timers, frame updates, and subscription disposal.
 - Direct copy-paste into the target project is not viable if Zenject and UniRx are not required dependencies.
+- Do not copy `UiView.Show()` / `Hide()` semantics based on `gameObject.SetActive` as the window lifecycle mechanism. In this project, UI.Windows `WindowSystem.Show/Hide` remains the lifecycle source of truth.
+- Do not copy `DiContainerUiExtensions.BindViewPresenter` as-is. UI.Windows should create/load window instances, and the project-owned MVP adapter should bind presenters after the window instance is available.
 
 ### UI.Windows-submodule Findings
 
@@ -143,6 +163,36 @@ Important UI.Windows constraints:
 - `OnDeInit` is suitable for final resource cleanup, but show-scoped subscriptions should be cleaned on `OnHideEnd` or pool add, not only on `OnDeInit`.
 - `WindowSystemResources.DeleteAll(windowInstance)` is already called by the UI.Windows lifecycle where applicable, so the MVP layer should cooperate with that handler model rather than replace it.
 
+### CompositionRoot And ECS Architecture Follow-up
+
+Confirmed from Svelto.ECS, OpenUI, Friflo.Engine.ECS, and LeoECS review on 2026-06-07:
+
+- Svelto.ECS treats the composition root as the place that manually creates the runtime root, scheduler, factories/functions, and engines. The core root stays owned by the composition root; narrower capability objects are passed outward.
+- Friflo.Engine.ECS uses explicit `EntityStore` and optional `SystemRoot`/`SystemGroup` composition. Structural changes inside query iteration are expected to go through `CommandBuffer`.
+- LeoECS uses explicit `EcsWorld` and `EcsSystems` with `Init`, `Run`, and `Destroy`; it supports reflection field injection inside ECS systems, but the repository states that development has stopped and recommends EcsProto or EcsLite instead.
+- All three ECS references support the same architectural direction for this project: a future ECS runtime should be owned by a scene or application composition layer, while UI and domain-facing code should depend on narrow ports, not on the concrete ECS world/store/root.
+
+Future ECS integration rules:
+
+- Do not inject or expose a concrete `EntityStore`, `SystemRoot`, `EcsWorld`, `EcsSystems`, or Svelto `EnginesRoot` directly to UI presenters.
+- Do not inject the project `IServiceResolver` into presenters, models, or domain services. Use explicit constructor dependencies and narrow ports/capabilities.
+- Prefer ports such as `IPlayerReadModel`, `IPlayerCommands`, `IUiEffectRequests`, `IWindowNavigator`, or equivalent names over generic service location.
+- Domain/model services must not depend on UI presenter interfaces. If domain logic needs an animation or UI effect, publish an event/request and let the UI adapter handle rendering.
+- A future ECS adapter may implement these ports using Friflo, EcsLite/EcsProto, LeoECS, Svelto, or another ECS without changing UI presenter contracts.
+- If a scene update/tick loop is needed, add a dedicated update driver service or scene component. Do not overload `SceneCompositionRoot` with per-frame update behavior by default.
+- Keep ECS-specific code out of `CompositionRoot.Runtime` unless it is behind project-owned abstractions and the runtime assembly remains independent from the selected ECS library.
+
+### Reactive Dependency Follow-up
+
+Confirmed from UniRx and R3 review on 2026-06-07:
+
+- Do not integrate UniRx by default. The `UniRx` repository is archived, and its README directs users to `Cysharp/R3` instead.
+- Keep `UIW-4` small if the MVP port only needs `ObservableProperty<T>`, simple event streams, and disposable collections.
+- Do not grow a large custom Rx-like library inside the project by default. If implementation starts needing timers, frame-based streams, throttling/debouncing, merging/combining streams, async reactive flows, or broader operator composition, evaluate R3 before adding those features manually.
+- If R3 is adopted, make it an explicit project dependency decision and verify Unity compilation/package resolution. Do not introduce it as incidental OpenUI copy-paste.
+- Prefer project-owned public ports for presenter/model boundaries. Avoid leaking R3-specific types through domain or presenter contracts unless the project deliberately accepts that coupling.
+- `IDisposable` remains the common subscription ownership boundary and should work with either minimal local primitives or R3.
+
 ## Proposed Architecture Direction
 
 Add a thin project-owned adapter layer on top of `UI.Windows`, not inside OpenUI and not by rewriting the UI.Windows resource system.
@@ -154,15 +204,19 @@ Suggested layer names are provisional:
 - `UiPresenter<TWindow>` or `WindowPresenter<TWindow>`: base class for presenter logic bound to a `WindowBase` or `LayoutWindowType` instance.
 - `WindowPresenterBinder`: attaches a presenter to a loaded/shown UI.Windows window and disposes show-scoped state on hide/pool.
 - `SimpleSignalBus`: minimal replacement for Zenject `SignalBus`.
-- `ObservableProperty<T>` and `DisposableBag`: minimal replacement for the subset of UniRx used by the examples.
+- `ObservableProperty<T>` and `DisposableBag`: minimal replacement for the small subset of UniRx used by the first examples, unless R3 is explicitly selected because the reactive scope grows.
+- `IPlayerReadModel` and `IPlayerCommands` or equivalent ports: expose player state and mutations to UI without binding presenters to a future ECS world/store.
+- `IUiEffectRequests` or equivalent: allows domain/application services to request visual feedback without depending on UI presenter implementations.
 
 Expected lifecycle model:
 
 - CompositionRoot owns application and scene services.
+- A future ECS composition installer may own ECS world/store/system-root creation, update driver registration, and disposal.
 - UI.Windows owns window instance creation, loading, layout, show/hide, pooling, and resource cleanup.
 - Presenter owns UI behavior and model binding for a loaded window instance.
 - Presenter should not instantiate windows directly unless it calls `WindowSystem.Show` or a wrapper around it.
 - Presenter should not manually destroy pooled UI.Windows windows.
+- Presenters should depend on explicit ports/capabilities, not on `IServiceResolver`, Zenject `DiContainer`, or concrete ECS runtime objects.
 
 ## Migration Plan
 
@@ -266,6 +320,10 @@ The future implementation should preserve these OpenUI behaviors where practical
 - OpenUI view prefabs use MonoBehaviours derived from `UiView`; these must be adapted to UI.Windows roots/components before they can be used directly.
 - Zenject replacement is straightforward but touches constructors, factories, installer assets, initialization order, and tests.
 - UniRx replacement is broader because it touches model properties, button observables, signal streams, timers, frame updates, and subscription disposal.
+- A small local reactive layer is acceptable for the first vertical slice, but it can become accidental framework work. If reactive requirements move beyond simple value notification and subscription disposal, R3 is the preferred evaluation candidate before implementing more custom operators.
+- Future ECS selection is intentionally unresolved. Friflo.Engine.ECS, EcsLite/EcsProto, Svelto, or another ECS should be hidden behind project-owned ports so UI code does not need to be rewritten when the ECS choice is made.
+- LeoECS classic (`https://github.com/Leopotam/ecs`) is marked by its author as discontinued; use it as a lifecycle reference only unless Vitaly explicitly chooses it despite that status.
+- OpenUI contains useful behavior examples but also contains a domain-to-UI dependency in `PlayerService` for FX. Preserve the behavior through events/ports, not the dependency direction.
 
 ## UIW-2 Compatibility Policy
 
@@ -304,9 +362,15 @@ Dependency and patch rules:
 
 - Do not start by importing all OpenUI code blindly.
 - Do not reintroduce mandatory Zenject or UniRx unless Vitaly explicitly changes the requirement.
+- Do not treat "without UniRx" as "must write a full custom reactive framework". Start with minimal primitives, and evaluate R3 explicitly if operators, timers, frame streams, or reactive composition become substantial.
+- If R3 is introduced, keep the dependency deliberate and localized; prefer project-owned ports and `IDisposable` ownership boundaries over leaking R3 types everywhere.
 - Do not bypass `WindowSystem.Show/Hide` for window lifecycle.
 - Keep the first implementation as a small vertical slice before porting all examples.
 - Treat `UI.Windows` lifecycle and pooling as the source of truth.
 - Prefer project-owned adapter code over modifying third-party package internals unless a package compatibility fix is unavoidable.
+- Use OpenUI as a behavior and test reference, not as an infrastructure template.
+- Do not pass `IServiceResolver`, Zenject `DiContainer`, or concrete ECS world/store/root objects into presenters or domain services.
+- Introduce explicit ports/capabilities when a dependency boundary may later be backed by ECS.
+- Keep domain/model services independent from UI presenter interfaces; UI effects should be requested through events or ports and rendered by the UI layer.
 - Before editing files, check git status and avoid overwriting unrelated user changes.
 - Implement Linear tasks in dedicated `feature/<issue-slug>` branches from latest `main`, then merge completed task work back to `main` after acceptance.
