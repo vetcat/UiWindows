@@ -1,0 +1,19 @@
+{
+  "name": "ProjectContext.Player.Tests.PlayMode",
+  "rootNamespace": "ProjectContext.Player.Tests.PlayMode",
+  "references": [
+    "ProjectContext.Player"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
