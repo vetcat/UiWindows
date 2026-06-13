@@ -33,7 +33,7 @@ Before preparing, implementing, reviewing, or closing issue work, verify which t
 
 When expected tooling is unavailable, times out, lacks dependencies, or cannot see the opened project, continue only with an explicit fallback and report the limitation in the prompt, review, or final result.
 
-For project-owned skill validation, prefer an available validator. If a cached validator script is not executable, invoke it through its interpreter instead of changing system cache permissions. If validator dependencies are missing, use and report a documented manual frontmatter check rather than silently skipping validation.
+For project-owned skill validation, prefer a repository-provided validation wrapper when present, then an available system validator. If a cached validator script is not executable, invoke it through its interpreter instead of changing system cache permissions. If validator dependencies are missing, use and report a documented manual frontmatter check rather than silently skipping validation.
 
 ## Mode Routing
 

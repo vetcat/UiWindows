@@ -32,7 +32,7 @@ Run the issue's requested checks. If a check cannot run, explain exactly why and
 
 After running IDE/editor tooling, rerun repository status and separate unrelated generated files from task changes before committing or reporting.
 
-For project-owned skill changes, validate skill frontmatter with the available validator. If a cached validator cannot execute directly, run it through its interpreter. If the validator or dependency is unavailable, use and report a documented manual frontmatter fallback.
+For project-owned skill changes, validate skill frontmatter with a repository-provided validation wrapper when present or with the available system validator. If a cached validator cannot execute directly, run it through its interpreter. If the validator or dependency is unavailable, use and report a documented manual frontmatter fallback.
 
 Verification evidence should include:
 

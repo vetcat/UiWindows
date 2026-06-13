@@ -58,7 +58,8 @@ UIW-14 local workflow check on 2026-06-13:
 - Unity MCP saw one active `UiWindows@29793614097f6f61` editor instance on Unity `6000.4.4f1`; editor state was idle and ready for tools.
 - Rider MCP saw the Unity solution projects and `get_file_problems` plus targeted `build_solution` passed for `Assets/Scripts/CompositionRoot/Samples/SampleCompositionInstaller.cs`.
 - Cached `quick_validate.py` scripts in Rider/Codex system skill caches were not executable, so direct execution failed with permission denied. Running the same validator through `python3` worked here because `PyYAML 6.0.3` was installed.
-- Do not change permissions or contents in system cached skill directories as a task fix. Prefer `python3 <quick_validate.py> <skill-directory>`; if `PyYAML` or the validator is unavailable, document a manual frontmatter fallback validation.
+- `tools/quick-validate-skill` is the project-owned wrapper for skill validation. It calls the system `skill-creator` `quick_validate.py` through `python3`, preferring `$CODEX_HOME` or `~/.codex` over Rider versioned cache paths.
+- Do not change permissions or contents in system cached skill directories as a task fix. Prefer `tools/quick-validate-skill <skill-directory>` or `python3 <quick_validate.py> <skill-directory>`; if `PyYAML` or the validator is unavailable, document a manual frontmatter fallback validation.
 - Pre-existing Unity-generated changes were present in `Packages/nuget-packages/NuGet.config.meta` and `Packages/nuget-packages/packages.config.meta`; treat generated/importer changes as separate from task edits unless they are intentionally accepted.
 
 ## Technology Stack

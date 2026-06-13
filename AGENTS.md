@@ -197,7 +197,15 @@ Before using Unity MCP tools, read `mcpforunity://custom-tools`, `mcpforunity://
 
 ## Skill Validation
 
-When validating project-owned skills, prefer the available skill validator. If a cached `quick_validate.py` is present but not executable, run it with `python3` rather than changing permissions in system cache directories.
+When validating project-owned skills, prefer the repository wrapper:
+
+```bash
+tools/quick-validate-skill .agents/skills/<skill-name>
+```
+
+The wrapper runs the system `skill-creator` `quick_validate.py` through `python3`, using `$CODEX_HOME/skills/.system/skill-creator/scripts/quick_validate.py` when `CODEX_HOME` is set or `~/.codex/skills/.system/skill-creator/scripts/quick_validate.py` otherwise. Set `QUICK_VALIDATE_PY` for a custom validator path or `PYTHON_BIN` for a custom Python executable.
+
+If a cached `quick_validate.py` is present but not executable, run it through the wrapper or with `python3` rather than changing permissions in system cache directories.
 
 If validator execution fails because `PyYAML` or another local dependency is missing, do not modify cached system skills blindly. Use a documented fallback: manually verify `SKILL.md` frontmatter has a `---` block, valid YAML shape where practical, required `name` and `description`, and only allowed keys (`name`, `description`, `license`, `allowed-tools`, `metadata`), then report that fallback validation was used.
 
