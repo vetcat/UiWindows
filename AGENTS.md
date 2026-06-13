@@ -139,8 +139,8 @@ Current child issue sequence:
 - `UIW-13` - `03 - Integrate R3 reactive foundation for MVP`
 - `UIW-4` - `03x - Canceled: custom reactive primitives superseded by R3`
 - `UIW-5` - `04 - Implement MVP presenter lifecycle adapter for UI.Windows with R3`
-- `UIW-6` - `05 - Port Player model/service from OpenUI with R3` - next active task after `UIW-5` closure
-- `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3`
+- `UIW-6` - `05 - Port Player model/service from OpenUI with R3` - Done
+- `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3` - next active task after `UIW-6` closure
 - `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows`
 - `UIW-9` - `08 - Port settings and localization slice with R3`
 - `UIW-10` - `09 - Port shop and collection pooling slice with R3`
