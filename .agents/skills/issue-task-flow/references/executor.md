@@ -7,9 +7,10 @@ Use Executor mode to implement exactly one selected issue.
 1. Read local project instructions and context.
 2. Open the selected issue and relevant comments.
 3. Check `git status --short --branch` before changes.
-4. Fetch the integration branch.
-5. Create a dedicated task branch from the latest integration branch using the `feature/` namespace. If the tracker-generated branch is `owner/issue-slug`, replace the leading namespace and create `feature/issue-slug`; if no tracker slug exists, create `feature/<issue-id>-<normalized-title>`.
-6. Restate the issue scope, non-goals, acceptance criteria, and verification plan before substantial edits.
+4. Verify tracker, IDE, editor, and validation tooling available in the current session.
+5. Fetch the integration branch.
+6. Create a dedicated task branch from the latest integration branch using the `feature/` namespace. If the tracker-generated branch is `owner/issue-slug`, replace the leading namespace and create `feature/issue-slug`; if no tracker slug exists, create `feature/<issue-id>-<normalized-title>`.
+7. Restate the issue scope, non-goals, acceptance criteria, verification plan, and available/unavailable tooling before substantial edits.
 
 If local changes already exist, do not overwrite them. Stop and ask how to proceed unless they are clearly your own current-turn changes.
 
@@ -19,6 +20,8 @@ If local changes already exist, do not overwrite them. Stop and ask how to proce
 - Keep changes minimal and aligned with existing project patterns.
 - Do not broaden scope to adjacent tasks.
 - When implementation changes the repository's factual baseline, update the canonical local context or project docs referenced by local instructions before finalizing. Examples include new dependencies, verified environment state, architecture decisions, workflow changes, or completed setup that makes earlier context stale.
+- Use IDE diagnostics/build/refactor/format tools for changed code when available, and report any skipped or unavailable IDE tooling.
+- Use editor-specific tools for editor refresh/compile, tests, Console state, generated asset state, and live API checks when available.
 - Do not close the issue unless explicitly asked.
 - Do not merge into the integration branch unless explicitly asked.
 - Update the issue tracker with meaningful notes after implementation and verification.
@@ -26,6 +29,10 @@ If local changes already exist, do not overwrite them. Stop and ask how to proce
 ## Verification Rules
 
 Run the issue's requested checks. If a check cannot run, explain exactly why and what evidence remains.
+
+After running IDE/editor tooling, rerun repository status and separate unrelated generated files from task changes before committing or reporting.
+
+For project-owned skill changes, validate skill frontmatter with the available validator. If a cached validator cannot execute directly, run it through its interpreter. If the validator or dependency is unavailable, use and report a documented manual frontmatter fallback.
 
 Verification evidence should include:
 
@@ -40,6 +47,9 @@ Verification evidence should include:
 ```text
 Branch: <branch-name>
 Commits: <commit-shas-or-none>
+Tool availability:
+- <tracker/IDE/editor/validation tools available or fallback used>
+
 Changed files:
 - <path>: <summary>
 

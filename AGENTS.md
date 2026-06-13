@@ -178,7 +178,9 @@ The Executor should:
 
 ## Local MCP Notes
 
-The local `.ai/mcp/mcp.json` file is currently empty, but Linear tools were available in the session environment when checked. If a future agent does not see Linear tools, report that MCP availability differs from the prior session instead of assuming Linear is unavailable globally.
+The local `.ai/mcp/mcp.json` file is currently empty, but Linear, Rider, and Unity MCP tools may still be available from the session environment. Before Orchestrator or Executor work, verify actual tool availability through the active tool list/resource discovery instead of inferring availability from `.ai/mcp/mcp.json`.
+
+If Linear, Rider, Unity, or another expected MCP tool is unavailable, times out, or does not see this project, report the exact limitation in the prompt, review, or Executor result.
 
 ## IDE And Unity MCP Verification
 
@@ -191,13 +193,22 @@ When changing project-owned C# code, use Rider MCP when it is available:
 
 Unity MCP remains the source of truth for Unity editor refresh/compile, PlayMode verification, Unity Console state, and reflection against live Unity/UI.Windows APIs. If Rider MCP or Unity MCP is unavailable, times out, or does not see the opened project, report that limitation in the Executor result.
 
+Before using Unity MCP tools, read `mcpforunity://custom-tools`, `mcpforunity://instances`, and `mcpforunity://editor/state` when available so the active Unity instance and editor readiness are explicit.
+
+## Skill Validation
+
+When validating project-owned skills, prefer the available skill validator. If a cached `quick_validate.py` is present but not executable, run it with `python3` rather than changing permissions in system cache directories.
+
+If validator execution fails because `PyYAML` or another local dependency is missing, do not modify cached system skills blindly. Use a documented fallback: manually verify `SKILL.md` frontmatter has a `---` block, valid YAML shape where practical, required `name` and `description`, and only allowed keys (`name`, `description`, `license`, `allowed-tools`, `metadata`), then report that fallback validation was used.
+
 ## Repository Hygiene
 
 - Check `git status --short --branch` before editing.
 - Implement each Linear task in its own branch created from the latest `main`.
 - Use `feature/<issue-slug>` for Executor task branches. When Linear provides a generated branch name such as `owner/uiw-2-task-title`, preserve the generated issue slug but replace the leading owner namespace with `feature/`, for example `feature/uiw-2-task-title`. If no generated slug is available, use `feature/<issue-id>-<normalized-task-title>`.
 - Do not implement task work directly on `main`, except for explicitly requested repository-maintenance changes.
-- After a task is accepted/closed, merge its branch back into `main` and push `main` so the next task starts from the latest integrated state.
+- After Unity, Rider, or editor checks, rerun `git status --short --branch` and separate generated/importer noise from task changes before committing or reporting.
+- After a task is accepted/closed, merge its branch back into `main`, push `main`, verify the local branch is not still ahead of `origin/main`, update Linear status/final notes, and update any parent-plan next-task marker when relevant.
 - Do not overwrite unrelated user changes.
 - Keep third-party package internals unchanged unless a compatibility fix is unavoidable.
 - Prefer a small vertical slice before broad migration work.

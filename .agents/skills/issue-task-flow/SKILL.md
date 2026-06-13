@@ -27,6 +27,14 @@ Treat local project instructions as authoritative over this generic skill.
 
 When a project uses ordered issue titles or numeric prefixes, sort issues by that explicit project ordering. Do not rely on tracker API return order unless the project says API order is authoritative.
 
+## Capability Discovery
+
+Before preparing, implementing, reviewing, or closing issue work, verify which tracker, IDE, editor, and validation tools are actually available in the current session. Do not infer tool availability from local config files alone; hosted or IDE-provided tools may exist even when repository MCP config is empty.
+
+When expected tooling is unavailable, times out, lacks dependencies, or cannot see the opened project, continue only with an explicit fallback and report the limitation in the prompt, review, or final result.
+
+For project-owned skill validation, prefer an available validator. If a cached validator script is not executable, invoke it through its interpreter instead of changing system cache permissions. If validator dependencies are missing, use and report a documented manual frontmatter check rather than silently skipping validation.
+
 ## Mode Routing
 
 - For orchestration, read `references/orchestrator.md`.
@@ -50,5 +58,5 @@ Prefer the project's configured issue tracker and branch naming conventions. If 
 
 Keep outputs operational:
 
-- Orchestrator outputs should include the chosen task, blockers, the executor prompt, and review/closure criteria.
-- Executor outputs should include branch name, changed files, commits, verification results, issue updates, and unresolved risks.
+- Orchestrator outputs should include the chosen task, blocker status, relevant tool availability, the executor prompt, and review/closure criteria.
+- Executor outputs should include branch name, changed files, commits, tool availability/fallbacks, verification results, issue updates, and unresolved risks.

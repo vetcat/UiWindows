@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: compositionroot-ecs-reactive-followup-recorded
+status: flow-mcp-closure-hardening-in-progress
 ---
 
 # Project Context for AI Agents
@@ -39,13 +39,27 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 
 ## IDE And Unity MCP Verification
 
+- Local `.ai/mcp/mcp.json` can be empty while session-provided MCP tools are still available. Future chats should verify actual Linear, Rider, and Unity MCP availability through the active tool list/resource discovery before implementation or review work.
+- If an expected MCP tool is unavailable, times out, or does not see this project, report the exact limitation in the Executor or Orchestrator result instead of assuming the tool is globally unavailable.
 - When changing project-owned C# code, use Rider MCP when it is available.
 - Run Rider `get_file_problems` on changed `.cs` files after edits.
 - Run Rider `build_solution` after C# changes when practical, or explicitly report why Unity compile was used instead.
 - Use Rider `rename_refactoring` for programmatic symbol renames instead of manual text replacement.
 - Use Rider `reformat_file` for edited C# files when formatting changed and the file belongs to the opened solution.
 - Unity MCP remains the source of truth for Unity editor refresh/compile, PlayMode verification, Unity Console state, and reflection against live Unity/UI.Windows APIs.
+- Before using Unity MCP tools, read `mcpforunity://custom-tools`, `mcpforunity://instances`, and `mcpforunity://editor/state` when available.
 - If Rider MCP or Unity MCP is unavailable, times out, or does not see the opened project, report that limitation in the Executor result.
+
+UIW-14 local workflow check on 2026-06-13:
+
+- `UIW-14` is a process/tooling issue, not part of the ordered `UIW-1` migration child sequence.
+- The dedicated branch is `feature/uiw-14-flow-harden-executor-mcp-and-closure-verification-workflow`.
+- Linear MCP, Rider MCP, and Unity MCP were available in this session even though `.ai/mcp/mcp.json` was empty.
+- Unity MCP saw one active `UiWindows@29793614097f6f61` editor instance on Unity `6000.4.4f1`; editor state was idle and ready for tools.
+- Rider MCP saw the Unity solution projects and `get_file_problems` plus targeted `build_solution` passed for `Assets/Scripts/CompositionRoot/Samples/SampleCompositionInstaller.cs`.
+- Cached `quick_validate.py` scripts in Rider/Codex system skill caches were not executable, so direct execution failed with permission denied. Running the same validator through `python3` worked here because `PyYAML 6.0.3` was installed.
+- Do not change permissions or contents in system cached skill directories as a task fix. Prefer `python3 <quick_validate.py> <skill-directory>`; if `PyYAML` or the validator is unavailable, document a manual frontmatter fallback validation.
+- Pre-existing Unity-generated changes were present in `Packages/nuget-packages/NuGet.config.meta` and `Packages/nuget-packages/packages.config.meta`; treat generated/importer changes as separate from task edits unless they are intentionally accepted.
 
 ## Technology Stack
 
@@ -324,10 +338,11 @@ Future AI chat workflow:
 3. Open Linear issue `UIW-1`.
 4. Review child issues ordered by numeric prefix.
 5. Pick the first child issue that is not `Done` or `Canceled`, unless Vitaly explicitly chooses another task.
-6. Start from the latest `main`, then create a dedicated branch for that Linear issue.
-7. Use `feature/<issue-slug>` for Executor task branches. When Linear provides a generated branch name such as `owner/uiw-2-task-title`, preserve the generated issue slug but replace the leading owner namespace with `feature/`, for example `feature/uiw-2-task-title`. If no generated slug is available, use `feature/<issue-id>-<normalized-task-title>`.
-8. Work only on that issue's scope, verify its acceptance criteria, then update Linear status and notes.
-9. After the task is accepted/closed, merge the task branch back into `main` and push `main` so the next task starts from the integrated state.
+6. Verify available Linear, Rider, Unity, and validation tooling through actual session tools/resources; report unavailable or timed-out tooling explicitly.
+7. Start from the latest `main`, then create a dedicated branch for that Linear issue.
+8. Use `feature/<issue-slug>` for Executor task branches. When Linear provides a generated branch name such as `owner/uiw-2-task-title`, preserve the generated issue slug but replace the leading owner namespace with `feature/`, for example `feature/uiw-2-task-title`. If no generated slug is available, use `feature/<issue-id>-<normalized-task-title>`.
+9. Work only on that issue's scope, verify its acceptance criteria, rerun git status after editor/tool checks, then update Linear status and notes.
+10. After the task is accepted/closed, merge the task branch back into `main`, push `main`, verify local `main` is not still ahead of `origin/main`, and update any relevant parent-plan next-task marker.
 
 Current child issue sequence:
 
@@ -354,10 +369,11 @@ Orchestrator mode:
 - Do not implement the selected task directly unless Vitaly explicitly asks.
 - Read `AGENTS.md`, this context file, `UIW-1`, and the relevant child issue.
 - Pick the first child issue under `UIW-1` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
+- Verify available MCP tools before preparing or reviewing task work.
 - Verify blockers before creating implementation prompts.
 - Create one focused Executor prompt for one Linear issue.
 - After Executor completion, review diff, acceptance criteria, verification evidence, Linear notes, branch name, and git hygiene.
-- After acceptance, merge the task branch into `main`, push `main`, and update Linear only when Vitaly asks to complete closure.
+- After acceptance, merge the task branch into `main`, push `main`, verify `ahead origin/main` is clear, and update Linear/parent-plan notes only when Vitaly asks to complete closure.
 
 Executor mode:
 
@@ -365,7 +381,8 @@ Executor mode:
 - Work on exactly one Linear issue.
 - Start from latest `main`, create a dedicated `feature/<issue-slug>` branch, and derive the issue slug from the Linear-generated branch name when available by replacing its leading owner namespace with `feature/`.
 - Stay within the issue scope.
-- Run verification from the issue and project context.
+- Run verification from the issue and project context, including Rider MCP for changed C# files when available and Unity MCP for Unity editor/Console/test state.
+- Report unavailable, timed-out, or skipped MCP tooling explicitly.
 - Update Linear with implementation notes and verification results.
 - Return changed files, branch name, commits, verification results, and unresolved risks.
 - Do not merge to `main` or close the task unless Vitaly explicitly asks.
