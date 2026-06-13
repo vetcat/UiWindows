@@ -23,11 +23,12 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 
 - Local project path: `/Users/vitaly/Projects/UiWindows`.
 - Unity version: `6000.4.4f1` from `ProjectSettings/ProjectVersion.txt`.
-- Current repository is a Unity project with base project settings plus project-owned CompositionRoot, R3 integration, and UI.Windows MVP adapter code under `Assets/Scripts`.
+- Current repository is a Unity project with base project settings plus project-owned CompositionRoot, R3 integration, UI.Windows MVP adapter code, and the first R3-backed player model/service under `Assets/Scripts`.
 - `UI.Windows-submodule` is integrated as a fork-pinned UPM Git dependency.
 - R3 is integrated as the explicit reactive foundation for the MVP layer through NuGetForUnity plus the R3.Unity UPM package.
 - The minimal UI.Windows MVP presenter lifecycle adapter is implemented under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter`.
-- No OpenUI code has been imported into this project yet.
+- The first OpenUI behavior port is implemented under `Assets/Scripts/ProjectContext/Runtime/Player` in assembly `ProjectContext.Player`; it recreates player behavior without importing OpenUI infrastructure.
+- No OpenUI infrastructure has been imported into this project.
 - `.ai/mcp/mcp.json` is currently empty.
 - Working tree was clean after the repository investigation.
 
@@ -185,6 +186,18 @@ UIW-5 MVP presenter adapter snapshot on 2026-06-08:
 - PlayMode tests live under `Assets/Scripts/UiWindowsMvp/Tests/PlayMode` in assembly `UiWindowsMvp.Tests.PlayMode`.
 - Verified during review: Unity compile had zero errors/warnings, full PlayMode suite passed `8/8`, R3 smoke returned `True`, no UniRx/Zenject/OpenUI dependencies were added, and `CompositionRoot.Runtime` remained independent.
 - No real UI.Windows prefab/window was opened through `WindowSystem.Show` yet; first real visible slice is deferred to later issues.
+
+UIW-6 player model/service snapshot on 2026-06-13:
+
+- R3-backed player domain/model code lives under `Assets/Scripts/ProjectContext/Runtime/Player` in assembly `ProjectContext.Player`.
+- Public ports are split into `IPlayerReadModel`, `IPlayerCommands`, `IPlayerService`, and `IPlayerSettings`.
+- `PlayerService` exposes read-only R3 state for health, XP, coins, level, name, and XP progress; mutable `ReactiveProperty<T>` and `Subject<T>` instances remain private.
+- Player mutation crosses the boundary through command methods such as `SetHealth`, `AddXp`, `SetCoins`, `RemoveCoins`, and `SetName`.
+- Health is clamped to `IPlayerSettings.MaxHealth`.
+- XP progression uses OpenUI-style level bounds `[0, 100, 200, 300, 400]` by default, publishes `XpUpdates`, and publishes `LevelUps` when XP raises the player level.
+- OpenUI's `PlayerService -> IUiFxViewPresenter` dependency was not preserved. UI-neutral effect requests were not added in this slice because no UIW-7 player binding requires coin FX yet; future FX ports should be explicit request streams rather than presenter dependencies.
+- PlayMode/unit tests live under `Assets/Scripts/ProjectContext/Tests/PlayMode` in assembly `ProjectContext.Player.Tests.PlayMode`.
+- The player runtime does not reference UI.Windows windows, Unity UI views, presenter interfaces, OpenUI, Zenject, or UniRx.
 
 ## Project Goal
 

@@ -37,6 +37,13 @@ UI.Windows-specific MVP adapter code lives in:
 
 - `Assets/Scripts/UiWindowsMvp`
 
+Project/application model and domain ports live in:
+
+- `Assets/Scripts/ProjectContext`
+
+Current player model/service code lives under `Assets/Scripts/ProjectContext/Runtime/Player`.
+This layer may use R3 for read-model state and events, but must not depend on UI.Windows windows, Unity UI views, presenter interfaces, OpenUI, Zenject, or UniRx.
+
 `CompositionRoot` is a reusable scene bootstrap/lifecycle primitive, not a UI concept:
 
 - `SceneCompositionRoot` is intended to be reusable for any scene.
