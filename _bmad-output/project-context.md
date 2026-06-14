@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: flow-mcp-closure-hardening-in-progress
+status: uiw-15-layout-preview-scene-added
 ---
 
 # Project Context for AI Agents
@@ -28,6 +28,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - R3 is integrated as the explicit reactive foundation for the MVP layer through NuGetForUnity plus the R3.Unity UPM package.
 - The minimal UI.Windows MVP presenter lifecycle adapter is implemented under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter`.
 - The first OpenUI behavior port is implemented under `Assets/Scripts/ProjectContext/Runtime/Player` in assembly `ProjectContext.Player`; it recreates player behavior without importing OpenUI infrastructure.
+- `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiTopLeftView.prefab` is the project-owned UI.Windows-compatible UiTopLeft view asset, and `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting that prefab under a Canvas.
 - No OpenUI infrastructure has been imported into this project.
 - `.ai/mcp/mcp.json` is currently empty.
 - Working tree was clean after the repository investigation.
@@ -198,6 +199,15 @@ UIW-6 player model/service snapshot on 2026-06-13:
 - OpenUI's `PlayerService -> IUiFxViewPresenter` dependency was not preserved. UI-neutral effect requests were not added in this slice because no UIW-7 player binding requires coin FX yet; future FX ports should be explicit request streams rather than presenter dependencies.
 - PlayMode/unit tests live under `Assets/Scripts/ProjectContext/Tests/PlayMode` in assembly `ProjectContext.Player.Tests.PlayMode`.
 - The player runtime does not reference UI.Windows windows, Unity UI views, presenter interfaces, OpenUI, Zenject, or UniRx.
+
+UIW-15 UiTopLeft view asset/layout preview snapshot on 2026-06-14:
+
+- The adapted UiTopLeft view prefab lives at `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiTopLeftView.prefab`.
+- The project-owned layout preview scene lives at `Assets/Scenes/Develop/UIDevelopScene.unity`.
+- `UIDevelopScene` is only a static prefab layout-check scene: it contains a Main Camera, Directional Light, Canvas with `CanvasScaler` and `GraphicRaycaster`, EventSystem, and one `UiTopLeftView` prefab instance under the Canvas.
+- The scene exists so agents and humans can inspect the top-left HUD layout without running OpenUI or the future UI.Windows vertical slice.
+- `UIDevelopScene` is not the UI.Windows lifecycle vertical slice. It does not add `UiTopLeftPresenter`, `IPlayerReadModel`/`IPlayerCommands` binding, R3 subscriptions, scene launcher/bootstrap behavior, `WindowSystem.Show` wiring, OpenUI runtime, Zenject, UniRx, schemes, installers, localization, or effects infrastructure.
+- Presenter/model/R3 binding and real `WindowSystem.Show` lifecycle verification remain in `UIW-7`.
 
 ## Project Goal
 
