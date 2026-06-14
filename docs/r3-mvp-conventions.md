@@ -53,6 +53,7 @@ This fallback is a known NuGetForUnity first-launch limitation when restored art
 - Presenters own presenter-lifetime subscriptions and dispose them when the presenter is finally disposed.
 - Window show-scoped subscriptions must be disposed on hide completion or when UI.Windows returns a window to the pool.
 - Pooled windows must recreate show-scoped subscriptions on each show and must not accumulate duplicate handlers across show/hide cycles.
+- A pooled UI.Windows window keeps its presenter binding for the lifetime of that pooled window instance; only the show scope is recreated per show. Rebind only when UI.Windows has produced a new window instance without an active binding.
 - `OnDeInit` remains final cleanup. Do not wait for `OnDeInit` to release show-scoped subscriptions for pooled windows.
 - `AddTo(Component)` is acceptable only for subscriptions whose lifetime should match Unity object destruction. It is not a substitute for explicit show/hide cleanup.
 

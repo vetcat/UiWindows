@@ -28,7 +28,10 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         public IWindowPresenter<UiTopLeftWindow> Create(UiTopLeftWindow window)
         {
+            CreatedCount++;
             return new UiTopLeftPresenter(readModel, commands, settings, healthCommandStep, xpCommandStep);
         }
+
+        internal int CreatedCount { get; private set; }
     }
 }

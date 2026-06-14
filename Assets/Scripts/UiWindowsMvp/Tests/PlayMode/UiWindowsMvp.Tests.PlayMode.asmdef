@@ -2,6 +2,7 @@
   "name": "UiWindowsMvp.Tests.PlayMode",
   "rootNamespace": "UiWindowsMvp.Tests.PlayMode",
   "references": [
+    "CompositionRoot.Runtime",
     "ProjectContext.Player",
     "UiWindowsMvp.SampleSceneWindows",
     "UiWindowsMvp.UIAdapter",
