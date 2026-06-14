@@ -82,6 +82,11 @@ namespace UiWindowsMvp.SampleSceneWindows
             }
 
             currentWindow = uiTopLeftWindow;
+            if (WindowPresenterBinder.TryGetBinding(uiTopLeftWindow, out _))
+            {
+                return;
+            }
+
             WindowPresenterBinder.Bind(uiTopLeftWindow, presenterFactory);
         }
 

@@ -7,7 +7,13 @@ namespace UiWindowsMvp.SampleSceneWindows
     {
         public bool TryGetView(out UiTopLeftView view)
         {
-            return GetLayoutComponent(out view, Algorithm.GetFirstTypeAny);
+            if (GetLayoutComponent(out view, Algorithm.GetFirstTypeAny))
+            {
+                return true;
+            }
+
+            view = FindComponent<UiTopLeftView>();
+            return view != null;
         }
     }
 }

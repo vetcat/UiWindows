@@ -27,4 +27,8 @@ Lifecycle mapping:
 
 This assembly intentionally uses `IDisposable` as the subscription ownership boundary instead of depending directly on R3. R3 subscriptions implement `IDisposable` and should be added to `IUiShowScope` for show-scoped cleanup. Do not add a second reactive framework here.
 
+For pooled UI.Windows windows, keep one presenter binding for the pooled window instance and let each `OnShowBegin` create a fresh `IUiShowScope`. Reopening a pooled instance must not call `WindowPresenterBinder.Bind` again while an active binding is already anchored on that instance. `OnHideEnd` must release all show-scoped model subscriptions and UI event handlers before the instance returns to the pool. Final cleanup still belongs to `OnDeInitialized`/`WindowSystem.Clean` and must remain idempotent.
+
+The reusable pooled-window verification checklist lives in `docs/uiwindows-mvp-pooling-lifecycle.md`.
+
 This assembly may depend on `CompositionRoot.Runtime`; the reusable CompositionRoot module must not depend on UI, MVP, or UI.Windows.

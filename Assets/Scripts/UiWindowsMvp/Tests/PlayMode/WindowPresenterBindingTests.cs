@@ -26,7 +26,8 @@ namespace UiWindowsMvp.Tests.PlayMode
                 Assert.That(presenter.BoundWindow, Is.SameAs(window));
                 Assert.That(WindowPresenterBinder.TryGetBinding(window, out var storedBinding), Is.True);
                 Assert.That(storedBinding, Is.SameAs(binding));
-                Assert.Throws<InvalidOperationException>(() => WindowPresenterBinder.Bind(window, new TrackingPresenter(), subscribeToWindowSystemEvents: false));
+                Assert.Throws<InvalidOperationException>(() =>
+                    WindowPresenterBinder.Bind(window, new TrackingPresenter(), subscribeToWindowSystemEvents: false));
 
                 binding.Dispose();
 
@@ -43,8 +44,8 @@ namespace UiWindowsMvp.Tests.PlayMode
         {
             var factory = new TrackingPresenterFactory(new TrackingPresenter());
 
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => WindowPresenterBinder.Bind<TestWindow>(null, factory, subscribeToWindowSystemEvents: false));
+            var exception = Assert.Throws<ArgumentNullException>(() =>
+                WindowPresenterBinder.Bind<TestWindow>(null, factory, subscribeToWindowSystemEvents: false));
 
             Assert.That(exception.ParamName, Is.EqualTo("window"));
             Assert.That(factory.CreateCount, Is.EqualTo(0));
@@ -91,25 +92,23 @@ namespace UiWindowsMvp.Tests.PlayMode
 
                 binding.OnWindowInitialized();
                 binding.OnWindowInitialized();
-                binding.OnWindowShowBegin();
-                var firstShowDisposable = presenter.LastShowDisposable;
-                binding.OnWindowShowEnd();
-
-                binding.OnWindowHideBegin();
-                binding.OnWindowHideEnd();
-
-                binding.OnWindowShowBegin();
-                var secondShowDisposable = presenter.LastShowDisposable;
-                binding.OnWindowHideEnd();
+                var showDisposables = new TrackingDisposable[3];
+                for (var i = 0; i < showDisposables.Length; i++)
+                {
+                    binding.OnWindowShowBegin();
+                    showDisposables[i] = presenter.LastShowDisposable;
+                    binding.OnWindowShowEnd();
+                    binding.OnWindowHideBegin();
+                    binding.OnWindowHideEnd();
+                }
 
                 Assert.That(presenter.InitializeCount, Is.EqualTo(1));
-                Assert.That(presenter.ShowBeginCount, Is.EqualTo(2));
-                Assert.That(presenter.ShowEndCount, Is.EqualTo(1));
-                Assert.That(presenter.HideBeginCount, Is.EqualTo(1));
-                Assert.That(presenter.HideEndCount, Is.EqualTo(2));
-                Assert.That(firstShowDisposable, Is.Not.SameAs(secondShowDisposable));
-                Assert.That(firstShowDisposable.DisposeCount, Is.EqualTo(1));
-                Assert.That(secondShowDisposable.DisposeCount, Is.EqualTo(1));
+                Assert.That(presenter.ShowBeginCount, Is.EqualTo(3));
+                Assert.That(presenter.ShowEndCount, Is.EqualTo(3));
+                Assert.That(presenter.HideBeginCount, Is.EqualTo(3));
+                Assert.That(presenter.HideEndCount, Is.EqualTo(3));
+                Assert.That(showDisposables, Is.Unique);
+                Assert.That(showDisposables, Has.All.Property(nameof(TrackingDisposable.DisposeCount)).EqualTo(1));
             }
             finally
             {

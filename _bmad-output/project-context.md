@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-16-sample-scene-runtime-integration
+status: uiw-8-pooling-lifecycle-verification
 ---
 
 # Project Context for AI Agents
@@ -30,6 +30,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - The first OpenUI behavior port is implemented under `Assets/Scripts/ProjectContext/Runtime/Player` in assembly `ProjectContext.Player`; it recreates player behavior without importing OpenUI infrastructure.
 - `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiTopLeftView.prefab` is the project-owned UI.Windows-compatible UiTopLeft view asset.
 - `Assets/Scenes/SampleScene.unity` is the canonical runtime/integration scene for UI.Windows MVP vertical slices, including the UiTopLeft runtime wiring.
+- `docs/uiwindows-mvp-pooling-lifecycle.md` records the reusable pooling/show-scope verification pattern for future UI.Windows MVP windows.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -226,6 +227,19 @@ UIW-16 UiTopLeft runtime integration snapshot on 2026-06-14:
 - `UiTopLeftPresenter`, `UiTopLeftPresenterFactory`, `UiTopLeftWindow`, and the runtime launcher/source code live under `Assets/Scripts/UiWindowsMvp/Runtime/SampleSceneWindows`.
 - The presenter uses narrow player ports (`IPlayerReadModel`, `IPlayerCommands`, `IPlayerSettings`), subscribes to R3 read-model surfaces through `IUiShowScope`, and routes health/XP buttons through command methods.
 - The former `Assets/Scenes/Develop/UiTopLeftRuntimeDemoScene.unity` was removed. Avoid per-prefab runtime demo scenes unless Vitaly explicitly requests or a strong technical blocker is documented.
+
+UIW-8 pooling lifecycle verification snapshot on 2026-06-14:
+
+- The reusable pooling lifecycle rule is documented in `docs/uiwindows-mvp-pooling-lifecycle.md`, `docs/r3-mvp-conventions.md`, and `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md`.
+- `UiTopLeftRuntimeWindowSource` marks the runtime `UiTopLeftWindow` source as pooled with UI.Windows `createPool`, so repeated opens use UI.Windows pool mechanics rather than direct GameObject activation or custom destruction.
+- `UiTopLeftDemoLauncher` keeps opening through `WindowSystem.Show` and hiding through UI.Windows `Hide`; on pooled reopen it reuses the existing `WindowPresenterBinding` on the same window instance instead of rebinding a second presenter.
+- For pooled UI.Windows MVP windows, there is one presenter binding per pooled window instance. `OnShowBegin` creates a fresh `IUiShowScope` every show, and `OnHideEnd` disposes that scope before the instance returns to the pool.
+- Show-scoped R3 model subscriptions, UI button listeners, timers, frame streams, and visible-state handlers belong in `IUiShowScope`. They must not wait for final `OnDeInitialized` cleanup because pooled windows may hide and reopen many times without deinit.
+- Final cleanup remains `OnDeInitialized` / `WindowSystem.Clean` / binding `Dispose`, and it must be idempotent.
+- UI.Windows `LayoutWindowType` pooling has an important caveat: `LayoutItem.PushToPool()` can clear cached `componentInstance` references while the layout instance remains. Project window wrappers should be resilient after pool reuse; `UiTopLeftWindow.TryGetView` first checks `GetLayoutComponent` and then falls back to `FindComponent<UiTopLeftView>()`.
+- `UiTopLeftWindowLifecycleTests.ReopenCyclesThroughWindowSystem_ReusePooledWindowWithoutDuplicateSubscriptions` is the reference PlayMode pattern for future windows: show through `SampleScene`, capture pooled instance/binding/view, repeat show-hide-reopen cycles, verify one button effect per click, verify hidden model updates and hidden clicks do not affect stale UI state, verify reopen reuses the same window instance and binding, then verify final `WindowSystem.Clean` disposal is safe.
+- R3 `ObservableTracker` was not made a runtime dependency. The verification relies on observable behavior and lifecycle counters rather than editor diagnostics.
+- `UIW-8` verification passed in Unity `6000.4.4f1`: `UiWindowsMvp.Tests.PlayMode` 9/9, full PlayMode suite 19/19, Rider diagnostics/build passed, Unity Console had 0 errors and 0 warnings.
 
 ## Project Goal
 

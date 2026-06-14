@@ -54,6 +54,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             var window = gameObject.AddComponent<UiTopLeftWindow>();
             window.rectTransform = (RectTransform)gameObject.transform;
             window.isObjectRoot = true;
+            window.createPool = true;
             window.preferences = WindowPreferences.Default;
             window.preferences.singleInstance = true;
             window.preferences.takeFocus = false;
