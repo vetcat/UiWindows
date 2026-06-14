@@ -205,6 +205,14 @@ If Linear, Rider, Unity, or another expected MCP tool is unavailable, times out,
 
 ## IDE And Unity MCP Verification
 
+When Rider MCP is available, prefer it for IDE-indexed project navigation and C#-aware operations:
+
+- Use Rider search tools (`find_files_by_name_keyword`, `find_files_by_glob`, `search_file`, `search_in_files_by_text`, `search_in_files_by_regex`) to locate project files and usages when indexed search is sufficient.
+- Use Rider `rename_refactoring` for programmatic C# symbol renames instead of manual text replacement.
+- Use Rider `reformat_file`, `get_file_problems`, and `build_solution` for C# formatting and validation when practical.
+- Do not force Rider MCP for every file operation. Use shell, `rg`, `apply_patch`, and git tools for raw file reads, diffs, git state, broad scripted inspection, Unity serialized assets, docs, package files, and edits that are clearer as patches.
+- If Rider MCP is unavailable, stale, slow, or does not see this project, fall back to the normal filesystem tools and report that limitation explicitly.
+
 When changing project-owned C# code, use Rider MCP when it is available:
 
 - Run Rider `get_file_problems` on changed `.cs` files after edits.

@@ -45,6 +45,9 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 
 - Local `.ai/mcp/mcp.json` can be empty while session-provided MCP tools are still available. Future chats should verify actual Linear, Rider, and Unity MCP availability through the active tool list/resource discovery before implementation or review work.
 - If an expected MCP tool is unavailable, times out, or does not see this project, report the exact limitation in the Executor or Orchestrator result instead of assuming the tool is globally unavailable.
+- When Rider MCP is available, prefer it for IDE-indexed project navigation and C#-aware operations: use Rider search tools to locate files/usages when indexed search is sufficient; use `rename_refactoring` for C# symbol renames; use `reformat_file`, `get_file_problems`, and `build_solution` for C# formatting and validation when practical.
+- Do not force Rider MCP for every file operation. Use shell, `rg`, `apply_patch`, and git tools for raw file reads, diffs, git state, broad scripted inspection, Unity serialized assets, docs, package files, and edits that are clearer as patches.
+- If Rider MCP is unavailable, stale, slow, or does not see this project, fall back to normal filesystem tools and report that limitation explicitly.
 - When changing project-owned C# code, use Rider MCP when it is available.
 - Run Rider `get_file_problems` on changed `.cs` files after edits.
 - Run Rider `build_solution` after C# changes when practical, or explicitly report why Unity compile was used instead.
