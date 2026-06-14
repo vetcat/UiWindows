@@ -41,6 +41,7 @@ Before making UI MVP decisions, read the local project instructions and these do
 - `_bmad-output/project-context.md`
 - `docs/project-architecture-skeleton.md`
 - `docs/r3-mvp-conventions.md`
+- `docs/uiwindows-mvp-pooling-lifecycle.md`
 
 ## Core Ownership Model
 
@@ -73,6 +74,15 @@ Before making UI MVP decisions, read the local project instructions and these do
 - Use `IDisposable` as the common subscription ownership boundary.
 - Use R3 `AddTo(Component)` only for subscriptions whose lifetime should truly match Unity object destruction, not as a replacement for show/hide cleanup.
 
+## Pooling Rules
+
+- Pooled UI.Windows window instances keep one presenter binding per pooled window instance. Do not call `WindowPresenterBinder.Bind` again on reopen when `WindowPresenterBinder.TryGetBinding` says the active binding already exists.
+- Each `OnShowBegin` must create a fresh `IUiShowScope`. `OnHideEnd` must dispose it before pool return, so R3 model subscriptions, button handlers, timers, frame streams, and other show-scoped state cannot survive hidden state.
+- Final cleanup belongs to `OnDeInitialized` and explicit UI.Windows cleanup paths such as `WindowSystem.Clean`; it remains idempotent and is not a per-show reset substitute.
+- Do not solve lifecycle bugs with direct `GameObject.SetActive`, presenter recreation on every pooled reopen, or custom window ownership outside UI.Windows.
+- `LayoutWindowType` pooling can clear cached `componentInstance` while the layout instance remains reused. Wrapper code should tolerate that, for example by trying `GetLayoutComponent` first and then a narrow `FindComponent<T>` fallback, instead of patching UI.Windows internals without a verified compatibility issue.
+- For the full rule/checklist, read `docs/uiwindows-mvp-pooling-lifecycle.md`.
+
 ## OpenUI Porting Rules
 
 - Use OpenUI as a behavior and test reference, not as infrastructure to copy wholesale.
@@ -90,6 +100,8 @@ When designing or reviewing a UI MVP change, verify:
 - Presenter dependencies are explicit and narrow.
 - Model/read-model mutable state does not leak across boundaries.
 - Show-scoped subscriptions cannot duplicate across hide/show or pool reuse.
+- If pooling is expected, reopen reuses the same window instance and presenter binding, while using a new show scope.
+- PlayMode coverage exercises `WindowSystem.Show -> Hide -> reopen` cycles and detects duplicate model subscriptions, duplicate button handlers, stale show-scoped state, and idempotent final cleanup.
 - Final cleanup is safe to call once or repeatedly.
 - `CompositionRoot.Runtime` remains independent from UI, UI.Windows, MVP, R3, OpenUI, Zenject, and UniRx.
 - The change is small enough for the current Linear issue and does not import broad OpenUI infrastructure.
