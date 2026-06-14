@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-15-layout-preview-scene-added
+status: uiw-16-sample-scene-runtime-integration
 ---
 
 # Project Context for AI Agents
@@ -28,7 +28,10 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - R3 is integrated as the explicit reactive foundation for the MVP layer through NuGetForUnity plus the R3.Unity UPM package.
 - The minimal UI.Windows MVP presenter lifecycle adapter is implemented under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter`.
 - The first OpenUI behavior port is implemented under `Assets/Scripts/ProjectContext/Runtime/Player` in assembly `ProjectContext.Player`; it recreates player behavior without importing OpenUI infrastructure.
-- `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiTopLeftView.prefab` is the project-owned UI.Windows-compatible UiTopLeft view asset, and `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting that prefab under a Canvas.
+- `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiTopLeftView.prefab` is the project-owned UI.Windows-compatible UiTopLeft view asset.
+- `Assets/Scenes/SampleScene.unity` is the canonical runtime/integration scene for UI.Windows MVP vertical slices, including the UiTopLeft runtime wiring.
+- `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
+- Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
 - `.ai/mcp/mcp.json` is currently empty.
 - Working tree was clean after the repository investigation.
@@ -39,12 +42,15 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - The skill captures the project-wide MVP interpretation: UI.Windows owns window lifecycle; presenters own view binding and UI behavior; models may be saves, services, controllers, ECS adapters, or combinations exposed through explicit ports; R3 show-scoped subscriptions must be cleaned on hide or pool return.
 - The skill now records the initial `UIW-5` adapter API names and verified lifecycle mapping; update it when later tasks materially change presenter/window lifecycle rules.
 - Use `.agents/skills/uiwindows-view-prefab-porting/SKILL.md` before porting, creating, reviewing, or fixing UI.Windows view prefab assets, OpenUI visual prefab ports, serialized Unity UI refs, RectTransform layout, CanvasScaler/font readability, or `UIDevelopScene` layout-preview behavior.
-- The prefab-porting skill records the `UIW-15` asset workflow: keep prefabs and visual assets outside `Assets/Scripts`, use `Assets/Scenes/Develop/UIDevelopScene.unity` as a static layout-check scene, apply correct root RectTransform values to prefab assets rather than scene-only overrides, and separate UI.Windows editor-generated noise from task changes.
+- The prefab-porting skill records the `UIW-15` asset workflow: keep prefabs and visual assets outside `Assets/Scripts`, use `Assets/Scenes/Develop/UIDevelopScene.unity` as a static layout-check scene, use `Assets/Scenes/SampleScene.unity` for runtime integration slices, apply correct root RectTransform values to prefab assets rather than scene-only overrides, and separate UI.Windows editor-generated noise from task changes.
 
 ## IDE And Unity MCP Verification
 
 - Local `.ai/mcp/mcp.json` can be empty while session-provided MCP tools are still available. Future chats should verify actual Linear, Rider, and Unity MCP availability through the active tool list/resource discovery before implementation or review work.
 - If an expected MCP tool is unavailable, times out, or does not see this project, report the exact limitation in the Executor or Orchestrator result instead of assuming the tool is globally unavailable.
+- When Rider MCP is available, prefer it for IDE-indexed project navigation and C#-aware operations: use Rider search tools to locate files/usages when indexed search is sufficient; use `rename_refactoring` for C# symbol renames; use `reformat_file`, `get_file_problems`, and `build_solution` for C# formatting and validation when practical.
+- Do not force Rider MCP for every file operation. Use shell, `rg`, `apply_patch`, and git tools for raw file reads, diffs, git state, broad scripted inspection, Unity serialized assets, docs, package files, and edits that are clearer as patches.
+- If Rider MCP is unavailable, stale, slow, or does not see this project, fall back to normal filesystem tools and report that limitation explicitly.
 - When changing project-owned C# code, use Rider MCP when it is available.
 - Run Rider `get_file_problems` on changed `.cs` files after edits.
 - Run Rider `build_solution` after C# changes when practical, or explicitly report why Unity compile was used instead.
@@ -209,9 +215,17 @@ UIW-15 UiTopLeft view asset/layout preview snapshot on 2026-06-14:
 - `UIDevelopScene` is only a static prefab layout-check scene: it contains a Main Camera, Directional Light, Canvas with `CanvasScaler` and `GraphicRaycaster`, EventSystem, and one `UiTopLeftView` prefab instance under the Canvas.
 - `UIDevelopScene` uses `CanvasScaler` `Scale With Screen Size`, reference resolution `1280x720`, match `0.5`, and reference pixels per unit `100`. This matches the OpenUI develop scene baseline and avoids shrinking legacy `UnityEngine.UI.Text` too aggressively in small editor Game Views.
 - `UiTopLeftView.prefab` root `RectTransform` should carry the top-left HUD placement itself: anchors `(0,1)`, pivot `(0,1)`, anchored position `(32,-32)`, and size delta `(420,520)`. Do not leave those values only as scene instance overrides.
-- The scene exists so agents and humans can inspect the top-left HUD layout without running OpenUI or the future UI.Windows vertical slice.
+- The scene exists so agents and humans can inspect the top-left HUD layout without running OpenUI or the runtime UI.Windows vertical slice.
 - `UIDevelopScene` is not the UI.Windows lifecycle vertical slice. It does not add `UiTopLeftPresenter`, `IPlayerReadModel`/`IPlayerCommands` binding, R3 subscriptions, scene launcher/bootstrap behavior, `WindowSystem.Show` wiring, OpenUI runtime, Zenject, UniRx, schemes, installers, localization, or effects infrastructure.
-- Presenter/model/R3 binding and real `WindowSystem.Show` lifecycle verification remain in `UIW-7`.
+- Presenter/model/R3 binding and real `WindowSystem.Show` lifecycle verification belong in `Assets/Scenes/SampleScene.unity`, not in `UIDevelopScene`.
+
+UIW-16 UiTopLeft runtime integration snapshot on 2026-06-14:
+
+- `Assets/Scenes/SampleScene.unity` is the canonical runtime/integration scene for UI.Windows MVP vertical slices.
+- `SampleScene` keeps its existing Main Camera, Directional Light, Global Volume, and `SceneCompositionRoot` shape, and adds the UiTopLeft installer, `EventSystem`, and `WindowSystem` wiring needed to show the slice through UI.Windows lifecycle.
+- `UiTopLeftPresenter`, `UiTopLeftPresenterFactory`, `UiTopLeftWindow`, and the runtime launcher/source code live under `Assets/Scripts/UiWindowsMvp/Runtime/SampleSceneWindows`.
+- The presenter uses narrow player ports (`IPlayerReadModel`, `IPlayerCommands`, `IPlayerSettings`), subscribes to R3 read-model surfaces through `IUiShowScope`, and routes health/XP buttons through command methods.
+- The former `Assets/Scenes/Develop/UiTopLeftRuntimeDemoScene.unity` was removed. Avoid per-prefab runtime demo scenes unless Vitaly explicitly requests or a strong technical blocker is documented.
 
 ## Project Goal
 

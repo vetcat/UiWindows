@@ -2,6 +2,10 @@
   "name": "UiWindowsMvp.SampleSceneWindows",
   "rootNamespace": "UiWindowsMvp.SampleSceneWindows",
   "references": [
+    "CompositionRoot.Runtime",
+    "ProjectContext.Player",
+    "R3",
+    "UiWindowsMvp.UIAdapter",
     "UI.Windows"
   ],
   "includePlatforms": [],

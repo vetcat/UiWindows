@@ -23,6 +23,12 @@ Core direction:
 Do not import all OpenUI code blindly. Do not bypass `WindowSystem.Show/Hide` for UI.Windows lifecycle.
 Do not build a parallel custom Rx-like framework now that R3 is integrated.
 
+## Scene Roles
+
+- `Assets/Scenes/SampleScene.unity` is the canonical runtime/integration scene for UI.Windows MVP vertical slices.
+- `Assets/Scenes/Develop/UIDevelopScene.unity` is the static layout/prefab inspection scene.
+- Do not create one runtime demo scene per UI prefab or slice by default. Additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
+
 ## Code Organization And CompositionRoot
 
 All project-owned C# code belongs under `Assets/Scripts`. This is the explicit code search scope for programmers and AI agents.
@@ -106,6 +112,7 @@ The skill records the project-specific asset workflow learned during `UIW-15`:
 
 - View prefabs live outside `Assets/Scripts`, normally under `Assets/Prefabs/UiWindowsMvp`.
 - Supporting visual assets live outside `Assets/Scripts`, normally under `Assets/Content/UiWindowsMvp`.
+- `Assets/Scenes/SampleScene.unity` is the runtime integration scene for UI.Windows MVP slices.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static layout-check scene, not a UI.Windows lifecycle/runtime slice.
 - The preview CanvasScaler baseline is `Scale With Screen Size`, `1280x720`, match `0.5`, reference pixels per unit `100`.
 - Correct prefab root RectTransform values should be applied to the prefab asset, not left as scene-only overrides.
@@ -204,6 +211,14 @@ The local `.ai/mcp/mcp.json` file is currently empty, but Linear, Rider, and Uni
 If Linear, Rider, Unity, or another expected MCP tool is unavailable, times out, or does not see this project, report the exact limitation in the prompt, review, or Executor result.
 
 ## IDE And Unity MCP Verification
+
+When Rider MCP is available, prefer it for IDE-indexed project navigation and C#-aware operations:
+
+- Use Rider search tools (`find_files_by_name_keyword`, `find_files_by_glob`, `search_file`, `search_in_files_by_text`, `search_in_files_by_regex`) to locate project files and usages when indexed search is sufficient.
+- Use Rider `rename_refactoring` for programmatic C# symbol renames instead of manual text replacement.
+- Use Rider `reformat_file`, `get_file_problems`, and `build_solution` for C# formatting and validation when practical.
+- Do not force Rider MCP for every file operation. Use shell, `rg`, `apply_patch`, and git tools for raw file reads, diffs, git state, broad scripted inspection, Unity serialized assets, docs, package files, and edits that are clearer as patches.
+- If Rider MCP is unavailable, stale, slow, or does not see this project, fall back to the normal filesystem tools and report that limitation explicitly.
 
 When changing project-owned C# code, use Rider MCP when it is available:
 

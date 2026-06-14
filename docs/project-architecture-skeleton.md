@@ -14,6 +14,13 @@ UiWindowsMvp is the UI.Windows-specific layer. It may depend on `CompositionRoot
 
 ProjectContext contains project/application model ports and services that presenters can consume through narrow contracts. Player model code may depend on R3 for read-model state and events, but it must not depend on UI.Windows, Unity UI views, presenter interfaces, OpenUI, Zenject, or UniRx.
 
+## Scene Roles
+
+- `Assets/Scenes/SampleScene.unity` is the canonical runtime/integration scene for UI.Windows MVP vertical slices.
+- Runtime launcher, scene installer, `WindowSystem`, and `EventSystem` wiring for vertical slices should be added to `SampleScene` unless a task explicitly requests another runtime scene.
+- `Assets/Scenes/Develop/UIDevelopScene.unity` is only the static layout/prefab inspection scene.
+- Do not create one runtime demo scene per UI prefab or slice by default. Additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly justified.
+
 ## Folder And Namespace Structure
 
 | Folder | Assembly | Namespace | Ownership |
