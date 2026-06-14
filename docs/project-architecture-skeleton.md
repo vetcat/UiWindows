@@ -45,6 +45,7 @@ ProjectContext contains project/application model ports and services that presen
 - Project model services expose narrow read/command ports to presenters and future adapters. They should publish state or request streams instead of depending on UI presenter implementations.
 - R3 is the deliberate reactive foundation for MVP work. Public ports should prefer read-only reactive surfaces and command methods; mutable subjects/properties stay inside their owning object.
 - R3 subscription ownership is still expressed as `IDisposable`. Show-scoped UI subscriptions must be disposed on hide/pool cleanup rather than only on final window deinitialization.
+- The reusable pooled UI.Windows MVP lifecycle and verification checklist lives in `docs/uiwindows-mvp-pooling-lifecycle.md`.
 
 ## CompositionRoot Mechanics
 

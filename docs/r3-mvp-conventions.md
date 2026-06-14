@@ -48,6 +48,8 @@ This fallback is a known NuGetForUnity first-launch limitation when restored art
 
 ## Lifetime Rules
 
+For the full pooled window verification pattern, see `docs/uiwindows-mvp-pooling-lifecycle.md`.
+
 - `IDisposable` is the subscription ownership boundary.
 - CompositionRoot owns service/model lifetimes and disposes them through `ServiceRegistry`.
 - Presenters own presenter-lifetime subscriptions and dispose them when the presenter is finally disposed.
