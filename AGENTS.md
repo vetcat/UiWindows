@@ -96,6 +96,20 @@ The skill records the project-wide MVP interpretation and current `UIW-5` adapte
 - R3 show-scoped subscriptions must be cleaned on hide or pool return.
 - The initial adapter lives under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter`.
 
+## UI.Windows View Prefab Porting Skill
+
+Before porting, creating, reviewing, or fixing UI.Windows view prefab assets, OpenUI visual prefab ports, serialized Unity UI refs, RectTransform layout, CanvasScaler/font readability, or `UIDevelopScene` layout-preview behavior, use:
+
+- `.agents/skills/uiwindows-view-prefab-porting/SKILL.md`
+
+The skill records the project-specific asset workflow learned during `UIW-15`:
+
+- View prefabs live outside `Assets/Scripts`, normally under `Assets/Prefabs/UiWindowsMvp`.
+- Supporting visual assets live outside `Assets/Scripts`, normally under `Assets/Content/UiWindowsMvp`.
+- `Assets/Scenes/Develop/UIDevelopScene.unity` is a static layout-check scene, not a UI.Windows lifecycle/runtime slice.
+- The preview CanvasScaler baseline is `Scale With Screen Size`, `1280x720`, match `0.5`, reference pixels per unit `100`.
+- Correct prefab root RectTransform values should be applied to the prefab asset, not left as scene-only overrides.
+
 ## Linear
 
 Linear MCP access was verified on 2026-06-06.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI.Windows View Prefab Porting"
+  short_description: "Port and validate UI.Windows view prefabs"
+  default_prompt: "Use $uiwindows-view-prefab-porting to port an OpenUI view prefab into a UI.Windows-compatible view asset and verify it in UIDevelopScene."
