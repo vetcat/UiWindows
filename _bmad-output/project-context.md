@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-8-pooling-lifecycle-verification
+status: uiw-8-closed-uiw-9-next
 ---
 
 # Project Context for AI Agents
@@ -31,6 +31,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiTopLeftView.prefab` is the project-owned UI.Windows-compatible UiTopLeft view asset.
 - `Assets/Scenes/SampleScene.unity` is the canonical runtime/integration scene for UI.Windows MVP vertical slices, including the UiTopLeft runtime wiring.
 - `docs/uiwindows-mvp-pooling-lifecycle.md` records the reusable pooling/show-scope verification pattern for future UI.Windows MVP windows.
+- `UIW-8` is complete and merged; the next ordered migration task is `UIW-9` - `08 - Port settings and localization slice with R3`.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -409,9 +410,9 @@ Current child issue sequence:
 - `UIW-4` - `03x - Canceled: custom reactive primitives superseded by R3`
 - `UIW-5` - `04 - Implement MVP presenter lifecycle adapter for UI.Windows with R3`
 - `UIW-6` - `05 - Port Player model/service from OpenUI with R3` - Done
-- `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3` - next active task after `UIW-6` closure
-- `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows`
-- `UIW-9` - `08 - Port settings and localization slice with R3`
+- `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3` - Done
+- `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows` - Done
+- `UIW-9` - `08 - Port settings and localization slice with R3` - next active task after `UIW-8` closure
 - `UIW-10` - `09 - Port shop and collection pooling slice with R3`
 - `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs`
 
