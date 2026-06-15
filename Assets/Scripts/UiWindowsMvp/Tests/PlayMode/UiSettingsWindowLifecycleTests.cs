@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Reflection;
 using CompositionRoot.Runtime;
 using NUnit.Framework;
-using ProjectContext.Player;
+using ProjectContext.Localization;
+using ProjectContext.Settings;
 using UiWindowsMvp.SampleSceneWindows;
 using UiWindowsMvp.UIAdapter;
 using UnityEngine;
@@ -12,11 +12,15 @@ using UnityEngine.UI.Windows;
 
 namespace UiWindowsMvp.Tests.PlayMode
 {
-    public sealed class UiTopLeftWindowLifecycleTests
+    public sealed class UiSettingsWindowLifecycleTests
     {
         [UnityTest]
-        public IEnumerator ReopenCyclesThroughWindowSystem_ReusePooledWindowWithoutDuplicateSubscriptions()
+        public IEnumerator
+            ReopenCyclesThroughWindowSystem_ReusePooledWindowWithoutDuplicateSettingsOrLocalizationHandlers()
         {
+            PlayerPrefs.DeleteKey(GameSettingsService.MusicVolumeKey);
+            PlayerPrefs.DeleteKey(GameSettingsService.SoundVolumeKey);
+            PlayerPrefs.DeleteKey(LocalizationService.LanguageKey);
             DestroyWindowSystemsImmediate();
             yield return null;
 
@@ -27,54 +31,83 @@ namespace UiWindowsMvp.Tests.PlayMode
             Assert.That(root, Is.Not.Null);
             Assert.That(root.IsBootstrapped, Is.True);
 
-            var launcher = root.Services.Resolve<UiTopLeftDemoLauncher>();
-            var player = root.Services.Resolve<IPlayerService>();
-            var presenterFactory = root.Services.Resolve<UiTopLeftPresenterFactory>();
-            UiTopLeftWindow window = null;
-            IWindowPresenterBinding<UiTopLeftWindow> binding = null;
+            var launcher = root.Services.Resolve<UiSettingsDemoLauncher>();
+            var uiTopLeftLauncher = root.Services.Resolve<UiTopLeftDemoLauncher>();
+            var settings = root.Services.Resolve<IGameSettingsService>();
+            var localization = root.Services.Resolve<ILocalizationService>();
+            var presenterFactory = root.Services.Resolve<UiSettingsPresenterFactory>();
+            UiSettingsWindow window = null;
+            IWindowPresenterBinding<UiSettingsWindow> binding = null;
             var cleaned = false;
 
             try
             {
                 yield return WaitUntil(
+                    () => uiTopLeftLauncher.CurrentWindow != null &&
+                          uiTopLeftLauncher.CurrentWindow.GetState() == ObjectState.Shown,
+                    "initial UiTopLeft window show before settings isolation");
+                var uiTopLeftWindow = uiTopLeftLauncher.CurrentWindow;
+                uiTopLeftLauncher.Hide();
+                yield return WaitUntil(() => uiTopLeftWindow.GetState() == ObjectState.Hidden,
+                    "hide initial UiTopLeft before settings isolation");
+                WindowSystem.Clean(uiTopLeftWindow);
+
+                launcher.Show();
+                yield return WaitUntil(
                     () => launcher.CurrentWindow != null && launcher.CurrentWindow.GetState() == ObjectState.Shown,
-                    "initial UiTopLeft window show");
+                    "initial UiSettings window show");
 
                 window = launcher.CurrentWindow;
                 Assert.That(window.createPool, Is.True);
                 Assert.That(WindowPresenterBinder.TryGetBinding(window, out binding), Is.True);
                 Assert.That(presenterFactory.CreatedCount, Is.EqualTo(1));
-
                 Assert.That(window.TryGetView(out var view), Is.True);
+
                 var initialInstanceId = window.GetInstanceID();
                 var initialView = view;
 
                 for (var cycle = 0; cycle < 3; cycle++)
                 {
-                    player.SetHealth(player.Settings.MaxHealth - 1);
-                    yield return null;
-                    player.SetHealth(player.Settings.MaxHealth);
+                    settings.SetMusicVolume(0.2f);
+                    localization.ChangeLanguage(SystemLanguage.English);
                     yield return null;
 
                     Assert.That(window.TryGetView(out view), Is.True);
                     Assert.That(view, Is.SameAs(initialView));
-                    Assert.That(view.HealthData.TextValue.text,
-                        Is.EqualTo($"{player.Settings.MaxHealth} / {player.Settings.MaxHealth}"));
+                    Assert.That(view.SettingsLayout.TextSliderMusicValue.text, Is.EqualTo("20"));
 
-                    view.HealthData.ButtonReduce.onClick.Invoke();
+                    view.SettingsLayout.SliderMusicVolume.value = 0.33f;
                     Assert.That(
-                        GetCurrentValue<int>(player, "Health"),
-                        Is.EqualTo(player.Settings.MaxHealth - UiTopLeftPresenter.DefaultHealthCommandStep));
-                    Assert.That(view.HealthData.TextValue.text, Is.EqualTo("90 / 100"));
+                        UiSettingsPresenterTests.GetCurrentValue<float>(settings, "MusicVolume"),
+                        Is.EqualTo(0.33f).Within(0.0001f));
+                    Assert.That(view.SettingsLayout.TextSliderMusicValue.text, Is.EqualTo("33"));
+
+                    view.ToggleLanguage.isOn = true;
+                    var frenchItem = UiSettingsPresenterTests.FindLanguageItem(view, SystemLanguage.French);
+                    frenchItem.Toggle.isOn = true;
+                    Assert.That(
+                        UiSettingsPresenterTests.GetCurrentValue<SystemLanguage>(localization, "CurrentLanguage"),
+                        Is.EqualTo(SystemLanguage.French));
+                    Assert.That(view.TextHeader.text, Is.EqualTo("Langue"));
 
                     launcher.Hide();
                     yield return WaitUntil(() => window.GetState() == ObjectState.Hidden, $"hide cycle {cycle}");
 
-                    player.SetHealth(player.Settings.MaxHealth);
-                    Assert.That(view.HealthData.TextValue.text, Is.EqualTo("90 / 100"));
+                    settings.SetMusicVolume(0.77f);
+                    localization.ChangeLanguage(SystemLanguage.German);
+                    Assert.That(view.SettingsLayout.TextSliderMusicValue.text, Is.EqualTo("33"));
+                    Assert.That(view.TextHeader.text, Is.EqualTo("Langue"));
 
-                    view.HealthData.ButtonReduce.onClick.Invoke();
-                    Assert.That(GetCurrentValue<int>(player, "Health"), Is.EqualTo(player.Settings.MaxHealth));
+                    view.SettingsLayout.SliderMusicVolume.value = 0.12f;
+                    Assert.That(
+                        UiSettingsPresenterTests.GetCurrentValue<float>(settings, "MusicVolume"),
+                        Is.EqualTo(0.77f).Within(0.0001f));
+
+                    var englishItem = UiSettingsPresenterTests.FindLanguageItem(view, SystemLanguage.English);
+                    englishItem.Toggle.isOn = true;
+                    Assert.That(
+                        UiSettingsPresenterTests.GetCurrentValue<SystemLanguage>(localization, "CurrentLanguage"),
+                        Is.EqualTo(SystemLanguage.German));
 
                     launcher.Show();
                     yield return WaitUntil(
@@ -86,6 +119,8 @@ namespace UiWindowsMvp.Tests.PlayMode
                         Is.True);
                     Assert.That(reopenedBinding, Is.SameAs(binding));
                     Assert.That(presenterFactory.CreatedCount, Is.EqualTo(1));
+                    Assert.That(view.SettingsLayout.TextSliderMusicValue.text, Is.EqualTo("77"));
+                    Assert.That(view.TextHeader.text, Is.EqualTo("Sprache"));
                 }
 
                 launcher.Hide();
@@ -100,11 +135,16 @@ namespace UiWindowsMvp.Tests.PlayMode
             finally
             {
                 launcher?.Dispose();
+                uiTopLeftLauncher?.Dispose();
+
                 if (!cleaned && window != null && window.GetState() == ObjectState.Hidden)
                 {
                     WindowSystem.Clean(window);
                 }
 
+                PlayerPrefs.DeleteKey(GameSettingsService.MusicVolumeKey);
+                PlayerPrefs.DeleteKey(GameSettingsService.SoundVolumeKey);
+                PlayerPrefs.DeleteKey(LocalizationService.LanguageKey);
                 DestroyWindowSystemsImmediate();
             }
         }
@@ -123,17 +163,6 @@ namespace UiWindowsMvp.Tests.PlayMode
             }
 
             Assert.Fail($"Timed out waiting for {description}.");
-        }
-
-        private static T GetCurrentValue<T>(object owner, string propertyName)
-        {
-            var property = owner.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
-            Assert.That(property, Is.Not.Null);
-            var reactiveSurface = property.GetValue(owner);
-            var currentValueProperty =
-                reactiveSurface.GetType().GetProperty("CurrentValue", BindingFlags.Public | BindingFlags.Instance);
-            Assert.That(currentValueProperty, Is.Not.Null);
-            return (T)currentValueProperty.GetValue(reactiveSurface);
         }
 
         private static void DestroyWindowSystemsImmediate()

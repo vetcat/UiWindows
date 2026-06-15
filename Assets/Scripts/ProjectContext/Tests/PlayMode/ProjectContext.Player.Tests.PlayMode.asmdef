@@ -2,6 +2,8 @@
   "name": "ProjectContext.Player.Tests.PlayMode",
   "rootNamespace": "ProjectContext.Player.Tests.PlayMode",
   "references": [
+    "ProjectContext.Localization",
+    "ProjectContext.Settings",
     "ProjectContext.Player"
   ],
   "includePlatforms": [],
