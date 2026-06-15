@@ -1,5 +1,7 @@
 using CompositionRoot.Runtime;
+using ProjectContext.Localization;
 using ProjectContext.Player;
+using ProjectContext.Settings;
 using UnityEngine;
 
 namespace UiWindowsMvp.SampleSceneWindows
@@ -8,7 +10,11 @@ namespace UiWindowsMvp.SampleSceneWindows
     {
         [SerializeField] private UiTopLeftView uiTopLeftViewPrefab;
 
+        [SerializeField] private UiSettingsView uiSettingsViewPrefab;
+
         [SerializeField] private bool showOnStart = true;
+
+        [SerializeField] private bool showSettingsOnStart;
 
         [SerializeField] private int healthCommandStep = UiTopLeftPresenter.DefaultHealthCommandStep;
 
@@ -16,22 +22,43 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         public void Install(IServiceRegistry registry)
         {
-            var settings = PlayerSettings.Default;
-            var playerService = new PlayerService(settings);
+            var playerSettings = PlayerSettings.Default;
+            var playerService = new PlayerService(playerSettings);
+            var gameSettingsService = new GameSettingsService();
+            var localizationService = new LocalizationService();
             var presenterFactory =
-                new UiTopLeftPresenterFactory(playerService, playerService, settings, healthCommandStep, xpCommandStep);
+                new UiTopLeftPresenterFactory(
+                    playerService,
+                    playerService,
+                    playerSettings,
+                    healthCommandStep,
+                    xpCommandStep);
+            var settingsPresenterFactory =
+                new UiSettingsPresenterFactory(
+                    gameSettingsService,
+                    gameSettingsService,
+                    localizationService,
+                    localizationService);
 
-            registry.Register<IPlayerSettings>(settings);
+            registry.Register<IPlayerSettings>(playerSettings);
             registry.Register<IPlayerReadModel>(playerService);
             registry.Register<IPlayerCommands>(playerService);
             registry.Register<IPlayerService>(playerService);
+            registry.Register<IGameSettingsReadModel>(gameSettingsService);
+            registry.Register<IGameSettingsCommands>(gameSettingsService);
+            registry.Register<IGameSettingsService>(gameSettingsService);
+            registry.Register<ILocalizationReadModel>(localizationService);
+            registry.Register<ILocalizationCommands>(localizationService);
+            registry.Register<ILocalizationService>(localizationService);
             registry.Register(presenterFactory);
+            registry.Register(settingsPresenterFactory);
             registry.Register(new UiTopLeftDemoLauncher(uiTopLeftViewPrefab, presenterFactory));
+            registry.Register(new UiSettingsDemoLauncher(uiSettingsViewPrefab, settingsPresenterFactory));
         }
 
         private void Start()
         {
-            if (!showOnStart)
+            if (!showOnStart && !showSettingsOnStart)
             {
                 return;
             }
@@ -43,7 +70,15 @@ namespace UiWindowsMvp.SampleSceneWindows
                     $"{nameof(UiTopLeftDemoInstaller)} requires {nameof(SceneCompositionRoot)} on the same GameObject.");
             }
 
-            root.Services.Resolve<UiTopLeftDemoLauncher>().Show();
+            if (showOnStart)
+            {
+                root.Services.Resolve<UiTopLeftDemoLauncher>().Show();
+            }
+
+            if (showSettingsOnStart)
+            {
+                root.Services.Resolve<UiSettingsDemoLauncher>().Show();
+            }
         }
     }
 }

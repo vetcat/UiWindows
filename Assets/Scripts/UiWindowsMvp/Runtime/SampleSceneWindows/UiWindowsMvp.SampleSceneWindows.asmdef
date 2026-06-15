@@ -3,7 +3,9 @@
   "rootNamespace": "UiWindowsMvp.SampleSceneWindows",
   "references": [
     "CompositionRoot.Runtime",
+    "ProjectContext.Localization",
     "ProjectContext.Player",
+    "ProjectContext.Settings",
     "R3",
     "UiWindowsMvp.UIAdapter",
     "UI.Windows"

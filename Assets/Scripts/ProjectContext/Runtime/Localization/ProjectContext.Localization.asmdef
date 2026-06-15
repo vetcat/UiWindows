@@ -1,0 +1,16 @@
+{
+  "name": "ProjectContext.Localization",
+  "rootNamespace": "ProjectContext.Localization",
+  "references": [
+    "R3"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
