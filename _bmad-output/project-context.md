@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-8-closed-uiw-9-next
+status: uiw-9-closed-uiw-10-next
 ---
 
 # Project Context for AI Agents
@@ -31,7 +31,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiTopLeftView.prefab` is the project-owned UI.Windows-compatible UiTopLeft view asset.
 - `Assets/Scenes/SampleScene.unity` is the canonical runtime/integration scene for UI.Windows MVP vertical slices, including the UiTopLeft runtime wiring.
 - `docs/uiwindows-mvp-pooling-lifecycle.md` records the reusable pooling/show-scope verification pattern for future UI.Windows MVP windows.
-- `UIW-8` is complete and merged; the next ordered migration task is `UIW-9` - `08 - Port settings and localization slice with R3`.
+- `UIW-9` is complete and merged; the next ordered migration task is `UIW-10` - `09 - Port shop and collection pooling slice with R3`.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -242,6 +242,22 @@ UIW-8 pooling lifecycle verification snapshot on 2026-06-14:
 - R3 `ObservableTracker` was not made a runtime dependency. The verification relies on observable behavior and lifecycle counters rather than editor diagnostics.
 - `UIW-8` verification passed in Unity `6000.4.4f1`: `UiWindowsMvp.Tests.PlayMode` 9/9, full PlayMode suite 19/19, Rider diagnostics/build passed, Unity Console had 0 errors and 0 warnings.
 
+UIW-9 settings/localization slice snapshot on 2026-06-15:
+
+- Settings domain/model code lives under `Assets/Scripts/ProjectContext/Runtime/Settings` in assembly `ProjectContext.Settings`.
+- Settings ports are split into `IGameSettingsReadModel`, `IGameSettingsCommands`, and `IGameSettingsService`.
+- `GameSettingsService` exposes read-only R3 state for music and sound volume, keeps mutable `ReactiveProperty<float>` instances private, clamps values to `[0, 1]`, and persists values through `PlayerPrefs`.
+- Localization domain/model code lives under `Assets/Scripts/ProjectContext/Runtime/Localization` in assembly `ProjectContext.Localization`.
+- Localization ports are split into `ILocalizationReadModel`, `ILocalizationCommands`, and `ILocalizationService`.
+- `LocalizationService` exposes read-only current-language state and a `LanguageChanged` event stream through R3, keeps mutable R3 primitives private, supports the sample English/French/German/Russian keys needed by the settings slice, and persists the selected language through `PlayerPrefs`.
+- The adapted settings view prefab lives at `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiSettingsView.prefab`.
+- `Assets/Scenes/Develop/UIDevelopScene.unity` includes a static `UiSettingsView` preview instance alongside existing view previews.
+- Runtime settings slice code lives under `Assets/Scripts/UiWindowsMvp/Runtime/SampleSceneWindows`, including `UiSettingsWindow`, `UiSettingsView`, `UiSettingsPresenter`, `UiSettingsPresenterFactory`, `UiSettingsDemoLauncher`, and `UiSettingsRuntimeWindowSource`.
+- `Assets/Scenes/SampleScene.unity` wires the settings prefab through the existing `UiTopLeftDemoInstaller` CompositionRoot pattern; `showSettingsOnStart` defaults to false while the launcher remains resolvable for tests or manual opens.
+- `UiSettingsPresenter` subscribes to settings/localization read-model state through `IUiShowScope` and removes slider/toggle/button handlers on hide, matching the UIW-8 pooling lifecycle rule.
+- `WindowPresenterEventSubscription<TWindow>` now unregisters concrete UI.Windows callbacks on dispose while retaining idempotent binding cleanup; regression coverage still verifies disposed bindings do not receive later UI.Windows events.
+- Focused verification for `UIW-9` passed in Unity `6000.4.4f1`: `ProjectContext.Player.Tests.PlayMode` plus `UiWindowsMvp.Tests.PlayMode` 23/23, Rider diagnostics/build passed, Unity Console had 0 errors and 0 warnings, and `git diff --check main...HEAD` passed after YAML whitespace normalization.
+
 ## Project Goal
 
 Build a Unity UI approach based primarily on `UI.Windows-submodule`, adding a Model-View-View-Presenter / MVP-style architecture similar to `OpenUI`, but without mandatory Zenject and UniRx dependencies.
@@ -412,8 +428,8 @@ Current child issue sequence:
 - `UIW-6` - `05 - Port Player model/service from OpenUI with R3` - Done
 - `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3` - Done
 - `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows` - Done
-- `UIW-9` - `08 - Port settings and localization slice with R3` - next active task after `UIW-8` closure
-- `UIW-10` - `09 - Port shop and collection pooling slice with R3`
+- `UIW-9` - `08 - Port settings and localization slice with R3` - Done
+- `UIW-10` - `09 - Port shop and collection pooling slice with R3` - next active task after `UIW-9` closure
 - `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs`
 
 ## AI Role Workflow
