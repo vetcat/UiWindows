@@ -222,8 +222,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_RenderShadows: 1
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
@@ -364,8 +364,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
   m_CustomShadowLayers: 0
@@ -412,7 +412,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0bcd98d128ec04a3da854a36a5e6898a, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: CompositionRoot.Samples::CompositionRoot.Samples.SampleCompositionInstaller
   modelName: CompositionRoot Sample
 --- !u!114 &769131746
@@ -425,7 +425,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f7d5bcd8a08bb41a3bdcf27808e01dde, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: CompositionRoot.Runtime::CompositionRoot.Runtime.SceneCompositionRoot
   installComponentsOnSameGameObject: 1
   installers: []
@@ -454,7 +454,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26f8abefa2e474a60b38fd32eede7159, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UiWindowsMvp.SampleSceneWindows::UiWindowsMvp.SampleSceneWindows.UiTopLeftDemoInstaller
   uiTopLeftViewPrefab: {fileID: 5731412208773537847, guid: 54bcce7a83a494c748871bc23ed972d4, type: 3}
   uiSettingsViewPrefab: {fileID: 3280582240713721807, guid: 50bd3bfbb05954b3a908aaf0aeb41c19, type: 3}
@@ -489,8 +489,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_IsGlobal: 1
   priority: 0
   blendDistance: 0
@@ -539,7 +539,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
   m_SendPointerHoverToParent: 1
   m_MoveRepeatDelay: 0.5
@@ -570,7 +570,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
@@ -623,7 +623,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c8c20b73618a742a8bca34684aa55786, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UiWindowsMvp.SampleSceneWindows::UiWindowsMvp.SampleSceneWindows.UiTopLeftDemoWindowSystemSetup
   settings: {fileID: 0}
 --- !u!114 &1996030995
@@ -636,7 +636,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 018fa60e319cd44f583d1c5dec5683f7, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UI.Windows::UnityEngine.UI.Windows.Utilities.Tweener
 --- !u!114 &1996030996
 MonoBehaviour:
@@ -648,7 +648,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a0bf21de7f89f4691b2aabc23a6f2d6c, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UI.Windows::UnityEngine.UI.Windows.Modules.WindowSystemPools
 --- !u!114 &1996030997
 MonoBehaviour:
@@ -660,7 +660,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d703775190c743a29ad58a7230cee7a, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UI.Windows::UnityEngine.UI.Windows.Modules.WindowSystemResources
   showLogs: 0
 --- !u!114 &1996030998
@@ -673,7 +673,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df21215a3946c4c0892d255f66fc7c70, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UI.Windows::UnityEngine.UI.Windows.WindowSystemBreadcrumbs
 --- !u!114 &1996030999
 MonoBehaviour:
@@ -685,7 +685,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93bd69cf09c634761a4960bea50c5e59, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UI.Windows::UnityEngine.UI.Windows.Modules.WindowSystemEvents
 --- !u!114 &1996031000
 MonoBehaviour:
@@ -697,7 +697,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c94ddbca804e944878a14f4e6dbb9b9b, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UI.Windows::UnityEngine.UI.Windows.WindowSystem
   showRootOnStart: 0
   rootScreen: {fileID: 0}
