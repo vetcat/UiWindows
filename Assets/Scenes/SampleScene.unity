@@ -458,8 +458,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: UiWindowsMvp.SampleSceneWindows::UiWindowsMvp.SampleSceneWindows.UiTopLeftDemoInstaller
   uiTopLeftViewPrefab: {fileID: 5731412208773537847, guid: 54bcce7a83a494c748871bc23ed972d4, type: 3}
   uiSettingsViewPrefab: {fileID: 3280582240713721807, guid: 50bd3bfbb05954b3a908aaf0aeb41c19, type: 3}
+  uiShopViewPrefab: {fileID: 259049269345109798, guid: 2df21400643794c60a797efcf4994e1b, type: 3}
   showOnStart: 1
   showSettingsOnStart: 0
+  showShopOnStart: 0
   healthCommandStep: 10
   xpCommandStep: 25
 --- !u!1 &832575517

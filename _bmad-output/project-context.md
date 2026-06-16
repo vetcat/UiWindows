@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-9-closed-uiw-10-next
+status: uiw-10-implemented-pending-review
 ---
 
 # Project Context for AI Agents
@@ -23,15 +23,15 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 
 - Local project path: `/Users/vitaly/Projects/UiWindows`.
 - Unity version: `6000.4.4f1` from `ProjectSettings/ProjectVersion.txt`.
-- Current repository is a Unity project with base project settings plus project-owned CompositionRoot, R3 integration, UI.Windows MVP adapter code, and the first R3-backed player model/service under `Assets/Scripts`.
+- Current repository is a Unity project with base project settings plus project-owned CompositionRoot, R3 integration, UI.Windows MVP adapter code, and R3-backed player/settings/localization/shop model services under `Assets/Scripts`.
 - `UI.Windows-submodule` is integrated as a fork-pinned UPM Git dependency.
 - R3 is integrated as the explicit reactive foundation for the MVP layer through NuGetForUnity plus the R3.Unity UPM package.
 - The minimal UI.Windows MVP presenter lifecycle adapter is implemented under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter`.
-- The first OpenUI behavior port is implemented under `Assets/Scripts/ProjectContext/Runtime/Player` in assembly `ProjectContext.Player`; it recreates player behavior without importing OpenUI infrastructure.
+- OpenUI behavior ports are implemented incrementally without importing OpenUI infrastructure; player lives under `Assets/Scripts/ProjectContext/Runtime/Player`, settings/localization under `Assets/Scripts/ProjectContext/Runtime/Settings` and `Assets/Scripts/ProjectContext/Runtime/Localization`, and the shop model under `Assets/Scripts/ProjectContext/Runtime/Shop`.
 - `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiTopLeftView.prefab` is the project-owned UI.Windows-compatible UiTopLeft view asset.
 - `Assets/Scenes/SampleScene.unity` is the canonical runtime/integration scene for UI.Windows MVP vertical slices, including the UiTopLeft runtime wiring.
 - `docs/uiwindows-mvp-pooling-lifecycle.md` records the reusable pooling/show-scope verification pattern for future UI.Windows MVP windows.
-- `UIW-9` is complete and merged; the next ordered migration task is `UIW-10` - `09 - Port shop and collection pooling slice with R3`.
+- `UIW-10` is implemented on branch `feature/uiw-10-09-port-shop-and-collection-pooling-slice-with-r3` and is pending review/closure. After `UIW-10` is accepted and closed, the next ordered migration task is `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs`.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -257,6 +257,21 @@ UIW-9 settings/localization slice snapshot on 2026-06-15:
 - `UiSettingsPresenter` subscribes to settings/localization read-model state through `IUiShowScope` and removes slider/toggle/button handlers on hide, matching the UIW-8 pooling lifecycle rule.
 - `WindowPresenterEventSubscription<TWindow>` now unregisters concrete UI.Windows callbacks on dispose while retaining idempotent binding cleanup; regression coverage still verifies disposed bindings do not receive later UI.Windows events.
 - Focused verification for `UIW-9` passed in Unity `6000.4.4f1`: `ProjectContext.Player.Tests.PlayMode` plus `UiWindowsMvp.Tests.PlayMode` 23/23, Rider diagnostics/build passed, Unity Console had 0 errors and 0 warnings, and `git diff --check main...HEAD` passed after YAML whitespace normalization.
+
+UIW-10 shop and collection pooling slice snapshot on 2026-06-16:
+
+- Shop domain/model code lives under `Assets/Scripts/ProjectContext/Runtime/Shop` in assembly `ProjectContext.Shop`.
+- Shop ports are split into `IShopReadModel`, `IShopCommands`, and `IShopService`.
+- `ShopService` exposes read-only R3 state for selected group, items in selected group, and selected item; mutable `ReactiveProperty<T>` instances remain private and mutations go through `SelectGroup` / `SelectItem`.
+- The default shop catalog mirrors the OpenUI sample data: two groups and ten item entries with amounts `10` through `100`, without carrying OpenUI sprite/settings infrastructure into the model layer.
+- `LocalizationService` includes the shop keys needed by this slice for English, French, German, and Russian.
+- The adapted shop view prefab lives at `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiShopView.prefab`.
+- `Assets/Scenes/Develop/UIDevelopScene.unity` includes a static `UiShopView` preview instance alongside existing view previews.
+- Runtime shop slice code lives under `Assets/Scripts/UiWindowsMvp/Runtime/SampleSceneWindows/Shop`, including `UiShopWindow`, `UiShopView`, `UiShopPresenter`, `UiShopPresenterFactory`, `UiShopDemoLauncher`, and `UiShopRuntimeWindowSource`.
+- `Assets/Scenes/SampleScene.unity` wires the shop prefab through the existing `UiTopLeftDemoInstaller` CompositionRoot pattern; `showShopOnStart` defaults to false while the launcher remains resolvable for tests or manual opens.
+- The view-side `PooledViewCollection<TView>` is a narrow Unity UI entry pooling helper only; it is not a reactive framework and it does not use `SetActive` for window lifecycle or item reuse.
+- `UiShopPresenter` subscribes to shop/localization read-model state through `IUiShowScope`, rebuilds group/item entries from read-model state, and disposes item/group button handlers both on list rebuild and on hide/pool return.
+- Focused verification for `UIW-10` passed in Unity `6000.4.4f1`: `ProjectContext.Player.Tests.PlayMode` 14/14, `UiWindowsMvp.Tests.PlayMode` 15/15, and full PlayMode suite 31/31. Rider `get_file_problems` passed on changed C# files; Rider `build_solution` returned `isSuccess=false` with an empty problem list, so Unity compile/tests were used as the build authority.
 
 ## Project Goal
 

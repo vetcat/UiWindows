@@ -6,6 +6,7 @@
     "ProjectContext.Localization",
     "ProjectContext.Player",
     "ProjectContext.Settings",
+    "ProjectContext.Shop",
     "R3",
     "UiWindowsMvp.UIAdapter",
     "UI.Windows"

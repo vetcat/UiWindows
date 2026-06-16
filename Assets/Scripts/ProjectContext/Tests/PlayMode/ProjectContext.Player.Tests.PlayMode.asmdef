@@ -4,7 +4,8 @@
   "references": [
     "ProjectContext.Localization",
     "ProjectContext.Settings",
-    "ProjectContext.Player"
+    "ProjectContext.Player",
+    "ProjectContext.Shop"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
