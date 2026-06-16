@@ -164,8 +164,8 @@ Current child issue sequence:
 - `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3` - Done
 - `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows` - Done
 - `UIW-9` - `08 - Port settings and localization slice with R3` - Done
-- `UIW-10` - `09 - Port shop and collection pooling slice with R3` - next active task after `UIW-9` closure
-- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs`
+- `UIW-10` - `09 - Port shop and collection pooling slice with R3` - Done
+- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - next active task after `UIW-10` closure
 
 Task creation should use the Linear `save_issue` tool with `team: "UiWindows"`. Do not create test issues just to verify write permission unless the user explicitly asks.
 

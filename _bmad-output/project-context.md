@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-10-implemented-pending-review
+status: uiw-10-closed-uiw-11-next
 ---
 
 # Project Context for AI Agents
@@ -31,7 +31,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiTopLeftView.prefab` is the project-owned UI.Windows-compatible UiTopLeft view asset.
 - `Assets/Scenes/SampleScene.unity` is the canonical runtime/integration scene for UI.Windows MVP vertical slices, including the UiTopLeft runtime wiring.
 - `docs/uiwindows-mvp-pooling-lifecycle.md` records the reusable pooling/show-scope verification pattern for future UI.Windows MVP windows.
-- `UIW-10` is implemented on branch `feature/uiw-10-09-port-shop-and-collection-pooling-slice-with-r3` and is pending review/closure. After `UIW-10` is accepted and closed, the next ordered migration task is `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs`.
+- `UIW-10` is complete and merged; the next ordered migration task is `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs`.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -271,7 +271,7 @@ UIW-10 shop and collection pooling slice snapshot on 2026-06-16:
 - `Assets/Scenes/SampleScene.unity` wires the shop prefab through the existing `UiTopLeftDemoInstaller` CompositionRoot pattern; `showShopOnStart` defaults to false while the launcher remains resolvable for tests or manual opens.
 - The view-side `PooledViewCollection<TView>` is a narrow Unity UI entry pooling helper only; it is not a reactive framework and it does not use `SetActive` for window lifecycle or item reuse.
 - `UiShopPresenter` subscribes to shop/localization read-model state through `IUiShowScope`, rebuilds group/item entries from read-model state, and disposes item/group button handlers both on list rebuild and on hide/pool return.
-- Focused verification for `UIW-10` passed in Unity `6000.4.4f1`: `ProjectContext.Player.Tests.PlayMode` 14/14, `UiWindowsMvp.Tests.PlayMode` 15/15, and full PlayMode suite 31/31. Rider `get_file_problems` passed on changed C# files; Rider `build_solution` returned `isSuccess=false` with an empty problem list, so Unity compile/tests were used as the build authority.
+- Focused verification for `UIW-10` passed in Unity `6000.4.4f1`: targeted shop PlayMode tests 6/6, full PlayMode suite 31/31, scene validation for `SampleScene` and `UIDevelopScene`, Unity Console with 0 errors and 0 warnings, `git diff --check main...HEAD`, and static forbidden-dependency scans. Rider `get_file_problems` passed on changed C# files; Rider `build_solution` returned `isSuccess=false` with an empty problem list, so Unity compile/tests were used as the build authority.
 
 ## Project Goal
 
@@ -444,8 +444,8 @@ Current child issue sequence:
 - `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3` - Done
 - `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows` - Done
 - `UIW-9` - `08 - Port settings and localization slice with R3` - Done
-- `UIW-10` - `09 - Port shop and collection pooling slice with R3` - next active task after `UIW-9` closure
-- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs`
+- `UIW-10` - `09 - Port shop and collection pooling slice with R3` - Done
+- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - next active task after `UIW-10` closure
 
 ## AI Role Workflow
 
