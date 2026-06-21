@@ -88,6 +88,26 @@ R3 usage rules:
 - Show-scoped UI subscriptions must be disposed on hide/pool cleanup, not only on final `OnDeInit`.
 - Do not introduce UniRx or a project-owned custom Rx framework in parallel with R3.
 
+## DOTween UI/FX Dependency
+
+DOTween is integrated through `UIW-17` as the explicit tween/animation dependency for UI/effects rendering.
+
+Current DOTween baseline:
+
+- Free DOTween `1.2.825` is imported from the official Demigiant ZIP source under `Assets/Plugins/Demigiant/DOTween`.
+- DOTween settings live at `Assets/Resources/DOTweenSettings.asset`.
+- `DOTween.Modules.asmdef` is enabled so project-owned asmdef assemblies can reference Unity UI shortcut modules.
+- `UiWindowsMvp.SampleSceneWindows` references `DOTween` and `DOTween.Modules`.
+- `docs/dotween-ui-fx-dependency.md` records the source URL, archive hash, setup workflow, generated files, and usage boundaries.
+
+DOTween usage rules:
+
+- DOTween is allowed only in UI/effects rendering code, normally under `Assets/Scripts/UiWindowsMvp`.
+- Do not expose DOTween types from `Assets/Scripts/ProjectContext` domain/model ports.
+- Domain/model services should publish state, commands, or effect requests through project-owned ports; the UI layer decides how to render DOTween animations.
+- DOTween must not replace UI.Windows lifecycle ownership. Windows still open and close through `WindowSystem.Show/Hide` or narrow wrappers around those APIs.
+- Presenters/views that create tweens must kill or complete active tweens on hide, pool return, and final disposal as appropriate.
+
 ## UI.Windows MVP Architecture Skill
 
 Before designing, implementing, or reviewing UI.Windows MVP presenters, views, model/read-model ports, R3 UI bindings, OpenUI example ports, show/hide subscription lifetimes, or decisions about where UI logic belongs, use:
@@ -165,7 +185,8 @@ Current child issue sequence:
 - `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows` - Done
 - `UIW-9` - `08 - Port settings and localization slice with R3` - Done
 - `UIW-10` - `09 - Port shop and collection pooling slice with R3` - Done
-- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - next active task after `UIW-10` closure
+- `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration` - Done
+- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - next active task after `UIW-17` closure
 
 Task creation should use the Linear `save_issue` tool with `team: "UiWindows"`. Do not create test issues just to verify write permission unless the user explicitly asks.
 

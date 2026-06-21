@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-10-closed-uiw-11-next
+status: uiw-17-closed-uiw-11-next
 ---
 
 # Project Context for AI Agents
@@ -26,12 +26,14 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - Current repository is a Unity project with base project settings plus project-owned CompositionRoot, R3 integration, UI.Windows MVP adapter code, and R3-backed player/settings/localization/shop model services under `Assets/Scripts`.
 - `UI.Windows-submodule` is integrated as a fork-pinned UPM Git dependency.
 - R3 is integrated as the explicit reactive foundation for the MVP layer through NuGetForUnity plus the R3.Unity UPM package.
+- Free DOTween `1.2.825` is installed from the official Demigiant ZIP source under `Assets/Plugins/Demigiant/DOTween` for UI/effects rendering work.
 - The minimal UI.Windows MVP presenter lifecycle adapter is implemented under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter`.
 - OpenUI behavior ports are implemented incrementally without importing OpenUI infrastructure; player lives under `Assets/Scripts/ProjectContext/Runtime/Player`, settings/localization under `Assets/Scripts/ProjectContext/Runtime/Settings` and `Assets/Scripts/ProjectContext/Runtime/Localization`, and the shop model under `Assets/Scripts/ProjectContext/Runtime/Shop`.
 - `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiTopLeftView.prefab` is the project-owned UI.Windows-compatible UiTopLeft view asset.
 - `Assets/Scenes/SampleScene.unity` is the canonical runtime/integration scene for UI.Windows MVP vertical slices, including the UiTopLeft runtime wiring.
 - `docs/uiwindows-mvp-pooling-lifecycle.md` records the reusable pooling/show-scope verification pattern for future UI.Windows MVP windows.
-- `UIW-10` is complete and merged; the next ordered migration task is `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs`.
+- `docs/dotween-ui-fx-dependency.md` records the DOTween source/version, setup workflow, generated files, and usage boundary.
+- `UIW-17` is complete and ready to merge/close; `UIW-11` is the next ordered migration task.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -103,6 +105,12 @@ NuGetForUnity-restored packages for R3 include:
 - `System.Runtime.CompilerServices.Unsafe`: `6.0.0`
 - `System.Threading.Channels`: `8.0.0`
 - `System.Threading.Tasks.Extensions`: `4.5.4`
+
+Imported third-party Unity assets include:
+
+- Free DOTween `1.2.825` from official Demigiant download `https://dotween.demigiant.com/downloads/DOTween_1_2_825.zip`, SHA-256 `689d42944f7076038eb6b87ed4c85ae6951c4aec8eaae4e068524ce55b422c8c`.
+- DOTween lives under `Assets/Plugins/Demigiant/DOTween`; generated settings live at `Assets/Resources/DOTweenSettings.asset`.
+- `DOTween.Modules.asmdef` is enabled so project-owned asmdef assemblies can reference Unity UI shortcuts through `DOTween.Modules`.
 
 External repositories studied on 2026-06-06:
 
@@ -272,6 +280,20 @@ UIW-10 shop and collection pooling slice snapshot on 2026-06-16:
 - The view-side `PooledViewCollection<TView>` is a narrow Unity UI entry pooling helper only; it is not a reactive framework and it does not use `SetActive` for window lifecycle or item reuse.
 - `UiShopPresenter` subscribes to shop/localization read-model state through `IUiShowScope`, rebuilds group/item entries from read-model state, and disposes item/group button handlers both on list rebuild and on hide/pool return.
 - Focused verification for `UIW-10` passed in Unity `6000.4.4f1`: targeted shop PlayMode tests 6/6, full PlayMode suite 31/31, scene validation for `SampleScene` and `UIDevelopScene`, Unity Console with 0 errors and 0 warnings, `git diff --check main...HEAD`, and static forbidden-dependency scans. Rider `get_file_problems` passed on changed C# files; Rider `build_solution` returned `isSuccess=false` with an empty problem list, so Unity compile/tests were used as the build authority.
+
+UIW-17 DOTween dependency setup snapshot on 2026-06-21:
+
+- Free DOTween `1.2.825` was downloaded from the official Demigiant ZIP source, not DOTween Pro.
+- The imported archive URL is `https://dotween.demigiant.com/downloads/DOTween_1_2_825.zip`; the imported archive SHA-256 is `689d42944f7076038eb6b87ed4c85ae6951c4aec8eaae4e068524ce55b422c8c`.
+- Official DOTween assets live under `Assets/Plugins/Demigiant/DOTween`; Unity setup generated `Assets/Resources/DOTweenSettings.asset` and `Assets/Plugins/Demigiant/DOTween/Modules/DOTween.Modules.asmdef`.
+- DOTween setup added the `DOTWEEN` scripting define in `ProjectSettings/ProjectSettings.asset`.
+- DOTween settings keep Unity UI shortcuts enabled and asmdef compatibility enabled; UI Toolkit, TextMeshPro, and external EPOOutline modules remain disabled until needed.
+- `UiWindowsMvp.SampleSceneWindows` references `DOTween` and `DOTween.Modules`, and `DOTweenMvpFxSmokeCheck` plus `DOTweenMvpFxSmokeTests` provide a minimal project-owned compile/runtime smoke for Unity UI tween access from asmdef code.
+- DOTween is allowed only in UI/effects rendering code, primarily under `Assets/Scripts/UiWindowsMvp`.
+- DOTween types must not appear in `Assets/Scripts/ProjectContext` public domain/model ports.
+- DOTween must not replace UI.Windows show/hide/pooling lifecycle. Future presenters/views that create tweens must kill or complete active tweens on hide, pool return, and final disposal as appropriate.
+- `UIW-17` review verification passed: `UiWindowsMvp.Tests.PlayMode` 16/16, Rider diagnostics/build passed, Unity Console had 0 errors and 0 warnings, `git diff --check main...HEAD` passed, no DOTween Pro files were imported, and no `DG.Tweening` / `DOTween` references leaked into `Assets/Scripts/ProjectContext`.
+- `UIW-11` can use DOTween for representative modal/hints/FX UI rendering and should not repeat DOTween dependency setup.
 
 ## Project Goal
 
@@ -445,7 +467,8 @@ Current child issue sequence:
 - `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows` - Done
 - `UIW-9` - `08 - Port settings and localization slice with R3` - Done
 - `UIW-10` - `09 - Port shop and collection pooling slice with R3` - Done
-- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - next active task after `UIW-10` closure
+- `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration` - Done
+- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - next active task after `UIW-17` closure
 
 ## AI Role Workflow
 

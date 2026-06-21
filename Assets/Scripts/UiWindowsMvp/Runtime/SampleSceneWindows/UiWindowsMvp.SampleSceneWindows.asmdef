@@ -3,6 +3,8 @@
   "rootNamespace": "UiWindowsMvp.SampleSceneWindows",
   "references": [
     "CompositionRoot.Runtime",
+    "DOTween",
+    "DOTween.Modules",
     "ProjectContext.Localization",
     "ProjectContext.Player",
     "ProjectContext.Settings",
