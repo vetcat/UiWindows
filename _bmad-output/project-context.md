@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-17-dotween-setup-in-progress
+status: uiw-17-closed-uiw-11-next
 ---
 
 # Project Context for AI Agents
@@ -33,7 +33,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `Assets/Scenes/SampleScene.unity` is the canonical runtime/integration scene for UI.Windows MVP vertical slices, including the UiTopLeft runtime wiring.
 - `docs/uiwindows-mvp-pooling-lifecycle.md` records the reusable pooling/show-scope verification pattern for future UI.Windows MVP windows.
 - `docs/dotween-ui-fx-dependency.md` records the DOTween source/version, setup workflow, generated files, and usage boundary.
-- `UIW-10` is complete and merged; `UIW-17` installs DOTween as setup for `UIW-11`, and `UIW-11` should start only after `UIW-17` is accepted/closed.
+- `UIW-17` is complete and ready to merge/close; `UIW-11` is the next ordered migration task.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -292,7 +292,8 @@ UIW-17 DOTween dependency setup snapshot on 2026-06-21:
 - DOTween is allowed only in UI/effects rendering code, primarily under `Assets/Scripts/UiWindowsMvp`.
 - DOTween types must not appear in `Assets/Scripts/ProjectContext` public domain/model ports.
 - DOTween must not replace UI.Windows show/hide/pooling lifecycle. Future presenters/views that create tweens must kill or complete active tweens on hide, pool return, and final disposal as appropriate.
-- `UIW-11` remains blocked on `UIW-17` acceptance/closure and should not repeat DOTween dependency setup.
+- `UIW-17` review verification passed: `UiWindowsMvp.Tests.PlayMode` 16/16, Rider diagnostics/build passed, Unity Console had 0 errors and 0 warnings, `git diff --check main...HEAD` passed, no DOTween Pro files were imported, and no `DG.Tweening` / `DOTween` references leaked into `Assets/Scripts/ProjectContext`.
+- `UIW-11` can use DOTween for representative modal/hints/FX UI rendering and should not repeat DOTween dependency setup.
 
 ## Project Goal
 
@@ -466,8 +467,8 @@ Current child issue sequence:
 - `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows` - Done
 - `UIW-9` - `08 - Port settings and localization slice with R3` - Done
 - `UIW-10` - `09 - Port shop and collection pooling slice with R3` - Done
-- `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration` - next active setup task after `UIW-10` closure
-- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - after `UIW-17`
+- `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration` - Done
+- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - next active task after `UIW-17` closure
 
 ## AI Role Workflow
 
