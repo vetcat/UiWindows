@@ -27,6 +27,14 @@ Treat local project instructions as authoritative over this generic skill.
 
 When a project uses ordered issue titles or numeric prefixes, sort issues by that explicit project ordering. Do not rely on tracker API return order unless the project says API order is authoritative.
 
+## Parent And Epic Reconciliation
+
+Closing child issues is not proof that a parent plan, epic, or umbrella issue is complete. When working from a parent issue, preserve the parent outcome separately from each child's local scope.
+
+Before preparing or closing child work, identify which parent acceptance target the child advances and which parent targets remain open or intentionally deferred. When the parent uses broad wording such as "most", "representative", "finalize", "complete", or "migration", require an explicit coverage list or traceability matrix that maps requested outcomes to implemented artifacts, verification evidence, and deferred gaps.
+
+When all known child issues are `Done`, `Canceled`, or otherwise inactive, do not mark or recommend the parent as complete by default. First run a parent reconciliation review against the original parent description, comments, local project context, and current repository state. If the implemented result is narrower than the original parent goal, report the mismatch and either create a follow-up/audit issue or ask for an explicit scope-change acceptance.
+
 ## Capability Discovery
 
 Before preparing, implementing, reviewing, or closing issue work, verify which tracker, IDE, editor, and validation tools are actually available in the current session. Do not infer tool availability from local config files alone; hosted or IDE-provided tools may exist even when repository MCP config is empty.

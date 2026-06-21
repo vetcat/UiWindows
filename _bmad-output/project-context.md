@@ -39,6 +39,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
+- Process correction from the `UIW-1` readiness review on 2026-06-21: closed child issues do not prove that a parent/umbrella issue is complete. Broad parent goals such as "most OpenUI examples/layouts" require a parent reconciliation review and traceability matrix before parent closure. The `issue-task-flow` skill, `AGENTS.md`, and this context now require that gate for future parent plans.
 - `.ai/mcp/mcp.json` is currently empty.
 - Working tree was clean after the repository investigation.
 
@@ -485,6 +486,13 @@ Current child issue sequence:
 - `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration` - Done
 - `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - Done
 
+Parent/umbrella issue closure rule:
+
+- Do not treat all child issues being `Done` or `Canceled` as parent completion.
+- Before recommending closure for `UIW-1` or any future parent/umbrella plan, build a traceability matrix: parent target -> implemented artifact(s) -> verification evidence -> status (`Done`, `Partial`, `Deferred`, `Missing`).
+- Broad parent wording such as "most", "representative", "finalize", "complete", "migration", or "ready" must be converted into an explicit coverage list before closure.
+- If completed child scopes are narrower than the original parent goal, call out the mismatch and either create follow-up tasks or ask Vitaly for explicit reduced-scope acceptance.
+
 ## AI Role Workflow
 
 Future chats should use explicit role modes when possible.
@@ -495,10 +503,12 @@ Orchestrator mode:
 - Do not implement the selected task directly unless Vitaly explicitly asks.
 - Read `AGENTS.md`, this context file, `UIW-1`, and the relevant child issue.
 - Pick the first child issue under `UIW-1` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
+- Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
 - Verify available MCP tools before preparing or reviewing task work.
 - Verify blockers before creating implementation prompts.
 - Create one focused Executor prompt for one Linear issue.
 - After Executor completion, review diff, acceptance criteria, verification evidence, Linear notes, branch name, and git hygiene.
+- If all child issues under a parent are closed, run the parent reconciliation review before saying the parent is complete.
 - After acceptance, merge the task branch into `main`, push `main`, verify `ahead origin/main` is clear, and update Linear/parent-plan notes only when Vitaly asks to complete closure.
 
 Executor mode:
@@ -507,6 +517,7 @@ Executor mode:
 - Work on exactly one Linear issue.
 - Start from latest `main`, create a dedicated `feature/<issue-slug>` branch, and derive the issue slug from the Linear-generated branch name when available by replacing its leading owner namespace with `feature/`.
 - Stay within the issue scope.
+- If the issue is a child of a parent plan, report which parent acceptance target was advanced and which known parent gaps remain outside this issue's scope.
 - Run verification from the issue and project context, including Rider MCP for changed C# files when available and Unity MCP for Unity editor/Console/test state.
 - Report unavailable, timed-out, or skipped MCP tooling explicitly.
 - Update Linear with implementation notes and verification results.

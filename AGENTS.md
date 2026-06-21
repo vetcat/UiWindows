@@ -171,6 +171,8 @@ Main Linear task-plan:
 - Parent issue: `UIW-1` - `[Plan] UI.Windows MVP migration with R3, without Zenject/UniRx`
 - URL: https://linear.app/white-rabbits-rabbit-hole/issue/UIW-1/plan-uiwindows-mvp-migration-with-r3-without-zenjectunirx
 - Future agents should open `UIW-1`, inspect child issues ordered by numeric prefix, and pick the first child issue that is not `Done` or `Canceled` unless the user says otherwise.
+- Closing child issues is not enough to close or accept the parent plan. For parent/umbrella issues, run a parent reconciliation review against the original parent description, comments, project context, and current repository state before recommending parent closure.
+- Broad parent wording such as "most", "representative", "finalize", "complete", or "migration" requires an explicit coverage list or traceability matrix: parent target -> implemented artifact -> verification evidence -> status (`Done`, `Partial`, `Deferred`, `Missing`).
 
 Current child issue sequence:
 
@@ -202,12 +204,14 @@ The Orchestrator should:
 
 - Read `AGENTS.md`, `_bmad-output/project-context.md`, `UIW-1`, and the relevant child issue.
 - Pick the first child issue under `UIW-1` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
+- Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
 - Verify blocker status before preparing implementation work.
 - Avoid implementing the task directly unless Vitaly explicitly asks it to.
 - Write a focused Executor prompt for exactly one Linear issue.
 - Require the Executor to create a dedicated branch from latest `main` using `feature/<issue-slug>`.
 - After Executor completion, review git diff, acceptance criteria, verification evidence, Linear comments, and branch hygiene.
 - Only recommend merging/closing when acceptance criteria and verification are satisfied.
+- If all child issues under a parent are `Done` or `Canceled`, run the parent reconciliation review before saying the parent is complete. If the implemented result is narrower than the original parent goal, either create/follow up missing tasks or ask Vitaly for explicit reduced-scope acceptance.
 - After acceptance, merge the task branch into `main`, push `main`, and ensure Linear status/notes are updated when Vitaly asks the Orchestrator to complete the closure.
 
 ### Executor
@@ -219,6 +223,7 @@ The Executor should:
 - Work on exactly one Linear issue.
 - Start from latest `main` and create a dedicated task branch.
 - Stay inside the selected issue scope.
+- If the issue is a child of a parent plan, report which parent acceptance target was advanced and which known parent gaps remain outside this issue's scope.
 - Make code/config/docs changes needed for that issue.
 - Run the issue's verification steps.
 - Update Linear with implementation notes and verification results.

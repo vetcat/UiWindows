@@ -10,7 +10,7 @@ Use Executor mode to implement exactly one selected issue.
 4. Verify tracker, IDE, editor, and validation tooling available in the current session.
 5. Fetch the integration branch.
 6. Create a dedicated task branch from the latest integration branch using the `feature/` namespace. If the tracker-generated branch is `owner/issue-slug`, replace the leading namespace and create `feature/issue-slug`; if no tracker slug exists, create `feature/<issue-id>-<normalized-title>`.
-7. Restate the issue scope, non-goals, acceptance criteria, verification plan, and available/unavailable tooling before substantial edits.
+7. Restate the issue scope, non-goals, acceptance criteria, verification plan, available/unavailable tooling, and parent acceptance target advanced by this child before substantial edits.
 
 If local changes already exist, do not overwrite them. Stop and ask how to proceed unless they are clearly your own current-turn changes.
 
@@ -25,6 +25,7 @@ If local changes already exist, do not overwrite them. Stop and ask how to proce
 - Do not close the issue unless explicitly asked.
 - Do not merge into the integration branch unless explicitly asked.
 - Update the issue tracker with meaningful notes after implementation and verification.
+- If the issue is a child of a parent plan or epic, update the tracker with what parent acceptance target was advanced and what parent gaps remain outside this issue's scope. Do not imply the parent is complete unless a parent reconciliation review was explicitly performed.
 
 ## Verification Rules
 
@@ -58,6 +59,10 @@ Verification:
 
 Issue tracker:
 - <comments/status updates made>
+
+Parent traceability:
+- Advanced: <parent acceptance target(s) or n/a>
+- Still open/deferred: <known parent gaps or n/a>
 
 Unresolved risks:
 - <risk or none>
