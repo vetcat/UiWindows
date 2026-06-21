@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-18-complete-follow-up-migration-tasks-created
+status: uiw-19-complete-next-uiw-20
 ---
 
 # Project Context for AI Agents
@@ -37,7 +37,8 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `docs/uiwindows-mvp-openui-migration-guide.md` records the final OpenUI migration rules for UI.Windows lifecycle, CompositionRoot boundaries, R3 request ports, presenter binding, pooling cleanup, DOTween usage, and prefab/scene roles.
 - `UIW-17` and `UIW-11` are complete; modal, hints, representative collect/spend FX ports, and final OpenUI migration docs are implemented.
 - `UIW-18` completed the parent reconciliation audit and confirmed the original `UIW-1` goal is not yet fully satisfied; follow-up child issues `UIW-19` through `UIW-25` were created from the audit gaps.
-- Next ordered child issue: `UIW-19` - `12 - Port UiTopRight coin HUD and coin FX target integration`.
+- `UIW-19` completed the top-right coin HUD and coin FX target integration follow-up.
+- Next ordered child issue: `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation`.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -178,6 +179,8 @@ UIW-19 top-right HUD implementation snapshot on 2026-06-21:
 - `UiFxPresenter` resolves optional UI-layer targets and `UiFxView` converts the coin icon `RectTransform` into its overlay-local collect/spend anchor, preserving fallback anchors when no target is registered.
 - `Assets/Scenes/SampleScene.unity` wires `UiTopRightView.prefab` into `UiTopLeftDemoInstaller` and opens it on start through `WindowSystem.Show`.
 - Focused PlayMode coverage includes `UiTopRightPresenterTests.Presenter_BindsCoinsAndRegistersFxTargetOnlyWhileShown` and `UiTopRightWindowLifecycleTests.ReopenCyclesThroughWindowSystem_ReusePooledWindowAndRoutesFxTarget`; the full `UiWindowsMvp.Tests.PlayMode` suite passed `23/23` on the implementation branch.
+- `UIW-19` review follow-up fixed stale FX anchors by resetting `UiFxView` to fallback collect/spend targets when no registered UI target is available or coordinate resolution fails.
+- Closure verification passed on 2026-06-21: Rider build and targeted diagnostics passed, Unity `UiWindowsMvp.Tests.PlayMode` passed `23/23`, Unity Console had 0 errors and 0 warnings after clearing TestRunner logs, `git diff --check main...HEAD` passed, no new forbidden UniRx/Zenject/OpenUI/SetActive lifecycle dependency was introduced, and DOTween did not leak into `Assets/Scripts/ProjectContext`.
 - This advances the `UIW-1` target for UiTopRight coin HUD and coin FX target integration only. `UIW-20` through `UIW-25` remain open parent gaps.
 
 UI.Windows fork workflow established on 2026-06-07:
