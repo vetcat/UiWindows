@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-11-in-progress-modal-hints-fx-ported
+status: uiw-11-complete-modal-hints-fx-migration-docs-finalized
 ---
 
 # Project Context for AI Agents
@@ -35,7 +35,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `docs/uiwindows-mvp-pooling-lifecycle.md` records the reusable pooling/show-scope verification pattern for future UI.Windows MVP windows.
 - `docs/dotween-ui-fx-dependency.md` records the DOTween source/version, setup workflow, generated files, and usage boundary.
 - `docs/uiwindows-mvp-openui-migration-guide.md` records the final OpenUI migration rules for UI.Windows lifecycle, CompositionRoot boundaries, R3 request ports, presenter binding, pooling cleanup, DOTween usage, and prefab/scene roles.
-- `UIW-17` is complete and merged; `UIW-11` is in progress with modal, hints, and representative collect/spend FX ports implemented on the feature branch.
+- `UIW-17` and `UIW-11` are complete; modal, hints, representative collect/spend FX ports, and final OpenUI migration docs are implemented.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -164,6 +164,7 @@ UIW-11 modal/hints/FX migration snapshot on 2026-06-21:
 - `UiHintsView` and `UiFxView` use DOTween only in `Assets/Scripts/UiWindowsMvp` and kill active sequences on hide/final cleanup.
 - `Assets/Scenes/SampleScene.unity` wires the modal/hints/FX prefabs into `UiTopLeftDemoInstaller`; hints and FX open as empty overlay windows so transient request streams are not lost.
 - Focused PlayMode coverage includes presenter tests and `UiFeedbackWindowLifecycleTests.ModalHintsAndFx_RunThroughWindowSystemAndCleanShowScopedRequests`.
+- `UIW-11` closure verification passed on 2026-06-21: Rider solution build succeeded with no problems, full Unity PlayMode suite passed `38/38`, Unity Console had 0 errors and 0 warnings after clearing TestRunner tooling logs, `git diff --check main...HEAD` passed, no UniRx/Zenject/OpenUI runtime dependency was introduced, DOTween references stayed out of `Assets/Scripts/ProjectContext`, and new runtime code did not use `SetActive(` for lifecycle.
 
 UI.Windows fork workflow established on 2026-06-07:
 
@@ -482,7 +483,7 @@ Current child issue sequence:
 - `UIW-9` - `08 - Port settings and localization slice with R3` - Done
 - `UIW-10` - `09 - Port shop and collection pooling slice with R3` - Done
 - `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration` - Done
-- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - next active task after `UIW-17` closure
+- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - Done
 
 ## AI Role Workflow
 
