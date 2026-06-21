@@ -29,6 +29,7 @@ The binding lifetime and show lifetime are different:
 Put these in `IUiShowScope`:
 
 - R3 subscriptions from model/read-model ports to view fields.
+- R3 subscriptions from modal, hint, and UI FX request ports.
 - Unity UI button listeners and value-change handlers.
 - R3 timers, frame streams, throttles, or other streams that should only run while the window is visible.
 - Temporary animation or view-state subscriptions tied to one visible show.
@@ -49,6 +50,8 @@ For each future pooled MVP window, add focused PlayMode coverage that follows th
 
 Reference test: `UiTopLeftWindowLifecycleTests.ReopenCyclesThroughWindowSystem_ReusePooledWindowWithoutDuplicateSubscriptions`.
 
+Additional request-stream reference: `UiFeedbackWindowLifecycleTests.ModalHintsAndFx_RunThroughWindowSystemAndCleanShowScopedRequests`.
+
 Minimum verification sequence:
 
 1. Load `Assets/Scenes/SampleScene.unity` or the canonical runtime scene for the slice.
@@ -64,6 +67,8 @@ Minimum verification sequence:
 11. Repeat the cycle more than once.
 12. Finish with `WindowSystem.Clean` or equivalent UI.Windows cleanup and assert binding disposal remains idempotent.
 
+For overlay windows such as hints and FX, also verify that requests published while hidden do not update the previous visible view or create active tweens, and that reopening reuses the pooled window instance and presenter binding with a fresh show scope.
+
 Behavioral checks are preferred over making R3 diagnostics a runtime requirement. `ObservableTracker` may be useful while debugging, but the project should prove correctness through lifecycle counters and user-observable effects.
 
 ## Do Not Copy
@@ -71,5 +76,6 @@ Behavioral checks are preferred over making R3 diagnostics a runtime requirement
 - Do not copy OpenUI `gameObject.SetActive` show/hide semantics as the lifecycle model.
 - Do not rebind presenters on every pooled reopen.
 - Do not keep button listeners outside the show scope unless their lifetime is intentionally the whole window instance.
+- Do not keep transient modal, hint, or FX request subscriptions alive while a pooled overlay is hidden.
 - Do not expose mutable R3 primitives from model/read-model ports to presenters.
 - Do not modify UI.Windows package internals for pooling behavior until a verified compatibility issue leaves no narrower project-owned fix.

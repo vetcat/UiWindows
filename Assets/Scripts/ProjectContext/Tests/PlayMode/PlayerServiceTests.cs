@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
+using ProjectContext.UiRequests;
 
 namespace ProjectContext.Player.Tests.PlayMode
 {
@@ -136,6 +137,23 @@ namespace ProjectContext.Player.Tests.PlayMode
         }
 
         [Test]
+        public void CoinFxCommands_PublishRequestThroughPortAndMutateCoins()
+        {
+            var feedback = new TrackingFeedbackCommands();
+            using var service = new PlayerService(CreateSettings(), feedback);
+
+            service.AddCoinsWithFx(25);
+            service.RemoveCoinsWithFx(10);
+
+            Assert.That(GetCurrentValue<int>(service, "Coins"), Is.EqualTo(15));
+            Assert.That(feedback.Requests, Has.Count.EqualTo(2));
+            Assert.That(feedback.Requests[0].Kind, Is.EqualTo(UiFxKind.Collect));
+            Assert.That(feedback.Requests[0].Amount, Is.EqualTo(25));
+            Assert.That(feedback.Requests[1].Kind, Is.EqualTo(UiFxKind.Spend));
+            Assert.That(feedback.Requests[1].Amount, Is.EqualTo(10));
+        }
+
+        [Test]
         public void DisposingSubscription_StopsReadModelUpdatesForThatSubscriber()
         {
             using var service = new PlayerService(CreateSettings());
@@ -207,6 +225,28 @@ namespace ProjectContext.Player.Tests.PlayMode
             var property = typeof(PlayerService).GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
             Assert.That(property, Is.Not.Null, $"{propertyName} must be a public player read-model property.");
             return property.GetValue(service);
+        }
+
+        private sealed class TrackingFeedbackCommands : IUiFeedbackCommands
+        {
+            public List<UiFxRequest> Requests { get; } = new();
+
+            public void ShowHint(
+                string description,
+                UiHintAnchor anchor = UiHintAnchor.Center,
+                float durationSeconds = 1.5f)
+            {
+            }
+
+            public void RequestCollectFx(int amount, UiFxTarget target = UiFxTarget.Coins)
+            {
+                Requests.Add(new UiFxRequest(UiFxKind.Collect, amount, target));
+            }
+
+            public void RequestSpendFx(int amount, UiFxTarget target = UiFxTarget.Coins)
+            {
+                Requests.Add(new UiFxRequest(UiFxKind.Spend, amount, target));
+            }
         }
     }
 }

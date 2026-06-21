@@ -5,7 +5,8 @@
     "ProjectContext.Localization",
     "ProjectContext.Settings",
     "ProjectContext.Player",
-    "ProjectContext.Shop"
+    "ProjectContext.Shop",
+    "ProjectContext.UiRequests"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

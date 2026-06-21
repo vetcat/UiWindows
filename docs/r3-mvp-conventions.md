@@ -44,6 +44,8 @@ This fallback is a known NuGetForUnity first-launch limitation when restored art
 - Mutable R3 types must not be exposed outside the object that owns mutation.
 - Mutations cross boundaries through command methods, for example `SetName`, `AddCoins`, `SelectItem`, or `RequestClose`, not by setting a public reactive property.
 - Domain/application services must not depend on UI presenters. Visual effects, navigation, and modal requests should be emitted as read-only request streams or routed through narrow project-owned ports.
+- Modal, hint, and representative UI FX requests live in `ProjectContext.UiRequests`. These ports expose read-only R3 state/streams and command methods without UI.Windows, Unity UI, DOTween, OpenUI, Zenject, or UniRx types.
+- Player coin collect/spend FX requests are routed through `IUiFeedbackCommands`; `PlayerService` does not know which presenter or DOTween sequence renders them.
 - Do not introduce UniRx or a project-owned custom Rx framework in parallel with R3.
 
 ## Lifetime Rules
@@ -58,6 +60,7 @@ For the full pooled window verification pattern, see `docs/uiwindows-mvp-pooling
 - A pooled UI.Windows window keeps its presenter binding for the lifetime of that pooled window instance; only the show scope is recreated per show. Rebind only when UI.Windows has produced a new window instance without an active binding.
 - `OnDeInit` remains final cleanup. Do not wait for `OnDeInit` to release show-scoped subscriptions for pooled windows.
 - `AddTo(Component)` is acceptable only for subscriptions whose lifetime should match Unity object destruction. It is not a substitute for explicit show/hide cleanup.
+- Transient request-stream subscribers, such as hint and FX presenters, belong in show scope. Hidden or pooled overlay windows must not consume request events until reopened.
 
 ## Compile Smoke
 

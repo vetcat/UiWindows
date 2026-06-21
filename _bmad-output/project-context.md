@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-17-closed-uiw-11-next
+status: uiw-11-in-progress-modal-hints-fx-ported
 ---
 
 # Project Context for AI Agents
@@ -23,17 +23,19 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 
 - Local project path: `/Users/vitaly/Projects/UiWindows`.
 - Unity version: `6000.4.4f1` from `ProjectSettings/ProjectVersion.txt`.
-- Current repository is a Unity project with base project settings plus project-owned CompositionRoot, R3 integration, UI.Windows MVP adapter code, and R3-backed player/settings/localization/shop model services under `Assets/Scripts`.
+- Current repository is a Unity project with base project settings plus project-owned CompositionRoot, R3 integration, UI.Windows MVP adapter code, R3-backed player/settings/localization/shop model services, and modal/hint/FX request ports under `Assets/Scripts`.
 - `UI.Windows-submodule` is integrated as a fork-pinned UPM Git dependency.
 - R3 is integrated as the explicit reactive foundation for the MVP layer through NuGetForUnity plus the R3.Unity UPM package.
 - Free DOTween `1.2.825` is installed from the official Demigiant ZIP source under `Assets/Plugins/Demigiant/DOTween` for UI/effects rendering work.
 - The minimal UI.Windows MVP presenter lifecycle adapter is implemented under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter`.
-- OpenUI behavior ports are implemented incrementally without importing OpenUI infrastructure; player lives under `Assets/Scripts/ProjectContext/Runtime/Player`, settings/localization under `Assets/Scripts/ProjectContext/Runtime/Settings` and `Assets/Scripts/ProjectContext/Runtime/Localization`, and the shop model under `Assets/Scripts/ProjectContext/Runtime/Shop`.
+- OpenUI behavior ports are implemented incrementally without importing OpenUI infrastructure; player lives under `Assets/Scripts/ProjectContext/Runtime/Player`, settings/localization under `Assets/Scripts/ProjectContext/Runtime/Settings` and `Assets/Scripts/ProjectContext/Runtime/Localization`, the shop model under `Assets/Scripts/ProjectContext/Runtime/Shop`, and modal/hint/FX request ports under `Assets/Scripts/ProjectContext/Runtime/UiRequests`.
 - `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiTopLeftView.prefab` is the project-owned UI.Windows-compatible UiTopLeft view asset.
+- `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiModalView.prefab`, `UiHintsView.prefab`, and `UiFxView.prefab` are project-owned UI.Windows-compatible assets for the `UIW-11` modal, hints, and FX slice.
 - `Assets/Scenes/SampleScene.unity` is the canonical runtime/integration scene for UI.Windows MVP vertical slices, including the UiTopLeft runtime wiring.
 - `docs/uiwindows-mvp-pooling-lifecycle.md` records the reusable pooling/show-scope verification pattern for future UI.Windows MVP windows.
 - `docs/dotween-ui-fx-dependency.md` records the DOTween source/version, setup workflow, generated files, and usage boundary.
-- `UIW-17` is complete and ready to merge/close; `UIW-11` is the next ordered migration task.
+- `docs/uiwindows-mvp-openui-migration-guide.md` records the final OpenUI migration rules for UI.Windows lifecycle, CompositionRoot boundaries, R3 request ports, presenter binding, pooling cleanup, DOTween usage, and prefab/scene roles.
+- `UIW-17` is complete and merged; `UIW-11` is in progress with modal, hints, and representative collect/spend FX ports implemented on the feature branch.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -150,6 +152,18 @@ UIW-13 R3 integration snapshot on 2026-06-07:
 - Unity `6000.4.4f1` refresh/compile completed with zero Console errors and zero warnings after R3/NuGet integration.
 - Compile smoke `UiWindowsMvp.Reactive.R3MvpSmokeCheck.CanCreateReadOnlySurface()` returned `true`.
 - No UniRx package dependency was added.
+
+UIW-11 modal/hints/FX migration snapshot on 2026-06-21:
+
+- `ProjectContext.UiRequests` lives under `Assets/Scripts/ProjectContext/Runtime/UiRequests` and exposes R3-backed modal, hint, and UI FX request ports without UI.Windows, Unity UI, presenter, DOTween, OpenUI, Zenject, or UniRx dependencies.
+- `UiModalService` exposes `CurrentModal` plus command methods for info OK, info OK/Cancel, wait, close, and completion.
+- `UiFeedbackService` exposes transient hint and collect/spend FX request streams.
+- `PlayerService` can publish representative coin collect/spend FX through an optional `IUiFeedbackCommands` port while remaining independent from UI presenters and DOTween.
+- `UiModalWindow`, `UiHintsWindow`, and `UiFxWindow` are UI.Windows `LayoutWindowType` wrappers opened through `WindowSystem.Show` by narrow project launchers.
+- `UiModalPresenter`, `UiHintsPresenter`, and `UiFxPresenter` subscribe through show-scoped `IUiShowScope`; hidden pooled hint/FX overlays do not consume request streams.
+- `UiHintsView` and `UiFxView` use DOTween only in `Assets/Scripts/UiWindowsMvp` and kill active sequences on hide/final cleanup.
+- `Assets/Scenes/SampleScene.unity` wires the modal/hints/FX prefabs into `UiTopLeftDemoInstaller`; hints and FX open as empty overlay windows so transient request streams are not lost.
+- Focused PlayMode coverage includes presenter tests and `UiFeedbackWindowLifecycleTests.ModalHintsAndFx_RunThroughWindowSystemAndCleanShowScopedRequests`.
 
 UI.Windows fork workflow established on 2026-06-07:
 

@@ -51,7 +51,8 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         public void Hide()
         {
-            if (currentWindow == null || currentWindow.GetState() >= ObjectState.Hiding)
+            if (currentWindow == null || WindowSystem.HasInstance() == false ||
+                currentWindow.GetState() >= ObjectState.Hiding)
             {
                 return;
             }

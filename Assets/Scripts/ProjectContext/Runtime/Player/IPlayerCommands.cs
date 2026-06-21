@@ -9,6 +9,8 @@ namespace ProjectContext.Player
         void SetCoins(int value);
         void AddCoins(int amount);
         void RemoveCoins(int amount);
+        void AddCoinsWithFx(int amount);
+        void RemoveCoinsWithFx(int amount);
         void SetLevel(int value);
         void SetName(string value);
     }
