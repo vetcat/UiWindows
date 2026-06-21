@@ -23,8 +23,11 @@ namespace UiWindowsMvp.SampleSceneWindows
         private readonly List<UiFxItemView> activeItems = new();
         private readonly Stack<UiFxItemView> pooledItems = new();
         private readonly Vector3[] targetCorners = new Vector3[4];
+        private Vector2 fallbackCollectTargetAnchoredPosition;
+        private Vector2 fallbackSpendSourceAnchoredPosition;
         private int requestIndex;
         private string lastFxText = string.Empty;
+        private bool fallbackAnchorsCaptured;
 
         public int ActiveFxCount => activeItems.Count;
         public int PooledFxCount => pooledItems.Count;
@@ -41,10 +44,12 @@ namespace UiWindowsMvp.SampleSceneWindows
                 CollectTarget != null &&
                 SpendSource != null)
             {
+                CaptureFallbackAnchors();
                 return;
             }
 
             BuildDefaultLayout();
+            CaptureFallbackAnchors();
         }
 
         public void PlayFx(UiFxRequest request)
@@ -130,11 +135,13 @@ namespace UiWindowsMvp.SampleSceneWindows
         {
             if (targetTransform == null || Body == null)
             {
+                ResetResolvedTarget();
                 return;
             }
 
             if (TryResolveLocalPoint(targetTransform, out var anchoredPosition) == false)
             {
+                ResetResolvedTarget();
                 return;
             }
 
@@ -147,6 +154,36 @@ namespace UiWindowsMvp.SampleSceneWindows
             {
                 SpendSource.anchoredPosition = anchoredPosition;
             }
+        }
+
+        private void ResetResolvedTarget()
+        {
+            if (fallbackAnchorsCaptured == false)
+            {
+                CaptureFallbackAnchors();
+            }
+
+            if (CollectTarget != null)
+            {
+                CollectTarget.anchoredPosition = fallbackCollectTargetAnchoredPosition;
+            }
+
+            if (SpendSource != null)
+            {
+                SpendSource.anchoredPosition = fallbackSpendSourceAnchoredPosition;
+            }
+        }
+
+        private void CaptureFallbackAnchors()
+        {
+            if (fallbackAnchorsCaptured || CollectTarget == null || SpendSource == null)
+            {
+                return;
+            }
+
+            fallbackCollectTargetAnchoredPosition = CollectTarget.anchoredPosition;
+            fallbackSpendSourceAnchoredPosition = SpendSource.anchoredPosition;
+            fallbackAnchorsCaptured = true;
         }
 
         private bool TryResolveLocalPoint(RectTransform targetTransform, out Vector2 anchoredPosition)

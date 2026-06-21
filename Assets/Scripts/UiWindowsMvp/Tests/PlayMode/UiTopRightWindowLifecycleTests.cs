@@ -56,6 +56,8 @@ namespace UiWindowsMvp.Tests.PlayMode
                 Assert.That(fxWindow.TryGetView(out var fxView), Is.True);
                 var initialInstanceId = window.GetInstanceID();
                 var initialView = view;
+                var fallbackCollectTarget = fxView.CollectTargetAnchoredPosition;
+                var fallbackSpendSource = fxView.SpendSourceAnchoredPosition;
 
                 for (var cycle = 0; cycle < 3; cycle++)
                 {
@@ -79,6 +81,20 @@ namespace UiWindowsMvp.Tests.PlayMode
                     yield return WaitUntil(() => window.GetState() == ObjectState.Hidden, $"hide cycle {cycle}");
 
                     Assert.That(targetResolver.TryGetTarget(UiFxTarget.Coins, out _), Is.False);
+                    player.AddCoinsWithFx(7);
+                    Assert.That(fxView.LastFxText, Is.EqualTo("+7"));
+                    Assert.That(fxView.CollectTargetAnchoredPosition.x,
+                        Is.EqualTo(fallbackCollectTarget.x).Within(0.5f));
+                    Assert.That(fxView.CollectTargetAnchoredPosition.y,
+                        Is.EqualTo(fallbackCollectTarget.y).Within(0.5f));
+
+                    player.RemoveCoinsWithFx(3);
+                    Assert.That(fxView.LastFxText, Is.EqualTo("-3"));
+                    Assert.That(fxView.SpendSourceAnchoredPosition.x,
+                        Is.EqualTo(fallbackSpendSource.x).Within(0.5f));
+                    Assert.That(fxView.SpendSourceAnchoredPosition.y,
+                        Is.EqualTo(fallbackSpendSource.y).Within(0.5f));
+
                     player.SetCoins(200 + cycle);
                     Assert.That(view.TextCoinsAmount.text, Is.EqualTo((105 + cycle).ToString()));
 
