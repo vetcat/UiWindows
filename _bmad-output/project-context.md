@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-11-complete-modal-hints-fx-migration-docs-finalized
+status: uiw-18-created-parent-reconciliation-pending
 ---
 
 # Project Context for AI Agents
@@ -36,6 +36,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `docs/dotween-ui-fx-dependency.md` records the DOTween source/version, setup workflow, generated files, and usage boundary.
 - `docs/uiwindows-mvp-openui-migration-guide.md` records the final OpenUI migration rules for UI.Windows lifecycle, CompositionRoot boundaries, R3 request ports, presenter binding, pooling cleanup, DOTween usage, and prefab/scene roles.
 - `UIW-17` and `UIW-11` are complete; modal, hints, representative collect/spend FX ports, and final OpenUI migration docs are implemented.
+- `UIW-18` was created as the next ordered child issue under `UIW-1` to audit completion against the original OpenUI migration scope before any parent closure or further implementation.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -485,6 +486,7 @@ Current child issue sequence:
 - `UIW-10` - `09 - Port shop and collection pooling slice with R3` - Done
 - `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration` - Done
 - `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - Done
+- `UIW-18` - `11 - Audit UIW-1 completion against original OpenUI migration scope` - Todo
 
 Parent/umbrella issue closure rule:
 

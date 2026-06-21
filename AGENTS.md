@@ -189,6 +189,7 @@ Current child issue sequence:
 - `UIW-10` - `09 - Port shop and collection pooling slice with R3` - Done
 - `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration` - Done
 - `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - Done
+- `UIW-18` - `11 - Audit UIW-1 completion against original OpenUI migration scope` - Todo
 
 Task creation should use the Linear `save_issue` tool with `team: "UiWindows"`. Do not create test issues just to verify write permission unless the user explicitly asks.
 
