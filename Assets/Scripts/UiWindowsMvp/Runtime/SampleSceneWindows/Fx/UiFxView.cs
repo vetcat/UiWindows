@@ -22,26 +22,45 @@ namespace UiWindowsMvp.SampleSceneWindows
         private readonly List<Sequence> activeSequences = new();
         private readonly List<UiFxItemView> activeItems = new();
         private readonly Stack<UiFxItemView> pooledItems = new();
+        private readonly Vector3[] targetCorners = new Vector3[4];
+        private Vector2 fallbackCollectTargetAnchoredPosition;
+        private Vector2 fallbackSpendSourceAnchoredPosition;
         private int requestIndex;
         private string lastFxText = string.Empty;
+        private bool fallbackAnchorsCaptured;
 
         public int ActiveFxCount => activeItems.Count;
         public int PooledFxCount => pooledItems.Count;
         public string LastFxText => lastFxText;
+        public Vector2 CollectTargetAnchoredPosition => CollectTarget != null ? CollectTarget.anchoredPosition : Vector2.zero;
+        public Vector2 SpendSourceAnchoredPosition => SpendSource != null ? SpendSource.anchoredPosition : Vector2.zero;
 
         public void EnsureLayout()
         {
-            if (Body != null)
+            if (Body != null &&
+                FxRoot != null &&
+                PoolRoot != null &&
+                CollectSource != null &&
+                CollectTarget != null &&
+                SpendSource != null)
             {
+                CaptureFallbackAnchors();
                 return;
             }
 
             BuildDefaultLayout();
+            CaptureFallbackAnchors();
         }
 
         public void PlayFx(UiFxRequest request)
         {
+            PlayFx(request, null);
+        }
+
+        public void PlayFx(UiFxRequest request, RectTransform targetTransform)
+        {
             EnsureLayout();
+            ApplyResolvedTarget(targetTransform);
 
             if (request.Kind == UiFxKind.Spend)
             {
@@ -110,6 +129,75 @@ namespace UiWindowsMvp.SampleSceneWindows
             sequence.Append(item.RectTransform.DOScale(0.55f, 0.35f));
             sequence.Join(item.CanvasGroup.DOFade(0f, FadeDuration));
             sequence.OnComplete(() => Complete(sequence, item));
+        }
+
+        private void ApplyResolvedTarget(RectTransform targetTransform)
+        {
+            if (targetTransform == null || Body == null)
+            {
+                ResetResolvedTarget();
+                return;
+            }
+
+            if (TryResolveLocalPoint(targetTransform, out var anchoredPosition) == false)
+            {
+                ResetResolvedTarget();
+                return;
+            }
+
+            if (CollectTarget != null)
+            {
+                CollectTarget.anchoredPosition = anchoredPosition;
+            }
+
+            if (SpendSource != null)
+            {
+                SpendSource.anchoredPosition = anchoredPosition;
+            }
+        }
+
+        private void ResetResolvedTarget()
+        {
+            if (fallbackAnchorsCaptured == false)
+            {
+                CaptureFallbackAnchors();
+            }
+
+            if (CollectTarget != null)
+            {
+                CollectTarget.anchoredPosition = fallbackCollectTargetAnchoredPosition;
+            }
+
+            if (SpendSource != null)
+            {
+                SpendSource.anchoredPosition = fallbackSpendSourceAnchoredPosition;
+            }
+        }
+
+        private void CaptureFallbackAnchors()
+        {
+            if (fallbackAnchorsCaptured || CollectTarget == null || SpendSource == null)
+            {
+                return;
+            }
+
+            fallbackCollectTargetAnchoredPosition = CollectTarget.anchoredPosition;
+            fallbackSpendSourceAnchoredPosition = SpendSource.anchoredPosition;
+            fallbackAnchorsCaptured = true;
+        }
+
+        private bool TryResolveLocalPoint(RectTransform targetTransform, out Vector2 anchoredPosition)
+        {
+            targetTransform.GetWorldCorners(targetCorners);
+            var worldCenter = (targetCorners[0] + targetCorners[2]) * 0.5f;
+            var sourceCamera = GetRectTransformCamera(targetTransform);
+            var screenPoint = RectTransformUtility.WorldToScreenPoint(sourceCamera, worldCenter);
+            var targetCamera = GetRectTransformCamera(Body);
+            return RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                Body,
+                screenPoint,
+                targetCamera,
+                out anchoredPosition);
         }
 
         private void Track(Sequence sequence, UiFxItemView item)
@@ -232,6 +320,17 @@ namespace UiWindowsMvp.SampleSceneWindows
             var rectTransform = (RectTransform)gameObject.transform;
             rectTransform.localScale = Vector3.one;
             return rectTransform;
+        }
+
+        private static Camera GetRectTransformCamera(RectTransform rectTransform)
+        {
+            var canvas = rectTransform.GetComponentInParent<Canvas>();
+            if (canvas == null || canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+            {
+                return null;
+            }
+
+            return canvas.worldCamera;
         }
 
         private static Image CreateImage(string name, Transform parent, Color color)
