@@ -189,7 +189,14 @@ Current child issue sequence:
 - `UIW-10` - `09 - Port shop and collection pooling slice with R3` - Done
 - `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration` - Done
 - `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - Done
-- `UIW-18` - `11 - Audit UIW-1 completion against original OpenUI migration scope` - Todo
+- `UIW-18` - `11 - Audit UIW-1 completion against original OpenUI migration scope` - Done
+- `UIW-19` - `12 - Port UiTopRight coin HUD and coin FX target integration` - Todo
+- `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation` - Todo
+- `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction` - Todo
+- `UIW-22` - `15 - Port object indicator dynamic UI layer and character reward source integration` - Todo
+- `UIW-23` - `16 - Port UiTopCenter time and press-hold hint example` - Todo
+- `UIW-24` - `17 - Visual/layout parity and UIDevelopScene preview coverage audit` - Todo
+- `UIW-25` - `18 - Integrated SampleScene acceptance workflow and final UIW-1 reconciliation` - Todo
 
 Task creation should use the Linear `save_issue` tool with `team: "UiWindows"`. Do not create test issues just to verify write permission unless the user explicitly asks.
 
