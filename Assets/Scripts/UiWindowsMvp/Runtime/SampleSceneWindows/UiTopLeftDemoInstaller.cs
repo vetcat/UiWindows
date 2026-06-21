@@ -12,6 +12,8 @@ namespace UiWindowsMvp.SampleSceneWindows
     {
         [SerializeField] private UiTopLeftView uiTopLeftViewPrefab;
 
+        [SerializeField] private UiTopRightView uiTopRightViewPrefab;
+
         [SerializeField] private UiSettingsView uiSettingsViewPrefab;
 
         [SerializeField] private UiShopView uiShopViewPrefab;
@@ -23,6 +25,8 @@ namespace UiWindowsMvp.SampleSceneWindows
         [SerializeField] private UiFxView uiFxViewPrefab;
 
         [SerializeField] private bool showOnStart = true;
+
+        [SerializeField] private bool showTopRightOnStart = true;
 
         [SerializeField] private bool showSettingsOnStart;
 
@@ -37,6 +41,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             var playerSettings = PlayerSettings.Default;
             var modalService = new UiModalService();
             var feedbackService = new UiFeedbackService();
+            var fxTargetRegistry = new UiFxTargetRegistry();
             var playerService = new PlayerService(playerSettings, feedbackService);
             var gameSettingsService = new GameSettingsService();
             var localizationService = new LocalizationService();
@@ -48,6 +53,7 @@ namespace UiWindowsMvp.SampleSceneWindows
                     playerSettings,
                     healthCommandStep,
                     xpCommandStep);
+            var topRightPresenterFactory = new UiTopRightPresenterFactory(playerService, fxTargetRegistry);
             var settingsPresenterFactory =
                 new UiSettingsPresenterFactory(
                     gameSettingsService,
@@ -61,7 +67,7 @@ namespace UiWindowsMvp.SampleSceneWindows
                     localizationService);
             var modalPresenterFactory = new UiModalPresenterFactory(modalService, modalService);
             var hintsPresenterFactory = new UiHintsPresenterFactory(feedbackService);
-            var fxPresenterFactory = new UiFxPresenterFactory(feedbackService);
+            var fxPresenterFactory = new UiFxPresenterFactory(feedbackService, fxTargetRegistry);
 
             registry.Register<IPlayerSettings>(playerSettings);
             registry.Register<IPlayerReadModel>(playerService);
@@ -82,13 +88,18 @@ namespace UiWindowsMvp.SampleSceneWindows
             registry.Register<IUiFeedbackReadModel>(feedbackService);
             registry.Register<IUiFeedbackCommands>(feedbackService);
             registry.Register<IUiFeedbackService>(feedbackService);
+            registry.Register<IUiFxTargetResolver>(fxTargetRegistry);
+            registry.Register<IUiFxTargetRegistry>(fxTargetRegistry);
+            registry.Register(fxTargetRegistry);
             registry.Register(presenterFactory);
+            registry.Register(topRightPresenterFactory);
             registry.Register(settingsPresenterFactory);
             registry.Register(shopPresenterFactory);
             registry.Register(modalPresenterFactory);
             registry.Register(hintsPresenterFactory);
             registry.Register(fxPresenterFactory);
             registry.Register(new UiTopLeftDemoLauncher(uiTopLeftViewPrefab, presenterFactory));
+            registry.Register(new UiTopRightDemoLauncher(uiTopRightViewPrefab, topRightPresenterFactory));
             registry.Register(new UiSettingsDemoLauncher(uiSettingsViewPrefab, settingsPresenterFactory));
             registry.Register(new UiShopDemoLauncher(uiShopViewPrefab, shopPresenterFactory));
             registry.Register(new UiModalDemoLauncher(uiModalViewPrefab, modalPresenterFactory, modalService));
@@ -108,6 +119,11 @@ namespace UiWindowsMvp.SampleSceneWindows
             if (showOnStart)
             {
                 root.Services.Resolve<UiTopLeftDemoLauncher>().Show();
+            }
+
+            if (showTopRightOnStart)
+            {
+                root.Services.Resolve<UiTopRightDemoLauncher>().Show();
             }
 
             root.Services.Resolve<UiModalDemoLauncher>().Start();

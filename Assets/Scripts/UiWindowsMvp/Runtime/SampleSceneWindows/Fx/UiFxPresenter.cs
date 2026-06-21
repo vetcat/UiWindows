@@ -2,12 +2,14 @@ using System;
 using ProjectContext.UiRequests;
 using R3;
 using UiWindowsMvp.UIAdapter;
+using UnityEngine;
 
 namespace UiWindowsMvp.SampleSceneWindows
 {
     public sealed class UiFxPresenter : IWindowPresenter<UiFxWindow>
     {
         private readonly IUiFeedbackReadModel readModel;
+        private readonly IUiFxTargetResolver targetResolver;
         private readonly Func<UiFxWindow, UiFxView> viewResolver;
 
         private UiFxWindow window;
@@ -15,13 +17,27 @@ namespace UiWindowsMvp.SampleSceneWindows
         private bool disposed;
 
         public UiFxPresenter(IUiFeedbackReadModel readModel)
-            : this(readModel, ResolveView)
+            : this(readModel, null, ResolveView)
+        {
+        }
+
+        public UiFxPresenter(IUiFeedbackReadModel readModel, IUiFxTargetResolver targetResolver)
+            : this(readModel, targetResolver, ResolveView)
         {
         }
 
         internal UiFxPresenter(IUiFeedbackReadModel readModel, Func<UiFxWindow, UiFxView> viewResolver)
+            : this(readModel, null, viewResolver)
+        {
+        }
+
+        internal UiFxPresenter(
+            IUiFeedbackReadModel readModel,
+            IUiFxTargetResolver targetResolver,
+            Func<UiFxWindow, UiFxView> viewResolver)
         {
             this.readModel = readModel ?? throw new ArgumentNullException(nameof(readModel));
+            this.targetResolver = targetResolver;
             this.viewResolver = viewResolver ?? throw new ArgumentNullException(nameof(viewResolver));
         }
 
@@ -48,7 +64,7 @@ namespace UiWindowsMvp.SampleSceneWindows
 
             view = ResolveRequiredView();
             view.EnsureLayout();
-            showScope.Add(readModel.FxRequests.Subscribe(view.PlayFx));
+            showScope.Add(readModel.FxRequests.Subscribe(PlayFx));
         }
 
         public void OnShowEnd()
@@ -96,6 +112,18 @@ namespace UiWindowsMvp.SampleSceneWindows
             }
 
             return window.TryGetView(out var resolved) ? resolved : null;
+        }
+
+        private void PlayFx(UiFxRequest request)
+        {
+            view.PlayFx(request, ResolveTarget(request.Target));
+        }
+
+        private RectTransform ResolveTarget(UiFxTarget target)
+        {
+            return targetResolver != null && targetResolver.TryGetTarget(target, out var rectTransform)
+                ? rectTransform
+                : null;
         }
 
         private void ThrowIfDisposed()
