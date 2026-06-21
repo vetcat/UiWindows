@@ -45,3 +45,10 @@ DOTween is allowed only in UI/effects rendering code, primarily under `Assets/Sc
 DOTween types must not appear in `Assets/Scripts/ProjectContext` public domain/model ports. Domain/model services should continue to expose state, commands, and effect requests through project-owned ports without depending on `DG.Tweening`.
 
 DOTween does not replace UI.Windows lifecycle ownership. Windows still open and close through `WindowSystem.Show`/`Hide` or narrow wrappers around those APIs. Future presenters/views that create tweens must kill or complete active tweens on hide, pool return, and final disposal as appropriate.
+
+`UIW-11` applies this boundary to the migrated hints and FX slices:
+
+- `UiHintsView` owns and kills its active hint sequence through `ClearHint()`.
+- `UiFxView` owns collect/spend sequences, returns active items to its local pool, and kills active sequences through `StopAllFx()`.
+- `UiHintsPresenter` and `UiFxPresenter` subscribe to request streams only in show scope and clear active animations on hide.
+- `ProjectContext.UiRequests` and `ProjectContext.Player` expose/request FX data without `DG.Tweening` types.

@@ -186,7 +186,7 @@ Current child issue sequence:
 - `UIW-9` - `08 - Port settings and localization slice with R3` - Done
 - `UIW-10` - `09 - Port shop and collection pooling slice with R3` - Done
 - `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration` - Done
-- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - next active task after `UIW-17` closure
+- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - Done
 
 Task creation should use the Linear `save_issue` tool with `team: "UiWindows"`. Do not create test issues just to verify write permission unless the user explicitly asks.
 

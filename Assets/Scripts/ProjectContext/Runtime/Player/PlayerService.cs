@@ -1,4 +1,5 @@
 using System;
+using ProjectContext.UiRequests;
 using R3;
 
 namespace ProjectContext.Player
@@ -16,12 +17,19 @@ namespace ProjectContext.Player
         private readonly ReactiveProperty<PlayerXpProgress> _xpProgress;
         private readonly Subject<PlayerXpProgress> _xpUpdates = new();
         private readonly Subject<int> _levelUps = new();
+        private readonly IUiFeedbackCommands feedbackCommands;
 
         private bool _disposed;
 
         public PlayerService(IPlayerSettings settings)
+            : this(settings, null)
+        {
+        }
+
+        public PlayerService(IPlayerSettings settings, IUiFeedbackCommands feedbackCommands)
         {
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            this.feedbackCommands = feedbackCommands;
 
             _health = new ReactiveProperty<int>(Settings.MaxHealth);
             _xp = new ReactiveProperty<int>(0);
@@ -87,6 +95,22 @@ namespace ProjectContext.Player
         public void RemoveCoins(int amount)
         {
             SetCoins(AddClamped(_coins.CurrentValue, -amount));
+        }
+
+        public void AddCoinsWithFx(int amount)
+        {
+            ThrowIfDisposed();
+            var normalizedAmount = Math.Max(0, amount);
+            feedbackCommands?.RequestCollectFx(normalizedAmount, UiFxTarget.Coins);
+            AddCoins(normalizedAmount);
+        }
+
+        public void RemoveCoinsWithFx(int amount)
+        {
+            ThrowIfDisposed();
+            var normalizedAmount = Math.Max(0, amount);
+            feedbackCommands?.RequestSpendFx(normalizedAmount, UiFxTarget.Coins);
+            RemoveCoins(normalizedAmount);
         }
 
         public void SetLevel(int value)

@@ -2,6 +2,7 @@
   "name": "ProjectContext.Player",
   "rootNamespace": "ProjectContext.Player",
   "references": [
+    "ProjectContext.UiRequests",
     "R3"
   ],
   "includePlatforms": [],

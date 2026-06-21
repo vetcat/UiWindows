@@ -9,6 +9,7 @@
     "ProjectContext.Player",
     "ProjectContext.Settings",
     "ProjectContext.Shop",
+    "ProjectContext.UiRequests",
     "R3",
     "UiWindowsMvp.UIAdapter",
     "UI.Windows"
