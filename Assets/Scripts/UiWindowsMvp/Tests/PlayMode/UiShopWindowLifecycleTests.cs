@@ -149,6 +149,7 @@ namespace UiWindowsMvp.Tests.PlayMode
 
         private static void DestroyWindowSystemsImmediate()
         {
+            DestroyObjectsImmediate<UiDownRightWindow>();
             DestroyObjectsImmediate<UiShopWindow>();
             DestroyObjectsImmediate<UiSettingsWindow>();
             DestroyObjectsImmediate<UiTopLeftWindow>();
