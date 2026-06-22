@@ -11,7 +11,7 @@ Use one explicit mode per turn: `Orchestrator` or `Executor`.
 
 If the user names a mode, use it. If the user asks to delegate, coordinate, prepare a prompt, review another chat, or choose the next task, use `Orchestrator`. If the user gives one concrete issue to implement or provides an executor prompt, use `Executor`.
 
-An Orchestrator may delegate implementation to an Executor sub-agent when sub-agent tools are available and the user has asked to try or use delegated execution. In that flow, the main chat remains the Orchestrator/control surface for the human; the sub-agent is the Executor implementation worker. If sub-agent tools are unavailable, blocked, or inappropriate for the task, fall back to the older separate-chat Executor handoff prompt.
+An Orchestrator may delegate implementation to an Executor sub-agent when sub-agent tools are available and the user has asked to try or use delegated execution. In that flow, the main chat remains the Orchestrator/control surface for the human; the sub-agent is the Executor implementation worker. Prefer storing the full task-specific Executor prompt as an `Executor Handoff` Linear comment, then launching the sub-agent with a short bootstrap prompt that points to the issue and handoff comment. If sub-agent tools or Linear handoff access are unavailable, blocked, or inappropriate for the task, fall back to a full separate-chat Executor handoff prompt.
 
 If the mode is still ambiguous and the next action would differ materially, ask one short clarification before making changes.
 

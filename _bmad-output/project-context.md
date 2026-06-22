@@ -200,7 +200,10 @@ UIW-20 sub-agent Executor flow trial on 2026-06-22:
 
 - The trial is accepted as the default future flow for issue work: keep one human-facing Orchestrator chat and launch a focused Executor sub-agent for one Linear issue when sub-agent tools are available.
 - The separate Executor chat flow remains the fallback when sub-agent tools are unavailable, blocked, or explicitly requested.
-- The Orchestrator should pass a compact, explicit prompt to the Executor sub-agent rather than forking the full conversation context unless the task truly needs the full thread.
+- The Orchestrator should write the full task-specific prompt into the selected Linear issue as the latest comment titled `Executor Handoff`.
+- The Orchestrator should launch the Executor sub-agent with a short bootstrap prompt containing project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment.
+- If Linear is unavailable or the handoff comment cannot be created/read, do not use a link-only handoff; either pass the full prompt directly or stop and report the blocker.
+- The Orchestrator should avoid forking the full conversation context unless the task truly needs the full thread.
 - Sub-agent Executors may work in the same repository checkout. While the Executor is implementing, the Orchestrator should treat the task branch as write-locked and avoid parallel edits in that workspace.
 - A first `wait_agent` timeout does not prove failure; for larger Unity tasks, the Orchestrator should either wait again or inspect repo status before intervening.
 - The first Executor result may be workable but not closure-ready. In `UIW-20`, Orchestrator review found dispose-order and newline hygiene issues; the Orchestrator sent a narrow follow-up to the same sub-agent, which fixed and committed the result.
@@ -556,7 +559,7 @@ Orchestrator mode:
 - Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
 - Verify available multi-agent, Linear, Rider, Unity, and validation tools before preparing or reviewing task work.
 - Verify blockers before creating implementation prompts.
-- Launch one focused Executor sub-agent for one Linear issue when sub-agent tools are available; otherwise create a separate-chat Executor prompt.
+- Add a focused `Executor Handoff` comment to the Linear issue, then launch one short-prompt Executor sub-agent for one Linear issue when sub-agent tools are available; otherwise create a separate-chat Executor prompt.
 - Do not edit the shared task branch while a sub-agent Executor is actively implementing.
 - After Executor completion, review committed diff, acceptance criteria, verification evidence, Linear notes, branch name/upstream hygiene, final repository status, and run independent spot-checks proportional to risk.
 - If review finds implementation issues, prefer sending a narrow follow-up to the same sub-agent when its context is useful.
@@ -567,6 +570,7 @@ Executor mode:
 
 - Use when Vitaly provides a specific task or an Executor prompt.
 - Work on exactly one Linear issue.
+- Read the latest Linear comment titled `Executor Handoff` when launched from a short bootstrap prompt; if it is missing or Linear is unavailable, stop and report instead of guessing.
 - Start from latest `main`, create a dedicated `feature/<issue-slug>` branch, and derive the issue slug from the Linear-generated branch name when available by replacing its leading owner namespace with `feature/`.
 - Do not leave the task branch misleadingly tracking `origin/main`; unset upstream or push/set upstream to the matching remote feature branch.
 - Stay within the issue scope.

@@ -209,6 +209,9 @@ Default task flow after the successful `UIW-20` trial:
 - Keep one human-facing chat in Orchestrator mode.
 - When sub-agent tools are available, the Orchestrator should launch one Executor sub-agent for one Linear issue instead of asking Vitaly to open a separate Executor chat.
 - A separate Executor chat remains the fallback when sub-agent tools are unavailable, blocked, or explicitly requested.
+- Before launching the Executor, write the full task-specific prompt into the selected Linear issue as the latest comment titled `Executor Handoff`.
+- Launch the sub-agent with a short bootstrap prompt containing the project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment.
+- If Linear is unavailable or the handoff comment cannot be created/read, do not use a link-only handoff; either pass the full prompt directly or stop and report the blocker.
 - The Orchestrator must not edit the shared task branch while a sub-agent Executor is actively implementing, because sub-agents may work in the same checkout rather than an isolated workspace.
 - The Orchestrator should use compact, explicit Executor prompts rather than full context forks unless the task truly needs the whole thread.
 - The Orchestrator must independently review the Executor result and request follow-up from the same sub-agent when the fix is inside that implementation context.
@@ -226,7 +229,7 @@ The Orchestrator should:
 - Verify blocker status before preparing implementation work.
 - Avoid implementing the task directly unless Vitaly explicitly asks it to.
 - Verify multi-agent, Linear, Rider, Unity, and validation tool availability before delegating or reviewing.
-- Launch a focused Executor sub-agent for exactly one Linear issue when sub-agent tools are available; otherwise write a focused separate-chat Executor prompt.
+- Add a focused `Executor Handoff` comment to the Linear issue, then launch a short-prompt Executor sub-agent for exactly one Linear issue when sub-agent tools are available; otherwise write a focused separate-chat Executor prompt.
 - Require the Executor to create a dedicated branch from latest `main` using `feature/<issue-slug>`.
 - Require the Executor to commit completed task changes before final report unless explicitly blocked.
 - After Executor completion, review committed git diff, acceptance criteria, verification evidence, Linear comments, branch/upstream hygiene, and final repository status.
@@ -242,6 +245,7 @@ Use this mode when the user gives a specific Linear issue to implement or provid
 The Executor should:
 
 - Work on exactly one Linear issue.
+- Read the latest Linear comment titled `Executor Handoff` when launched from a short bootstrap prompt; if it is missing or Linear is unavailable, stop and report instead of guessing.
 - Start from latest `main` and create a dedicated task branch.
 - Do not leave the feature branch misleadingly tracking `origin/main`; unset upstream or push/set upstream to the remote feature branch when appropriate.
 - Stay inside the selected issue scope.

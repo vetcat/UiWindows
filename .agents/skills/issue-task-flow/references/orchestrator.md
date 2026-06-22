@@ -38,6 +38,10 @@ Preferred mode when available: keep the current chat as Orchestrator and spawn o
 
 Fallback mode: create a focused prompt for a separate Executor chat when sub-agent tools are unavailable, the user explicitly wants a separate chat, or the implementation requires isolation that the current sub-agent runtime cannot provide.
 
+Default handoff storage: write the full task-specific Executor prompt into the selected issue as a Linear comment titled `Executor Handoff` before spawning the sub-agent. Then give the sub-agent a short bootstrap prompt with project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment. This keeps the durable task contract in Linear for humans, replacement sub-agents, and later review.
+
+If Linear is unavailable or the `Executor Handoff` comment cannot be created/read, do not silently proceed with a link-only handoff. Either include the full Executor prompt directly in the sub-agent/separate-chat prompt, or stop and report that the durable handoff could not be prepared.
+
 Important lessons from the `UIW-20` trial:
 
 - Sub-agents may work in the same repository checkout, not an isolated copy. While the Executor is running, the Orchestrator should treat the task branch as write-locked and avoid parallel file edits in that workspace.
@@ -49,9 +53,11 @@ Important lessons from the `UIW-20` trial:
 
 ## Delegation Prompt Template
 
-Create a focused prompt for one Executor agent or chat:
+Create a focused full handoff prompt and save it as the latest Linear issue comment titled `Executor Handoff` when Linear is available:
 
 ```text
+## Executor Handoff
+
 Project: <absolute-project-path>
 Role: Executor
 Issue: <issue-id> - <title>
@@ -109,6 +115,28 @@ Final response must include:
 - Final repository status and branch upstream notes
 - Remaining risks or blockers
 ```
+
+Then spawn the sub-agent with a short bootstrap prompt:
+
+```text
+Project: <absolute-project-path>
+Role: Executor
+Issue: <issue-id> - <title>
+Issue URL: <url-if-available>
+
+Read the Linear issue and the latest comment titled "Executor Handoff".
+If Linear is unavailable, the issue cannot be opened, or that handoff comment is missing, stop and report the blocker.
+
+Hard rules:
+- Work only on this issue.
+- Follow AGENTS.md and _bmad-output/project-context.md.
+- Start from latest main and create the required feature branch.
+- Do not merge or close the issue.
+- Commit completed changes before final report unless blocked.
+- Final report must include branch, commits, changed files, verification, Linear updates, final repository status, and risks.
+```
+
+For separate-chat fallback, either give the same short bootstrap prompt when the human will open Linear in that chat, or paste the full `Executor Handoff` content directly if Linear access is uncertain.
 
 ## Review Checklist
 

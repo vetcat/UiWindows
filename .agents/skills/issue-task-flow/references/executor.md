@@ -4,10 +4,12 @@ Use Executor mode to implement exactly one selected issue.
 
 An Executor may run as a separate chat or as a sub-agent spawned by an Orchestrator. The rules are the same in both cases. When running as a sub-agent, do not assume the workspace is isolated: you may be editing the same checkout the Orchestrator will inspect, so keep the branch clean and do not rely on parallel Orchestrator edits.
 
+When launched with a short bootstrap prompt, first read the selected issue and the latest Linear comment titled `Executor Handoff`. Treat that comment as the task-specific contract. If Linear is unavailable, the issue cannot be opened, or the handoff comment is missing, stop and report the blocker instead of guessing from stale local context.
+
 ## Startup Checklist
 
 1. Read local project instructions and context.
-2. Open the selected issue and relevant comments.
+2. Open the selected issue and relevant comments, especially the latest `Executor Handoff` comment when present.
 3. Check `git status --short --branch` before changes.
 4. Verify tracker, IDE, editor, and validation tooling available in the current session.
 5. Fetch the integration branch.
