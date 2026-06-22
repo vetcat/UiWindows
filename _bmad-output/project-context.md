@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-20-implementation-branch-next-uiw-21-after-review
+status: uiw-20-complete-next-uiw-21
 ---
 
 # Project Context for AI Agents
@@ -38,7 +38,8 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `UIW-17` and `UIW-11` are complete; modal, hints, representative collect/spend FX ports, and final OpenUI migration docs are implemented.
 - `UIW-18` completed the parent reconciliation audit and confirmed the original `UIW-1` goal is not yet fully satisfied; follow-up child issues `UIW-19` through `UIW-25` were created from the audit gaps.
 - `UIW-19` completed the top-right coin HUD and coin FX target integration follow-up.
-- Current Executor branch implements `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation`; after Orchestrator review/acceptance, the next ordered child issue is `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction`.
+- `UIW-20` completed the down-right settings launcher follow-up.
+- Next ordered child issue: `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction`.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -514,8 +515,8 @@ Current child issue sequence:
 - `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration` - Done
 - `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - Done
 - `UIW-18` - `11 - Audit UIW-1 completion against original OpenUI migration scope` - Done
-- `UIW-19` - `12 - Port UiTopRight coin HUD and coin FX target integration` - Todo
-- `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation` - Todo
+- `UIW-19` - `12 - Port UiTopRight coin HUD and coin FX target integration` - Done
+- `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation` - Done
 - `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction` - Todo
 - `UIW-22` - `15 - Port object indicator dynamic UI layer and character reward source integration` - Todo
 - `UIW-23` - `16 - Port UiTopCenter time and press-hold hint example` - Todo
