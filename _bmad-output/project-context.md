@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-19-complete-next-uiw-20
+status: uiw-20-implementation-branch-next-uiw-21-after-review
 ---
 
 # Project Context for AI Agents
@@ -38,7 +38,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `UIW-17` and `UIW-11` are complete; modal, hints, representative collect/spend FX ports, and final OpenUI migration docs are implemented.
 - `UIW-18` completed the parent reconciliation audit and confirmed the original `UIW-1` goal is not yet fully satisfied; follow-up child issues `UIW-19` through `UIW-25` were created from the audit gaps.
 - `UIW-19` completed the top-right coin HUD and coin FX target integration follow-up.
-- Next ordered child issue: `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation`.
+- Current Executor branch implements `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation`; after Orchestrator review/acceptance, the next ordered child issue is `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction`.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -182,6 +182,18 @@ UIW-19 top-right HUD implementation snapshot on 2026-06-21:
 - `UIW-19` review follow-up fixed stale FX anchors by resetting `UiFxView` to fallback collect/spend targets when no registered UI target is available or coordinate resolution fails.
 - Closure verification passed on 2026-06-21: Rider build and targeted diagnostics passed, Unity `UiWindowsMvp.Tests.PlayMode` passed `23/23`, Unity Console had 0 errors and 0 warnings after clearing TestRunner logs, `git diff --check main...HEAD` passed, no new forbidden UniRx/Zenject/OpenUI/SetActive lifecycle dependency was introduced, and DOTween did not leak into `Assets/Scripts/ProjectContext`.
 - This advances the `UIW-1` target for UiTopRight coin HUD and coin FX target integration only. `UIW-20` through `UIW-25` remain open parent gaps.
+
+UIW-20 down-right settings launcher implementation snapshot on 2026-06-22:
+
+- `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiDownRightView.prefab` ports the OpenUI down-right settings launcher visual shape with `Body`, `ButtonSettings`, `TextSettings`, and `ImageSettings` references.
+- `Assets/Content/UiWindowsMvp/SampleSceneWindows/Icons/SettingsIcon.png` is the copied visual icon asset used by the adapted launcher prefab; no OpenUI runtime code was imported.
+- `UiDownRightWindow`, `UiDownRightView`, `UiDownRightPresenter`, `UiDownRightPresenterFactory`, `UiDownRightRuntimeWindowSource`, and `UiDownRightDemoLauncher` live under `Assets/Scripts/UiWindowsMvp/Runtime/SampleSceneWindows`.
+- `UiDownRightPresenter` binds the settings button and localized label through `IUiShowScope`; hidden pooled launcher instances do not keep button handlers or localization subscriptions alive.
+- The launcher opens the existing `UiSettingsDemoLauncher`, so settings still open through the UI.Windows `WindowSystem.Show` path and the existing settings presenter/model behavior remains unchanged.
+- `Assets/Scenes/SampleScene.unity` wires `UiDownRightView.prefab` into `UiTopLeftDemoInstaller` and opens it on start through `WindowSystem.Show`.
+- Focused PlayMode coverage includes `UiDownRightPresenterTests.Presenter_BindsSettingsButtonAndRefreshesLocalizedLabelOnlyWhileShown` and `UiDownRightWindowLifecycleTests.ReopenCyclesThroughWindowSystem_OpenSettingsWithoutDuplicateHandlers`; existing SampleScene lifecycle test cleanup now includes `UiDownRightWindow` because it auto-starts with SampleScene.
+- Verification on the implementation branch passed: Rider targeted diagnostics and solution build, Unity compile/Console, `UiWindowsMvp.Tests.PlayMode` 25/25, `ProjectContext` settings/localization tests 3/3, `git diff --check`, and forbidden dependency/lifecycle scans. No new UniRx, Zenject, OpenUI runtime, or `SetActive(` lifecycle usage was introduced.
+- This advances the `UIW-1` target for OpenUI down-right settings navigation layout only. `UIW-21` through `UIW-25` remain open parent gaps outside this issue's scope.
 
 UI.Windows fork workflow established on 2026-06-07:
 

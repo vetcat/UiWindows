@@ -14,6 +14,8 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         [SerializeField] private UiTopRightView uiTopRightViewPrefab;
 
+        [SerializeField] private UiDownRightView uiDownRightViewPrefab;
+
         [SerializeField] private UiSettingsView uiSettingsViewPrefab;
 
         [SerializeField] private UiShopView uiShopViewPrefab;
@@ -27,6 +29,8 @@ namespace UiWindowsMvp.SampleSceneWindows
         [SerializeField] private bool showOnStart = true;
 
         [SerializeField] private bool showTopRightOnStart = true;
+
+        [SerializeField] private bool showDownRightOnStart = true;
 
         [SerializeField] private bool showSettingsOnStart;
 
@@ -59,6 +63,11 @@ namespace UiWindowsMvp.SampleSceneWindows
                     gameSettingsService,
                     gameSettingsService,
                     localizationService,
+                    localizationService);
+            var settingsLauncher = new UiSettingsDemoLauncher(uiSettingsViewPrefab, settingsPresenterFactory);
+            var downRightPresenterFactory =
+                new UiDownRightPresenterFactory(
+                    settingsLauncher,
                     localizationService);
             var shopPresenterFactory =
                 new UiShopPresenterFactory(
@@ -94,13 +103,15 @@ namespace UiWindowsMvp.SampleSceneWindows
             registry.Register(presenterFactory);
             registry.Register(topRightPresenterFactory);
             registry.Register(settingsPresenterFactory);
+            registry.Register(downRightPresenterFactory);
             registry.Register(shopPresenterFactory);
             registry.Register(modalPresenterFactory);
             registry.Register(hintsPresenterFactory);
             registry.Register(fxPresenterFactory);
             registry.Register(new UiTopLeftDemoLauncher(uiTopLeftViewPrefab, presenterFactory));
             registry.Register(new UiTopRightDemoLauncher(uiTopRightViewPrefab, topRightPresenterFactory));
-            registry.Register(new UiSettingsDemoLauncher(uiSettingsViewPrefab, settingsPresenterFactory));
+            registry.Register(settingsLauncher);
+            registry.Register(new UiDownRightDemoLauncher(uiDownRightViewPrefab, downRightPresenterFactory));
             registry.Register(new UiShopDemoLauncher(uiShopViewPrefab, shopPresenterFactory));
             registry.Register(new UiModalDemoLauncher(uiModalViewPrefab, modalPresenterFactory, modalService));
             registry.Register(new UiHintsDemoLauncher(uiHintsViewPrefab, hintsPresenterFactory));
@@ -124,6 +135,11 @@ namespace UiWindowsMvp.SampleSceneWindows
             if (showTopRightOnStart)
             {
                 root.Services.Resolve<UiTopRightDemoLauncher>().Show();
+            }
+
+            if (showDownRightOnStart)
+            {
+                root.Services.Resolve<UiDownRightDemoLauncher>().Show();
             }
 
             root.Services.Resolve<UiModalDemoLauncher>().Start();
