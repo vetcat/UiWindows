@@ -207,13 +207,14 @@ Use explicit role modes when the user wants orchestration or delegated execution
 Default task flow after the successful `UIW-20` trial:
 
 - Keep one human-facing chat in Orchestrator mode.
+- The purpose of this flow is to preserve the Orchestrator's context window for continued delegation, review, and human-facing decisions. It is not a token-saving rule for either role.
 - When sub-agent tools are available, the Orchestrator should launch one Executor sub-agent for one Linear issue instead of asking Vitaly to open a separate Executor chat.
 - A separate Executor chat remains the fallback when sub-agent tools are unavailable, blocked, or explicitly requested.
 - Before launching the Executor, write the full task-specific prompt into the selected Linear issue as the latest comment titled `Executor Handoff`.
-- Launch the sub-agent with a short bootstrap prompt containing the project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment.
+- Launch the sub-agent with a short bootstrap prompt containing the project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment. The short prompt is only a pointer to the full task contract, not a reduced-context implementation brief.
 - If Linear is unavailable or the handoff comment cannot be created/read, do not use a link-only handoff; either pass the full prompt directly or stop and report the blocker.
 - The Orchestrator must not edit the shared task branch while a sub-agent Executor is actively implementing, because sub-agents may work in the same checkout rather than an isolated workspace.
-- The Orchestrator should use compact, explicit Executor prompts rather than full context forks unless the task truly needs the whole thread.
+- The Orchestrator should avoid full context forks unless the task truly needs the whole thread, but must still give the Executor enough context for safe implementation through Linear or a full direct prompt.
 - The Orchestrator must independently review the Executor result and request follow-up from the same sub-agent when the fix is inside that implementation context.
 - The Orchestrator closes the sub-agent after accepting or abandoning its result.
 

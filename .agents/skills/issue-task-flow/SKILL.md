@@ -13,6 +13,8 @@ If the user names a mode, use it. If the user asks to delegate, coordinate, prep
 
 An Orchestrator may delegate implementation to an Executor sub-agent when sub-agent tools are available and the user has asked to try or use delegated execution. In that flow, the main chat remains the Orchestrator/control surface for the human; the sub-agent is the Executor implementation worker. Prefer storing the full task-specific Executor prompt as an `Executor Handoff` Linear comment, then launching the sub-agent with a short bootstrap prompt that points to the issue and handoff comment. If sub-agent tools or Linear handoff access are unavailable, blocked, or inappropriate for the task, fall back to a full separate-chat Executor handoff prompt.
 
+The purpose of delegated execution is to preserve the Orchestrator's context window for long-lived coordination, spawning Executors, review, and human-facing decisions. It is not a token-saving rule for either role. Do not reduce the Executor's task context below what safe implementation requires; the Executor must receive the complete task contract through the Linear handoff or a full direct prompt.
+
 If the mode is still ambiguous and the next action would differ materially, ask one short clarification before making changes.
 
 ## Always Load Local Context First

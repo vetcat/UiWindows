@@ -34,11 +34,13 @@ For a parent/audit issue, the expected Orchestrator output is the traceability m
 
 ## Executor Delegation Modes
 
-Preferred mode when available: keep the current chat as Orchestrator and spawn one Executor sub-agent for exactly one issue. Use a compact prompt instead of forking the full conversation context unless the task truly needs the full thread. This keeps the Orchestrator context focused on control, review, and human decisions.
+Preferred mode when available: keep the current chat as Orchestrator and spawn one Executor sub-agent for exactly one issue. The goal is to preserve the Orchestrator's context window for long-lived coordination, spawning Executors, review, and human-facing decisions. This is not a token-saving rule for either role.
+
+Use a short bootstrap prompt instead of forking the full conversation context only when the Executor can read the complete task contract from Linear or another explicit handoff. Do not make the Executor infer missing scope, acceptance criteria, verification, or project constraints from a deliberately underspecified prompt.
 
 Fallback mode: create a focused prompt for a separate Executor chat when sub-agent tools are unavailable, the user explicitly wants a separate chat, or the implementation requires isolation that the current sub-agent runtime cannot provide.
 
-Default handoff storage: write the full task-specific Executor prompt into the selected issue as a Linear comment titled `Executor Handoff` before spawning the sub-agent. Then give the sub-agent a short bootstrap prompt with project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment. This keeps the durable task contract in Linear for humans, replacement sub-agents, and later review.
+Default handoff storage: write the full task-specific Executor prompt into the selected issue as a Linear comment titled `Executor Handoff` before spawning the sub-agent. Then give the sub-agent a short bootstrap prompt with project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment. This keeps the durable task contract in Linear for humans, replacement sub-agents, and later review; the short bootstrap is only a pointer to that contract.
 
 If Linear is unavailable or the `Executor Handoff` comment cannot be created/read, do not silently proceed with a link-only handoff. Either include the full Executor prompt directly in the sub-agent/separate-chat prompt, or stop and report that the durable handoff could not be prepared.
 

@@ -199,11 +199,12 @@ UIW-20 down-right settings launcher implementation snapshot on 2026-06-22:
 UIW-20 sub-agent Executor flow trial on 2026-06-22:
 
 - The trial is accepted as the default future flow for issue work: keep one human-facing Orchestrator chat and launch a focused Executor sub-agent for one Linear issue when sub-agent tools are available.
+- The purpose of the flow is to preserve the Orchestrator's context window for continued delegation, review, and human-facing decisions. It is not a token-saving rule for either role.
 - The separate Executor chat flow remains the fallback when sub-agent tools are unavailable, blocked, or explicitly requested.
 - The Orchestrator should write the full task-specific prompt into the selected Linear issue as the latest comment titled `Executor Handoff`.
-- The Orchestrator should launch the Executor sub-agent with a short bootstrap prompt containing project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment.
+- The Orchestrator should launch the Executor sub-agent with a short bootstrap prompt containing project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment. The short prompt is only a pointer to the full task contract, not a reduced-context implementation brief.
 - If Linear is unavailable or the handoff comment cannot be created/read, do not use a link-only handoff; either pass the full prompt directly or stop and report the blocker.
-- The Orchestrator should avoid forking the full conversation context unless the task truly needs the full thread.
+- The Orchestrator should avoid forking the full conversation context unless the task truly needs the full thread, but must still give the Executor enough context for safe implementation through Linear or a full direct prompt.
 - Sub-agent Executors may work in the same repository checkout. While the Executor is implementing, the Orchestrator should treat the task branch as write-locked and avoid parallel edits in that workspace.
 - A first `wait_agent` timeout does not prove failure; for larger Unity tasks, the Orchestrator should either wait again or inspect repo status before intervening.
 - The first Executor result may be workable but not closure-ready. In `UIW-20`, Orchestrator review found dispose-order and newline hygiene issues; the Orchestrator sent a narrow follow-up to the same sub-agent, which fixed and committed the result.
