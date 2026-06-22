@@ -204,9 +204,19 @@ Task creation should use the Linear `save_issue` tool with `team: "UiWindows"`. 
 
 Use explicit role modes when the user wants orchestration or delegated execution.
 
+Default task flow after the successful `UIW-20` trial:
+
+- Keep one human-facing chat in Orchestrator mode.
+- When sub-agent tools are available, the Orchestrator should launch one Executor sub-agent for one Linear issue instead of asking Vitaly to open a separate Executor chat.
+- A separate Executor chat remains the fallback when sub-agent tools are unavailable, blocked, or explicitly requested.
+- The Orchestrator must not edit the shared task branch while a sub-agent Executor is actively implementing, because sub-agents may work in the same checkout rather than an isolated workspace.
+- The Orchestrator should use compact, explicit Executor prompts rather than full context forks unless the task truly needs the whole thread.
+- The Orchestrator must independently review the Executor result and request follow-up from the same sub-agent when the fix is inside that implementation context.
+- The Orchestrator closes the sub-agent after accepting or abandoning its result.
+
 ### Orchestrator
 
-Use this mode when the user says the chat is an orchestrator, asks to delegate a task to another chat, asks for task setup, asks for review/control of an implementation, or asks what should be done next.
+Use this mode when the user says the chat is an orchestrator, asks to delegate a task to an Executor sub-agent or fallback Executor chat, asks for task setup, asks for review/control of an implementation, or asks what should be done next.
 
 The Orchestrator should:
 
@@ -215,9 +225,12 @@ The Orchestrator should:
 - Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
 - Verify blocker status before preparing implementation work.
 - Avoid implementing the task directly unless Vitaly explicitly asks it to.
-- Write a focused Executor prompt for exactly one Linear issue.
+- Verify multi-agent, Linear, Rider, Unity, and validation tool availability before delegating or reviewing.
+- Launch a focused Executor sub-agent for exactly one Linear issue when sub-agent tools are available; otherwise write a focused separate-chat Executor prompt.
 - Require the Executor to create a dedicated branch from latest `main` using `feature/<issue-slug>`.
-- After Executor completion, review git diff, acceptance criteria, verification evidence, Linear comments, and branch hygiene.
+- Require the Executor to commit completed task changes before final report unless explicitly blocked.
+- After Executor completion, review committed git diff, acceptance criteria, verification evidence, Linear comments, branch/upstream hygiene, and final repository status.
+- Run an independent Orchestrator spot-check proportional to risk, for example `git diff --check`, targeted diagnostics, focused tests, or forbidden dependency scans.
 - Only recommend merging/closing when acceptance criteria and verification are satisfied.
 - If all child issues under a parent are `Done` or `Canceled`, run the parent reconciliation review before saying the parent is complete. If the implemented result is narrower than the original parent goal, either create/follow up missing tasks or ask Vitaly for explicit reduced-scope acceptance.
 - After acceptance, merge the task branch into `main`, push `main`, and ensure Linear status/notes are updated when Vitaly asks the Orchestrator to complete the closure.
@@ -230,19 +243,21 @@ The Executor should:
 
 - Work on exactly one Linear issue.
 - Start from latest `main` and create a dedicated task branch.
+- Do not leave the feature branch misleadingly tracking `origin/main`; unset upstream or push/set upstream to the remote feature branch when appropriate.
 - Stay inside the selected issue scope.
 - If the issue is a child of a parent plan, report which parent acceptance target was advanced and which known parent gaps remain outside this issue's scope.
 - Make code/config/docs changes needed for that issue.
 - Run the issue's verification steps.
 - Update Linear with implementation notes and verification results.
-- Return changed files, branch name, commits, verification results, and any unresolved risks.
+- Commit completed task changes before final report unless blocked or explicitly told not to commit.
+- Return changed files, branch name, commits, verification results, final repository status, and any unresolved risks.
 - Not merge to `main` or close the task unless Vitaly explicitly asks.
 
 ## Local MCP Notes
 
-The local `.ai/mcp/mcp.json` file is currently empty, but Linear, Rider, and Unity MCP tools may still be available from the session environment. Before Orchestrator or Executor work, verify actual tool availability through the active tool list/resource discovery instead of inferring availability from `.ai/mcp/mcp.json`.
+The local `.ai/mcp/mcp.json` file is currently empty, but Linear, Rider, Unity MCP, and multi-agent tools may still be available from the session environment. Before Orchestrator or Executor work, verify actual tool availability through the active tool list/resource discovery instead of inferring availability from `.ai/mcp/mcp.json`.
 
-If Linear, Rider, Unity, or another expected MCP tool is unavailable, times out, or does not see this project, report the exact limitation in the prompt, review, or Executor result.
+If Linear, Rider, Unity, multi-agent, or another expected tool is unavailable, times out, or does not see this project, report the exact limitation in the prompt, review, or Executor result.
 
 ## IDE And Unity MCP Verification
 
@@ -284,6 +299,7 @@ If validator execution fails because `PyYAML` or another local dependency is mis
 - Check `git status --short --branch` before editing.
 - Implement each Linear task in its own branch created from the latest `main`.
 - Use `feature/<issue-slug>` for Executor task branches. When Linear provides a generated branch name such as `owner/uiw-2-task-title`, preserve the generated issue slug but replace the leading owner namespace with `feature/`, for example `feature/uiw-2-task-title`. If no generated slug is available, use `feature/<issue-id>-<normalized-task-title>`.
+- Do not leave a task branch tracking `origin/main` as its upstream after creation. If the branch is local-only, unset upstream; if it is pushed, track the matching remote feature branch.
 - Do not implement task work directly on `main`, except for explicitly requested repository-maintenance changes.
 - After Unity, Rider, or editor checks, rerun `git status --short --branch` and separate generated/importer noise from task changes before committing or reporting.
 - After a task is accepted/closed, merge its branch back into `main`, push `main`, verify the local branch is not still ahead of `origin/main`, update Linear status/final notes, and update any parent-plan next-task marker when relevant.

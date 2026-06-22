@@ -6,7 +6,7 @@ Use Orchestrator mode to coordinate issue work without doing the implementation 
 
 1. Read local project instructions and context.
 2. Check repository status and current branch.
-3. Verify tracker, IDE, editor, and validation tooling available in the current session.
+3. Verify tracker, IDE, editor, validation, and multi-agent tooling available in the current session.
 4. Open the parent task plan or tracker query named by the project.
 5. Identify the next issue by project ordering rules.
 6. If the project uses ordered titles or numeric prefixes, sort by that explicit order instead of tracker API return order.
@@ -32,9 +32,24 @@ Before preparing the last child, closing a parent, or saying "all tasks are done
 
 For a parent/audit issue, the expected Orchestrator output is the traceability matrix, gaps, recommended follow-up issues, and a clear recommendation: close as accepted, close with explicit reduced scope, or keep open.
 
+## Executor Delegation Modes
+
+Preferred mode when available: keep the current chat as Orchestrator and spawn one Executor sub-agent for exactly one issue. Use a compact prompt instead of forking the full conversation context unless the task truly needs the full thread. This keeps the Orchestrator context focused on control, review, and human decisions.
+
+Fallback mode: create a focused prompt for a separate Executor chat when sub-agent tools are unavailable, the user explicitly wants a separate chat, or the implementation requires isolation that the current sub-agent runtime cannot provide.
+
+Important lessons from the `UIW-20` trial:
+
+- Sub-agents may work in the same repository checkout, not an isolated copy. While the Executor is running, the Orchestrator should treat the task branch as write-locked and avoid parallel file edits in that workspace.
+- A long-running Executor may time out on the first wait while still making progress. Do not assume failure from one wait timeout; check repository status or wait again before intervening.
+- The Executor's first result can be mostly correct but still require review cleanup. Use `send_input` to request a narrow follow-up from the same sub-agent when the fix depends on its implementation context.
+- Require a task commit before accepting the Executor result. An uncommitted working tree is reviewable, but not closure-ready.
+- If the created feature branch misleadingly tracks `origin/main`, fix or note branch hygiene. A local task branch should either have no upstream or track its own remote feature branch after push.
+- Close the sub-agent after acceptance or after deciding to abandon its result.
+
 ## Delegation Prompt Template
 
-Create a focused prompt for one Executor chat:
+Create a focused prompt for one Executor agent or chat:
 
 ```text
 Project: <absolute-project-path>
@@ -53,6 +68,9 @@ Branch workflow:
 - Start from latest <integration-branch>.
 - Create branch: feature/<tracker-generated-issue-slug-without-leading-owner-namespace>.
 - Do not work directly on <integration-branch>.
+- Do not leave the feature branch tracking <integration-branch> as its upstream; unset upstream or push/set upstream to the feature branch if required by the task workflow.
+- Commit task changes before final report unless explicitly blocked.
+- Final repository status must be clean, or any uncommitted/generated files must be explicitly reported.
 
 Scope:
 - <in-scope bullets>
@@ -88,6 +106,7 @@ Final response must include:
 - Changed files
 - Verification results
 - Issue tracker updates
+- Final repository status and branch upstream notes
 - Remaining risks or blockers
 ```
 
@@ -97,16 +116,17 @@ When the Executor reports back:
 
 - Fetch or inspect the task branch.
 - Check `git status --short --branch`.
-- Review the diff against the integration branch.
+- Review the committed diff against the integration branch. If changes are still uncommitted, review enough to triage but request a commit before acceptance.
 - Confirm the branch only touches the selected issue scope.
 - Check acceptance criteria one by one.
 - Check the child-to-parent traceability note: what parent target was advanced, what remains open, and whether any parent goal was narrowed by the implementation.
 - Confirm the Executor discovered available tools and reported any fallback.
 - Inspect verification evidence, not just claims.
 - Check issue tracker comments/status.
+- Run an independent Orchestrator spot-check proportional to risk, such as `git diff --check`, targeted diagnostics, focused tests, or forbidden dependency scans. The Orchestrator does not need to rerun every expensive Executor check when the evidence is credible, but must verify enough to make acceptance defensible.
 - Rerun repository status after review checks and identify unrelated generated files before closure.
 - Identify residual risks and missing tests.
-- Do not silently fix executor work unless the user asks; either request executor follow-up or make a clearly scoped review adjustment.
+- Prefer requesting a narrow Executor follow-up for issues inside the Executor's implementation, especially when the same sub-agent can fix them with its local context. Make a direct Orchestrator adjustment only when it is clearly a small review/closure edit and report it.
 
 ## Closure Workflow
 

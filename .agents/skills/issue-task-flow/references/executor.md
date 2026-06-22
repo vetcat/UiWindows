@@ -2,6 +2,8 @@
 
 Use Executor mode to implement exactly one selected issue.
 
+An Executor may run as a separate chat or as a sub-agent spawned by an Orchestrator. The rules are the same in both cases. When running as a sub-agent, do not assume the workspace is isolated: you may be editing the same checkout the Orchestrator will inspect, so keep the branch clean and do not rely on parallel Orchestrator edits.
+
 ## Startup Checklist
 
 1. Read local project instructions and context.
@@ -10,7 +12,8 @@ Use Executor mode to implement exactly one selected issue.
 4. Verify tracker, IDE, editor, and validation tooling available in the current session.
 5. Fetch the integration branch.
 6. Create a dedicated task branch from the latest integration branch using the `feature/` namespace. If the tracker-generated branch is `owner/issue-slug`, replace the leading namespace and create `feature/issue-slug`; if no tracker slug exists, create `feature/<issue-id>-<normalized-title>`.
-7. Restate the issue scope, non-goals, acceptance criteria, verification plan, available/unavailable tooling, and parent acceptance target advanced by this child before substantial edits.
+7. Check branch upstream hygiene. The feature branch should not misleadingly track the integration branch; unset upstream or push/set upstream to the remote feature branch when appropriate.
+8. Restate the issue scope, non-goals, acceptance criteria, verification plan, available/unavailable tooling, and parent acceptance target advanced by this child before substantial edits.
 
 If local changes already exist, do not overwrite them. Stop and ask how to proceed unless they are clearly your own current-turn changes.
 
@@ -26,6 +29,8 @@ If local changes already exist, do not overwrite them. Stop and ask how to proce
 - Do not merge into the integration branch unless explicitly asked.
 - Update the issue tracker with meaningful notes after implementation and verification.
 - If the issue is a child of a parent plan or epic, update the tracker with what parent acceptance target was advanced and what parent gaps remain outside this issue's scope. Do not imply the parent is complete unless a parent reconciliation review was explicitly performed.
+- Commit the completed task changes before final report unless blocked or explicitly told not to commit. If an Orchestrator requests follow-up fixes, commit those fixes too or amend only when explicitly requested.
+- Final repository status should be clean. If Unity/editor/generated noise remains, separate it from task changes and report exactly what is left.
 
 ## Verification Rules
 
@@ -47,7 +52,7 @@ Verification evidence should include:
 
 ```text
 Branch: <branch-name>
-Commits: <commit-shas-or-none>
+Commits: <commit-shas-or-blocker-explanation>
 Tool availability:
 - <tracker/IDE/editor/validation tools available or fallback used>
 
@@ -69,4 +74,7 @@ Unresolved risks:
 
 Not done:
 - <explicitly out-of-scope or blocked items>
+
+Repository status:
+- <clean/ahead/behind/upstream notes/generated noise>
 ```

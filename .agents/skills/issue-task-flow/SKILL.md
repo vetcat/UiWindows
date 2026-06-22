@@ -11,6 +11,8 @@ Use one explicit mode per turn: `Orchestrator` or `Executor`.
 
 If the user names a mode, use it. If the user asks to delegate, coordinate, prepare a prompt, review another chat, or choose the next task, use `Orchestrator`. If the user gives one concrete issue to implement or provides an executor prompt, use `Executor`.
 
+An Orchestrator may delegate implementation to an Executor sub-agent when sub-agent tools are available and the user has asked to try or use delegated execution. In that flow, the main chat remains the Orchestrator/control surface for the human; the sub-agent is the Executor implementation worker. If sub-agent tools are unavailable, blocked, or inappropriate for the task, fall back to the older separate-chat Executor handoff prompt.
+
 If the mode is still ambiguous and the next action would differ materially, ask one short clarification before making changes.
 
 ## Always Load Local Context First
@@ -37,7 +39,7 @@ When all known child issues are `Done`, `Canceled`, or otherwise inactive, do no
 
 ## Capability Discovery
 
-Before preparing, implementing, reviewing, or closing issue work, verify which tracker, IDE, editor, and validation tools are actually available in the current session. Do not infer tool availability from local config files alone; hosted or IDE-provided tools may exist even when repository MCP config is empty.
+Before preparing, implementing, reviewing, or closing issue work, verify which tracker, IDE, editor, validation, and multi-agent tools are actually available in the current session. Do not infer tool availability from local config files alone; hosted or IDE-provided tools may exist even when repository MCP config is empty.
 
 When expected tooling is unavailable, times out, lacks dependencies, or cannot see the opened project, continue only with an explicit fallback and report the limitation in the prompt, review, or final result.
 
@@ -59,6 +61,7 @@ Prefer the project's configured issue tracker and branch naming conventions. If 
 - Executor branch name: use the tracker-generated issue slug when available, but replace any leading personal/org namespace with `feature/`. For example, `owner/issue-slug` becomes `feature/issue-slug`.
 - If no tracker-generated branch slug is available, use `feature/<issue-id>-<normalized-title>`.
 - One task equals one branch.
+- Executors commit task changes before final report unless blocked or explicitly told not to commit. Final Executor status should be clean; uncommitted/untracked changes require an explicit explanation.
 - Executors do not merge or close tasks unless the user explicitly asks.
 - Orchestrators merge/close only after acceptance and verification are satisfied, and only when the user asks to complete closure.
 
@@ -66,5 +69,5 @@ Prefer the project's configured issue tracker and branch naming conventions. If 
 
 Keep outputs operational:
 
-- Orchestrator outputs should include the chosen task, blocker status, relevant tool availability, the executor prompt, and review/closure criteria.
+- Orchestrator outputs should include the chosen task, blocker status, relevant tool availability, delegation mode (sub-agent Executor or separate-chat fallback), the executor prompt or sub-agent result, and review/closure criteria.
 - Executor outputs should include branch name, changed files, commits, tool availability/fallbacks, verification results, issue updates, and unresolved risks.

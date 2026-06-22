@@ -58,7 +58,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 ## IDE And Unity MCP Verification
 
 - Local `.ai/mcp/mcp.json` can be empty while session-provided MCP tools are still available. Future chats should verify actual Linear, Rider, and Unity MCP availability through the active tool list/resource discovery before implementation or review work.
-- If an expected MCP tool is unavailable, times out, or does not see this project, report the exact limitation in the Executor or Orchestrator result instead of assuming the tool is globally unavailable.
+- If an expected MCP or multi-agent tool is unavailable, times out, or does not see this project, report the exact limitation in the Executor or Orchestrator result instead of assuming the tool is globally unavailable.
 - When Rider MCP is available, prefer it for IDE-indexed project navigation and C#-aware operations: use Rider search tools to locate files/usages when indexed search is sufficient; use `rename_refactoring` for C# symbol renames; use `reformat_file`, `get_file_problems`, and `build_solution` for C# formatting and validation when practical.
 - Do not force Rider MCP for every file operation. Use shell, `rg`, `apply_patch`, and git tools for raw file reads, diffs, git state, broad scripted inspection, Unity serialized assets, docs, package files, and edits that are clearer as patches.
 - If Rider MCP is unavailable, stale, slow, or does not see this project, fall back to normal filesystem tools and report that limitation explicitly.
@@ -195,6 +195,19 @@ UIW-20 down-right settings launcher implementation snapshot on 2026-06-22:
 - Focused PlayMode coverage includes `UiDownRightPresenterTests.Presenter_BindsSettingsButtonAndRefreshesLocalizedLabelOnlyWhileShown` and `UiDownRightWindowLifecycleTests.ReopenCyclesThroughWindowSystem_OpenSettingsWithoutDuplicateHandlers`; existing SampleScene lifecycle test cleanup now includes `UiDownRightWindow` because it auto-starts with SampleScene.
 - Verification on the implementation branch passed: Rider targeted diagnostics and solution build, Unity compile/Console, `UiWindowsMvp.Tests.PlayMode` 25/25, `ProjectContext` settings/localization tests 3/3, `git diff --check`, and forbidden dependency/lifecycle scans. No new UniRx, Zenject, OpenUI runtime, or `SetActive(` lifecycle usage was introduced.
 - This advances the `UIW-1` target for OpenUI down-right settings navigation layout only. `UIW-21` through `UIW-25` remain open parent gaps outside this issue's scope.
+
+UIW-20 sub-agent Executor flow trial on 2026-06-22:
+
+- The trial is accepted as the default future flow for issue work: keep one human-facing Orchestrator chat and launch a focused Executor sub-agent for one Linear issue when sub-agent tools are available.
+- The separate Executor chat flow remains the fallback when sub-agent tools are unavailable, blocked, or explicitly requested.
+- The Orchestrator should pass a compact, explicit prompt to the Executor sub-agent rather than forking the full conversation context unless the task truly needs the full thread.
+- Sub-agent Executors may work in the same repository checkout. While the Executor is implementing, the Orchestrator should treat the task branch as write-locked and avoid parallel edits in that workspace.
+- A first `wait_agent` timeout does not prove failure; for larger Unity tasks, the Orchestrator should either wait again or inspect repo status before intervening.
+- The first Executor result may be workable but not closure-ready. In `UIW-20`, Orchestrator review found dispose-order and newline hygiene issues; the Orchestrator sent a narrow follow-up to the same sub-agent, which fixed and committed the result.
+- Executors should commit task changes before final report unless explicitly blocked. Uncommitted changes are reviewable, but not closure-ready.
+- Task branches should not misleadingly track `origin/main`; unset upstream for local-only branches or track the matching remote feature branch after push.
+- Orchestrator acceptance still requires independent review: inspect committed diff, acceptance criteria, Linear notes, verification evidence, branch hygiene, final repository status, and run spot-checks proportional to risk.
+- After acceptance or abandonment, close the sub-agent so stale Executor context does not remain active.
 
 UI.Windows fork workflow established on 2026-06-07:
 
@@ -536,15 +549,17 @@ Future chats should use explicit role modes when possible.
 
 Orchestrator mode:
 
-- Use when Vitaly asks a chat to coordinate, delegate, prepare prompts, review another chat's work, or decide the next task.
+- Use when Vitaly asks a chat to coordinate, delegate, prepare prompts, review Executor sub-agent/fallback chat work, or decide the next task.
 - Do not implement the selected task directly unless Vitaly explicitly asks.
 - Read `AGENTS.md`, this context file, `UIW-1`, and the relevant child issue.
 - Pick the first child issue under `UIW-1` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
 - Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
-- Verify available MCP tools before preparing or reviewing task work.
+- Verify available multi-agent, Linear, Rider, Unity, and validation tools before preparing or reviewing task work.
 - Verify blockers before creating implementation prompts.
-- Create one focused Executor prompt for one Linear issue.
-- After Executor completion, review diff, acceptance criteria, verification evidence, Linear notes, branch name, and git hygiene.
+- Launch one focused Executor sub-agent for one Linear issue when sub-agent tools are available; otherwise create a separate-chat Executor prompt.
+- Do not edit the shared task branch while a sub-agent Executor is actively implementing.
+- After Executor completion, review committed diff, acceptance criteria, verification evidence, Linear notes, branch name/upstream hygiene, final repository status, and run independent spot-checks proportional to risk.
+- If review finds implementation issues, prefer sending a narrow follow-up to the same sub-agent when its context is useful.
 - If all child issues under a parent are closed, run the parent reconciliation review before saying the parent is complete.
 - After acceptance, merge the task branch into `main`, push `main`, verify `ahead origin/main` is clear, and update Linear/parent-plan notes only when Vitaly asks to complete closure.
 
@@ -553,12 +568,14 @@ Executor mode:
 - Use when Vitaly provides a specific task or an Executor prompt.
 - Work on exactly one Linear issue.
 - Start from latest `main`, create a dedicated `feature/<issue-slug>` branch, and derive the issue slug from the Linear-generated branch name when available by replacing its leading owner namespace with `feature/`.
+- Do not leave the task branch misleadingly tracking `origin/main`; unset upstream or push/set upstream to the matching remote feature branch.
 - Stay within the issue scope.
 - If the issue is a child of a parent plan, report which parent acceptance target was advanced and which known parent gaps remain outside this issue's scope.
 - Run verification from the issue and project context, including Rider MCP for changed C# files when available and Unity MCP for Unity editor/Console/test state.
 - Report unavailable, timed-out, or skipped MCP tooling explicitly.
 - Update Linear with implementation notes and verification results.
-- Return changed files, branch name, commits, verification results, and unresolved risks.
+- Commit completed task changes before final report unless blocked or explicitly told not to commit.
+- Return changed files, branch name, commits, verification results, final repository status, and unresolved risks.
 - Do not merge to `main` or close the task unless Vitaly explicitly asks.
 
 ## Acceptance Targets
