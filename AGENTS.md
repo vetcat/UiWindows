@@ -207,12 +207,15 @@ Use explicit role modes when the user wants orchestration or delegated execution
 Default task flow after the successful `UIW-20` trial:
 
 - Keep one human-facing chat in Orchestrator mode.
-- The purpose of this flow is to preserve the Orchestrator's context window for continued delegation, review, and human-facing decisions. It is not a token-saving rule for either role.
+- The intended interaction model is: Vitaly talks to the Orchestrator; the Orchestrator starts and controls specialized agents; durable task communication lives in Linear handoff comments and final notes whenever Linear is available.
+- The purpose of this flow is to preserve the Orchestrator's context window for continued delegation, review, and human-facing decisions. It is not a token-saving rule for any role.
 - When sub-agent tools are available, the Orchestrator should launch one Executor sub-agent for one Linear issue instead of asking Vitaly to open a separate Executor chat.
+- After accepting an implementation result, the Orchestrator should launch a Closure Executor sub-agent for mechanical merge/push/Linear closure when sub-agent tools are available, instead of spending Orchestrator context on routine closure commands.
 - A separate Executor chat remains the fallback when sub-agent tools are unavailable, blocked, or explicitly requested.
 - Before launching the Executor, write the full task-specific prompt into the selected Linear issue as the latest comment titled `Executor Handoff`.
 - Launch the sub-agent with a short bootstrap prompt containing the project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment. The short prompt is only a pointer to the full task contract, not a reduced-context implementation brief.
 - If Linear is unavailable or the handoff comment cannot be created/read, do not use a link-only handoff; either pass the full prompt directly or stop and report the blocker.
+- Before launching a Closure Executor, write the authorized closure actions into the selected Linear issue as the latest comment titled `Closure Handoff`.
 - The Orchestrator must not edit the shared task branch while a sub-agent Executor is actively implementing, because sub-agents may work in the same checkout rather than an isolated workspace.
 - The Orchestrator should avoid full context forks unless the task truly needs the whole thread, but must still give the Executor enough context for safe implementation through Linear or a full direct prompt.
 - If the Executor reports `BLOCKED_HUMAN_ACTION_REQUIRED`, for example Unity MCP is blocked by a Unity Editor domain reload or modal confirmation, the Orchestrator must surface the required action in this human-facing chat, wait for confirmation, then resume the same Executor when possible.
@@ -221,7 +224,7 @@ Default task flow after the successful `UIW-20` trial:
 
 ### Orchestrator
 
-Use this mode when the user says the chat is an orchestrator, asks to delegate a task to an Executor sub-agent or fallback Executor chat, asks for task setup, asks for review/control of an implementation, or asks what should be done next.
+Use this mode when the user says the chat is an orchestrator, asks to delegate a task to an Executor or Closure Executor sub-agent, asks for fallback chat setup, asks for review/control of an implementation, asks to complete closure, or asks what should be done next.
 
 The Orchestrator should:
 
@@ -239,7 +242,7 @@ The Orchestrator should:
 - Run an independent Orchestrator spot-check proportional to risk, for example `git diff --check`, targeted diagnostics, focused tests, or forbidden dependency scans.
 - Only recommend merging/closing when acceptance criteria and verification are satisfied.
 - If all child issues under a parent are `Done` or `Canceled`, run the parent reconciliation review before saying the parent is complete. If the implemented result is narrower than the original parent goal, either create/follow up missing tasks or ask Vitaly for explicit reduced-scope acceptance.
-- After acceptance, merge the task branch into `main`, push `main`, and ensure Linear status/notes are updated when Vitaly asks the Orchestrator to complete the closure.
+- After acceptance and when Vitaly asks to complete closure, add a focused `Closure Handoff` comment to Linear, then launch a Closure Executor sub-agent to merge the accepted task branch into `main`, push `main`, update Linear status/final notes, and report final status. The Orchestrator should perform closure directly only as a reported fallback.
 
 ### Executor
 
@@ -261,11 +264,23 @@ The Executor should:
 - Return changed files, branch name, commits, verification results, final repository status, and any unresolved risks.
 - Not merge to `main` or close the task unless Vitaly explicitly asks.
 
+### Closure Executor
+
+Use this mode only when the Orchestrator has accepted an implementation result and provided a `Closure Handoff`.
+
+The Closure Executor should:
+
+- Read the latest Linear comment titled `Closure Handoff`; if it is missing, ambiguous, or Linear is unavailable, stop and report instead of guessing.
+- Perform only the authorized mechanical closure actions: merge accepted branch/commit into the named integration branch, push the integration branch, update Linear final note/status, and update parent/plan notes only when explicitly authorized.
+- Not review acceptance criteria, edit files manually, resolve merge conflicts, run broad implementation verification, or close parent/umbrella issues without explicit parent reconciliation authorization.
+- Stop and report on unexpected dirty working tree, accepted branch/commit mismatch, divergent integration branch, merge conflict, failed push, missing tracker access, or tracker update failure.
+- Return merge result, pushed head, Linear updates, final `git status --short --branch`, and any blockers.
+
 ## Local MCP Notes
 
-The local `.ai/mcp/mcp.json` file is currently empty, but Linear, Rider, Unity MCP, and multi-agent tools may still be available from the session environment. Before Orchestrator or Executor work, verify actual tool availability through the active tool list/resource discovery instead of inferring availability from `.ai/mcp/mcp.json`.
+The local `.ai/mcp/mcp.json` file is currently empty, but Linear, Rider, Unity MCP, and multi-agent tools may still be available from the session environment. Before Orchestrator, Executor, or Closure Executor work, verify actual tool availability through the active tool list/resource discovery instead of inferring availability from `.ai/mcp/mcp.json`.
 
-If Linear, Rider, Unity, multi-agent, or another expected tool is unavailable, times out, or does not see this project, report the exact limitation in the prompt, review, or Executor result.
+If Linear, Rider, Unity, multi-agent, or another expected tool is unavailable, times out, or does not see this project, report the exact limitation in the prompt, review, Executor result, or Closure Executor result.
 
 ## IDE And Unity MCP Verification
 

@@ -1,19 +1,23 @@
 ---
 name: issue-task-flow
-description: Orchestrate and execute issue-tracked software tasks using explicit Orchestrator and Executor modes, branch-per-task workflow, handoff prompts, implementation review, verification gates, and merge/closure control. Use when the user asks to act as an orchestrator, delegate work to another chat or agent, prepare an executor prompt, implement a specific issue, review an executor's result, choose the next issue from Linear/GitHub/Jira or a local task plan, or manage task branches and closure.
+description: Orchestrate and execute issue-tracked software tasks using explicit Orchestrator, Executor, and Closure Executor modes, branch-per-task workflow, tracker handoff prompts, implementation review, verification gates, and delegated merge/closure control. Use when the user asks to act as an orchestrator, delegate work to another chat or agent, prepare an executor prompt, implement a specific issue, review an executor's result, choose the next issue from Linear/GitHub/Jira or a local task plan, or manage task branches and closure.
 ---
 
 # Issue Task Flow
 
 ## Core Rule
 
-Use one explicit mode per turn: `Orchestrator` or `Executor`.
+Use one explicit mode per turn: `Orchestrator`, `Executor`, or `Closure Executor`.
 
-If the user names a mode, use it. If the user asks to delegate, coordinate, prepare a prompt, review another chat, or choose the next task, use `Orchestrator`. If the user gives one concrete issue to implement or provides an executor prompt, use `Executor`.
+If the user names a mode, use it. If the user asks to delegate, coordinate, prepare a prompt, review another chat, or choose the next task, use `Orchestrator`. If the user gives one concrete issue to implement or provides an implementation executor prompt, use `Executor`. If the user provides an accepted branch plus an explicit closure/merge handoff, use `Closure Executor`.
 
 An Orchestrator may delegate implementation to an Executor sub-agent when sub-agent tools are available and the user has asked to try or use delegated execution. In that flow, the main chat remains the Orchestrator/control surface for the human; the sub-agent is the Executor implementation worker. Prefer storing the full task-specific Executor prompt as an `Executor Handoff` Linear comment, then launching the sub-agent with a short bootstrap prompt that points to the issue and handoff comment. If sub-agent tools or Linear handoff access are unavailable, blocked, or inappropriate for the task, fall back to a full separate-chat Executor handoff prompt.
 
-The purpose of delegated execution is to preserve the Orchestrator's context window for long-lived coordination, spawning Executors, review, and human-facing decisions. It is not a token-saving rule for either role. Do not reduce the Executor's task context below what safe implementation requires; the Executor must receive the complete task contract through the Linear handoff or a full direct prompt.
+An Orchestrator may also delegate mechanical post-acceptance closure to a Closure Executor sub-agent. The Closure Executor may merge an already accepted task branch, push the integration branch, update tracker status/final notes, and report final repository state, but it must not review, decide acceptance, edit source files, resolve merge conflicts, or broaden scope.
+
+The purpose of delegated execution is to preserve the Orchestrator's context window for long-lived coordination, spawning agents, review, and human-facing decisions. It is not a token-saving rule for any role. Do not reduce an agent's task context below what safe work requires; implementation and closure agents must receive the complete task contract through tracker handoffs or a full direct prompt.
+
+The intended human interaction model is: the human talks to the Orchestrator; the Orchestrator starts and controls specialized agents; durable task communication lives in the issue tracker as handoff comments and final notes whenever tracker tooling is available.
 
 If the mode is still ambiguous and the next action would differ materially, ask one short clarification before making changes.
 
@@ -52,7 +56,8 @@ For project-owned skill validation, prefer a repository-provided validation wrap
 ## Mode Routing
 
 - For orchestration, read `references/orchestrator.md`.
-- For execution, read `references/executor.md`.
+- For implementation execution, read `references/executor.md`.
+- For delegated post-acceptance closure, read `references/closure-executor.md`.
 - For post-implementation review, use Orchestrator mode and read `references/orchestrator.md`.
 
 ## Tracker And Branch Defaults
@@ -66,12 +71,14 @@ Prefer the project's configured issue tracker and branch naming conventions. If 
 - If no tracker-generated branch slug is available, use `feature/<issue-id>-<normalized-title>`.
 - One task equals one branch.
 - Executors commit task changes before final report unless blocked or explicitly told not to commit. Final Executor status should be clean; uncommitted/untracked changes require an explicit explanation.
-- Executors do not merge or close tasks unless the user explicitly asks.
-- Orchestrators merge/close only after acceptance and verification are satisfied, and only when the user asks to complete closure.
+- Implementation Executors do not merge or close tasks unless the user explicitly asks.
+- Closure Executors merge/push/update tracker only after Orchestrator acceptance and an explicit `Closure Handoff` authorizes the exact closure actions.
+- Orchestrators decide acceptance and authorize closure only after acceptance and verification are satisfied, and only when the user asks to complete closure.
 
 ## Output Expectations
 
 Keep outputs operational:
 
-- Orchestrator outputs should include the chosen task, blocker status, relevant tool availability, delegation mode (sub-agent Executor or separate-chat fallback), the executor prompt or sub-agent result, and review/closure criteria.
+- Orchestrator outputs should include the chosen task, blocker status, relevant tool availability, delegation mode, handoff comments/prompts, sub-agent results, and review/closure criteria.
 - Executor outputs should include branch name, changed files, commits, tool availability/fallbacks, verification results, issue updates, and unresolved risks.
+- Closure Executor outputs should include accepted branch/commit, integration branch result, merge/push status, tracker updates, final repository status, and any blockers.

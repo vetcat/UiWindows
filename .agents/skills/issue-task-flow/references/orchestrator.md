@@ -34,7 +34,7 @@ For a parent/audit issue, the expected Orchestrator output is the traceability m
 
 ## Executor Delegation Modes
 
-Preferred mode when available: keep the current chat as Orchestrator and spawn one Executor sub-agent for exactly one issue. The goal is to preserve the Orchestrator's context window for long-lived coordination, spawning Executors, review, and human-facing decisions. This is not a token-saving rule for either role.
+Preferred mode when available: keep the current chat as Orchestrator and spawn specialized sub-agents for bounded work. Use an implementation Executor for one issue's code/config/docs work, and a Closure Executor for mechanical post-acceptance merge/push/tracker closure. The goal is to preserve the Orchestrator's context window for long-lived coordination, spawning agents, review, and human-facing decisions. This is not a token-saving rule for any role.
 
 Use a short bootstrap prompt instead of forking the full conversation context only when the Executor can read the complete task contract from Linear or another explicit handoff. Do not make the Executor infer missing scope, acceptance criteria, verification, or project constraints from a deliberately underspecified prompt.
 
@@ -74,6 +74,71 @@ Re-check Unity/editor state, rerun the pending verification step, and report the
 ```
 
 If the original Executor cannot be resumed, launch a replacement Executor with the issue link, latest `Executor Handoff`, and the blocker/resume context. Do not treat a human-action blocker as task failure unless the required action cannot be completed.
+
+## Closure Delegation
+
+After the Orchestrator has reviewed and accepted an implementation result, delegate mechanical closure to a Closure Executor sub-agent when sub-agent tools are available. This keeps the human-facing chat focused on decisions and review while agents perform routine repository/tracker operations.
+
+The Orchestrator must make the acceptance decision before closure delegation. The Closure Executor does not review the implementation, reinterpret acceptance criteria, edit files, or resolve merge conflicts.
+
+Write a Linear comment titled `Closure Handoff` before launching the Closure Executor:
+
+```text
+## Closure Handoff
+
+Project: <absolute-project-path>
+Role: Closure Executor
+Issue: <issue-id> - <title>
+Issue URL: <url-if-available>
+
+Accepted implementation:
+- Branch: <feature-branch>
+- Commit(s): <accepted-commit-shas>
+- Orchestrator acceptance summary: <summary>
+
+Authorized closure actions:
+- Merge <feature-branch> into <integration-branch>.
+- Push <integration-branch>.
+- Add final Linear note: <note>.
+- Move Linear issue to <status>, if authorized.
+- Update parent/plan note: <exact action or none>.
+
+Stop conditions:
+- Unexpected dirty working tree.
+- Accepted branch/commit mismatch.
+- Merge conflict.
+- Failed push.
+- Missing tracker access or failed tracker update.
+- Any need to edit files manually.
+
+Final report must include:
+- Merge result and integration branch head.
+- Push result and remote sync state.
+- Linear updates made.
+- Final repository status.
+- Blockers or risks.
+```
+
+Then spawn the Closure Executor with a short bootstrap prompt:
+
+```text
+Project: <absolute-project-path>
+Role: Closure Executor
+Issue: <issue-id> - <title>
+Issue URL: <url-if-available>
+
+Read the Linear issue and the latest comment titled "Closure Handoff".
+If Linear is unavailable, the issue cannot be opened, or that handoff comment is missing, stop and report the blocker.
+
+Hard rules:
+- Perform only the authorized closure actions.
+- Do not edit files manually.
+- Do not resolve merge conflicts.
+- Stop on unexpected dirty status, accepted branch/commit mismatch, failed merge, failed push, or tracker update failure.
+- Final report must include merge result, push result, Linear updates, final repository status, and blockers.
+```
+
+If sub-agent tooling or Linear handoff access is unavailable, the Orchestrator may perform closure directly only after reporting the fallback. For separate-chat fallback, paste the full `Closure Handoff` content directly if Linear access is uncertain.
 
 ## Delegation Prompt Template
 
@@ -186,12 +251,10 @@ When the Executor reports back:
 
 Only after acceptance criteria and verification are satisfied:
 
-1. Ensure the task branch is up to date with the integration branch.
-2. Check repository status and confirm unrelated local/generated changes are excluded or intentionally accepted.
-3. Merge using the project's preferred strategy.
-4. Push the integration branch.
-5. Verify the local integration branch is not still ahead of its remote after the push.
-6. Update issue status and add final notes if the user asked to complete closure.
-7. Update parent plan notes or next-task markers when the project uses them, including parent acceptance target status and any explicit deferred gaps.
-8. If this was the final active child under a parent, run the Parent Reconciliation Gate before recommending parent closure.
-9. Confirm the next task should start from the updated integration branch.
+1. Record the accepted branch, accepted commits, verification evidence, and Orchestrator acceptance summary.
+2. If this was the final active child under a parent, run the Parent Reconciliation Gate before authorizing any parent closure.
+3. Write a `Closure Handoff` Linear comment with exact authorized actions and stop conditions.
+4. Launch a Closure Executor sub-agent when available, or report a fallback before doing closure directly.
+5. Review the Closure Executor report: merge result, pushed integration branch, Linear updates, parent/plan note updates, final repository status, and blockers.
+6. If closure succeeded, confirm the next task should start from the updated integration branch.
+7. If closure was blocked, surface the blocker and decide whether to fix, retry with the same Closure Executor, launch a replacement, or perform a direct fallback.
