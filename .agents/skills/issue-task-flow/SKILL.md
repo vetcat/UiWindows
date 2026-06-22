@@ -45,6 +45,8 @@ Before preparing, implementing, reviewing, or closing issue work, verify which t
 
 When expected tooling is unavailable, times out, lacks dependencies, or cannot see the opened project, continue only with an explicit fallback and report the limitation in the prompt, review, or final result.
 
+If an Executor is blocked by tooling that requires visible human action, such as a Unity Editor domain reload or modal confirmation that Unity MCP cannot accept, use the status `BLOCKED_HUMAN_ACTION_REQUIRED`. The Executor must report the required human action, branch/status, last successful step, and resume instruction. The Orchestrator must surface that blocker in the human-facing chat and resume the same Executor after confirmation when possible.
+
 For project-owned skill validation, prefer a repository-provided validation wrapper when present, then an available system validator. If a cached validator script is not executable, invoke it through its interpreter instead of changing system cache permissions. If validator dependencies are missing, use and report a documented manual frontmatter check rather than silently skipping validation.
 
 ## Mode Routing

@@ -19,6 +19,21 @@ When launched with a short bootstrap prompt, first read the selected issue and t
 
 If local changes already exist, do not overwrite them. Stop and ask how to proceed unless they are clearly your own current-turn changes.
 
+## Human Action Required Blockers
+
+If a required tool is blocked by a visible human action, report `BLOCKED_HUMAN_ACTION_REQUIRED` and stop instead of waiting indefinitely or guessing a fallback. This is especially important for Unity MCP when the Unity Editor requires domain reload, script reload, modal confirmation, PlayMode exit, or test-runner confirmation that MCP cannot accept.
+
+The blocker report must include:
+
+- `Status: BLOCKED_HUMAN_ACTION_REQUIRED`
+- Cause and tool state, including repeated timeout details if relevant.
+- Needed human action.
+- Current branch, commit status, and relevant changed/untracked files.
+- Last successful step.
+- Resume instruction for the Orchestrator to send after the human completes the action.
+
+After the Orchestrator resumes you, re-check the editor/tool state before continuing and rerun the pending verification step.
+
 ## Implementation Rules
 
 - Work only on the selected issue.
@@ -27,6 +42,7 @@ If local changes already exist, do not overwrite them. Stop and ask how to proce
 - When implementation changes the repository's factual baseline, update the canonical local context or project docs referenced by local instructions before finalizing. Examples include new dependencies, verified environment state, architecture decisions, workflow changes, or completed setup that makes earlier context stale.
 - Use IDE diagnostics/build/refactor/format tools for changed code when available, and report any skipped or unavailable IDE tooling.
 - Use editor-specific tools for editor refresh/compile, tests, Console state, generated asset state, and live API checks when available.
+- For editor/tool prompts that require human action, use `BLOCKED_HUMAN_ACTION_REQUIRED` instead of silently skipping the check.
 - Do not close the issue unless explicitly asked.
 - Do not merge into the integration branch unless explicitly asked.
 - Update the issue tracker with meaningful notes after implementation and verification.
@@ -73,6 +89,9 @@ Parent traceability:
 
 Unresolved risks:
 - <risk or none>
+
+Human action required:
+- <none, or BLOCKED_HUMAN_ACTION_REQUIRED with cause/action/resume instruction>
 
 Not done:
 - <explicitly out-of-scope or blocked items>

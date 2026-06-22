@@ -215,6 +215,7 @@ Default task flow after the successful `UIW-20` trial:
 - If Linear is unavailable or the handoff comment cannot be created/read, do not use a link-only handoff; either pass the full prompt directly or stop and report the blocker.
 - The Orchestrator must not edit the shared task branch while a sub-agent Executor is actively implementing, because sub-agents may work in the same checkout rather than an isolated workspace.
 - The Orchestrator should avoid full context forks unless the task truly needs the whole thread, but must still give the Executor enough context for safe implementation through Linear or a full direct prompt.
+- If the Executor reports `BLOCKED_HUMAN_ACTION_REQUIRED`, for example Unity MCP is blocked by a Unity Editor domain reload or modal confirmation, the Orchestrator must surface the required action in this human-facing chat, wait for confirmation, then resume the same Executor when possible.
 - The Orchestrator must independently review the Executor result and request follow-up from the same sub-agent when the fix is inside that implementation context.
 - The Orchestrator closes the sub-agent after accepting or abandoning its result.
 
@@ -231,6 +232,7 @@ The Orchestrator should:
 - Avoid implementing the task directly unless Vitaly explicitly asks it to.
 - Verify multi-agent, Linear, Rider, Unity, and validation tool availability before delegating or reviewing.
 - Add a focused `Executor Handoff` comment to the Linear issue, then launch a short-prompt Executor sub-agent for exactly one Linear issue when sub-agent tools are available; otherwise write a focused separate-chat Executor prompt.
+- Relay Executor `BLOCKED_HUMAN_ACTION_REQUIRED` reports to Vitaly immediately, including exact human action, branch/status, last successful step, and resume instruction; resume the same Executor after Vitaly confirms when possible.
 - Require the Executor to create a dedicated branch from latest `main` using `feature/<issue-slug>`.
 - Require the Executor to commit completed task changes before final report unless explicitly blocked.
 - After Executor completion, review committed git diff, acceptance criteria, verification evidence, Linear comments, branch/upstream hygiene, and final repository status.
@@ -247,6 +249,7 @@ The Executor should:
 
 - Work on exactly one Linear issue.
 - Read the latest Linear comment titled `Executor Handoff` when launched from a short bootstrap prompt; if it is missing or Linear is unavailable, stop and report instead of guessing.
+- If Unity MCP or another required tool is blocked by a visible human action such as Unity domain reload or modal confirmation, report `BLOCKED_HUMAN_ACTION_REQUIRED` with the exact action needed, current branch/status, last successful step, and resume instruction.
 - Start from latest `main` and create a dedicated task branch.
 - Do not leave the feature branch misleadingly tracking `origin/main`; unset upstream or push/set upstream to the remote feature branch when appropriate.
 - Stay inside the selected issue scope.

@@ -53,6 +53,28 @@ Important lessons from the `UIW-20` trial:
 - If the created feature branch misleadingly tracks `origin/main`, fix or note branch hygiene. A local task branch should either have no upstream or track its own remote feature branch after push.
 - Close the sub-agent after acceptance or after deciding to abandon its result.
 
+## Human Action Required Escalation
+
+Use `BLOCKED_HUMAN_ACTION_REQUIRED` when the Executor cannot continue because a visible tool/editor action must be performed by the human. The common Unity case is Unity MCP waiting on an Editor domain reload, script reload, modal confirmation, or PlayMode/test-runner state that cannot be accepted through MCP.
+
+Require the Executor to report:
+
+- `Status: BLOCKED_HUMAN_ACTION_REQUIRED`
+- Cause, including the exact tool/editor state or repeated timeout.
+- Required human action, for example "confirm Reload/Domain Reload in Unity Editor".
+- Current branch, commit status, and relevant uncommitted files.
+- Last successful step and the next step to resume.
+
+The Orchestrator must immediately surface the required action in the human-facing chat. After the human confirms completion, resume the same Executor with a narrow message such as:
+
+```text
+Human action completed: <action>.
+Continue from BLOCKED_HUMAN_ACTION_REQUIRED.
+Re-check Unity/editor state, rerun the pending verification step, and report the result.
+```
+
+If the original Executor cannot be resumed, launch a replacement Executor with the issue link, latest `Executor Handoff`, and the blocker/resume context. Do not treat a human-action blocker as task failure unless the required action cannot be completed.
+
 ## Delegation Prompt Template
 
 Create a focused full handoff prompt and save it as the latest Linear issue comment titled `Executor Handoff` when Linear is available:
@@ -102,6 +124,7 @@ Tooling expectations:
 - Use IDE diagnostics/build/refactor/format tools for changed code when available.
 - Use editor-specific tools for editor refresh/compile, tests, console state, and live API checks when available.
 - Report unavailable, timed-out, skipped, or fallback tooling explicitly.
+- If Unity/editor tooling is blocked by a human-visible domain reload, modal confirmation, or similar prompt, report `BLOCKED_HUMAN_ACTION_REQUIRED` with the required action and resume point instead of waiting indefinitely.
 - Rerun repository status after editor/tool checks and separate generated noise from task changes.
 
 Issue tracker updates:
@@ -134,6 +157,7 @@ Hard rules:
 - Follow AGENTS.md and _bmad-output/project-context.md.
 - Start from latest main and create the required feature branch.
 - Do not merge or close the issue.
+- If Unity/editor tooling requires human confirmation, report `BLOCKED_HUMAN_ACTION_REQUIRED` with the exact action needed, current branch/status, last successful step, and resume instruction.
 - Commit completed changes before final report unless blocked.
 - Final report must include branch, commits, changed files, verification, Linear updates, final repository status, and risks.
 ```
