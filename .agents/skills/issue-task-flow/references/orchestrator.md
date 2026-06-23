@@ -47,8 +47,9 @@ If Linear is unavailable or the `Executor Handoff` comment cannot be created/rea
 Important lessons from the `UIW-20` trial:
 
 - Sub-agents may work in the same repository checkout, not an isolated copy. While the Executor is running, the Orchestrator should treat the task branch as write-locked and avoid parallel file edits in that workspace.
-- A long-running Executor may time out on the first wait while still making progress. Do not assume failure from one wait timeout; check repository status or wait again before intervening.
+- A long-running Executor may time out on the first wait while still making progress. Do not assume failure from one wait timeout; first use read-only status checks such as `git status --short --branch`, then wait again or request a status update before intervening.
 - The Executor's first result can be mostly correct but still require review cleanup. Use `send_input` to request a narrow follow-up from the same sub-agent when the fix depends on its implementation context.
+- `UIW-20` and `UIW-21` both surfaced missing-final-newline hygiene after the first Executor result. Include final-newline checks in future handoffs and usually ask the same Executor to fix this kind of small review issue before acceptance.
 - Require a task commit before accepting the Executor result. An uncommitted working tree is reviewable, but not closure-ready.
 - If the created feature branch misleadingly tracks `origin/main`, fix or note branch hygiene. A local task branch should either have no upstream or track its own remote feature branch after push.
 - Close the sub-agent after acceptance or after deciding to abandon its result.
@@ -183,6 +184,9 @@ Parent traceability:
 
 Verification required:
 - <commands/tools/checks>
+- Focused issue-specific tests plus directly relevant existing suites; run broad unrelated suites only when the touched surface justifies them, they are cheap, or the issue explicitly asks for them.
+- `git diff --check <integration-branch>...HEAD`.
+- Final-newline check for changed text files such as `.cs`, `.md`, `.asmdef`, `.json`, `.yaml`, and `.yml`.
 
 Tooling expectations:
 - Verify available tracker, IDE, editor, and validation tools before editing.
@@ -242,7 +246,7 @@ When the Executor reports back:
 - Confirm the Executor discovered available tools and reported any fallback.
 - Inspect verification evidence, not just claims.
 - Check issue tracker comments/status.
-- Run an independent Orchestrator spot-check proportional to risk, such as `git diff --check`, targeted diagnostics, focused tests, or forbidden dependency scans. The Orchestrator does not need to rerun every expensive Executor check when the evidence is credible, but must verify enough to make acceptance defensible.
+- Run an independent Orchestrator spot-check proportional to risk, such as `git diff --check`, a final-newline check for changed text files, targeted diagnostics, focused tests, or forbidden dependency scans. The Orchestrator does not need to rerun every expensive Executor check when the evidence is credible, but must verify enough to make acceptance defensible.
 - Rerun repository status after review checks and identify unrelated generated files before closure.
 - Identify residual risks and missing tests.
 - Prefer requesting a narrow Executor follow-up for issues inside the Executor's implementation, especially when the same sub-agent can fix them with its local context. Make a direct Orchestrator adjustment only when it is clearly a small review/closure edit and report it.
