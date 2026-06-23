@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-21-implemented-next-uiw-22
+status: uiw-21-complete-next-uiw-22
 ---
 
 # Project Context for AI Agents
@@ -39,8 +39,8 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `UIW-18` completed the parent reconciliation audit and confirmed the original `UIW-1` goal is not yet fully satisfied; follow-up child issues `UIW-19` through `UIW-25` were created from the audit gaps.
 - `UIW-19` completed the top-right coin HUD and coin FX target integration follow-up.
 - `UIW-20` completed the down-right settings launcher follow-up.
-- `UIW-21` implementation branch ports the down-left shop launcher and shop/modal interaction follow-up; it still requires orchestrator review, merge, and Linear closure.
-- Next ordered child issue after `UIW-21` acceptance: `UIW-22` - `15 - Port object indicator dynamic UI layer and character reward source integration`.
+- `UIW-21` completed the down-left shop launcher and shop/modal interaction follow-up.
+- Next ordered child issue: `UIW-22` - `15 - Port object indicator dynamic UI layer and character reward source integration`.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
@@ -207,6 +207,7 @@ UIW-21 down-left shop launcher implementation snapshot on 2026-06-23:
 - `Assets/Scenes/SampleScene.unity` wires `UiDownLeftView.prefab` into `UiTopLeftDemoInstaller` and opens it on start through `WindowSystem.Show`.
 - Focused PlayMode coverage includes `UiDownLeftPresenterTests.Presenter_BindsShopButtonAndRefreshesLocalizedLabelOnlyWhileShown`, `UiShopPresenterTests.Presenter_ClickingItemRequestsModalAndUpdatesVisibilityThroughPorts`, and `UiDownLeftWindowLifecycleTests.LauncherOpensShop_HidesWhileShopVisible_AndItemClickShowsModalOncePerCycle`; existing SampleScene lifecycle test cleanup now includes `UiDownLeftWindow` because it auto-starts with SampleScene.
 - Verification on the implementation branch passed: Rider formatting/targeted diagnostics/build, Unity compile/Console, Unity prefab info/hierarchy, `SampleScene` validation, focused UIW-21 PlayMode tests 3/3, `UiWindowsMvp.Tests.PlayMode` 28/28, `ProjectContext.Player.Tests.PlayMode` 15/15, `git diff --check`, and forbidden dependency/lifecycle scans. No new UniRx, Zenject, OpenUI runtime, or `SetActive(` lifecycle usage was introduced, and DOTween did not leak into `Assets/Scripts/ProjectContext`.
+- `UIW-21` closure completed on 2026-06-23: implementation commit `ae588ee` was merged to `main` with merge commit `6ed3b76`, pushed to `origin/main`, and Linear was moved to `Done`.
 - This advances the `UIW-1` target for OpenUI down-left shop navigation and shop/modal behavior only. `UIW-22` through `UIW-25` remain parent gaps outside this issue's scope.
 
 UIW-20 sub-agent Executor flow trial on 2026-06-22:
@@ -550,7 +551,7 @@ Current child issue sequence:
 - `UIW-18` - `11 - Audit UIW-1 completion against original OpenUI migration scope` - Done
 - `UIW-19` - `12 - Port UiTopRight coin HUD and coin FX target integration` - Done
 - `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation` - Done
-- `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction` - Implemented on branch, review pending
+- `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction` - Done
 - `UIW-22` - `15 - Port object indicator dynamic UI layer and character reward source integration` - Todo
 - `UIW-23` - `16 - Port UiTopCenter time and press-hold hint example` - Todo
 - `UIW-24` - `17 - Visual/layout parity and UIDevelopScene preview coverage audit` - Todo

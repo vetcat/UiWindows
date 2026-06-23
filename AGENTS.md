@@ -192,7 +192,7 @@ Current child issue sequence:
 - `UIW-18` - `11 - Audit UIW-1 completion against original OpenUI migration scope` - Done
 - `UIW-19` - `12 - Port UiTopRight coin HUD and coin FX target integration` - Done
 - `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation` - Done
-- `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction` - Todo
+- `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction` - Done
 - `UIW-22` - `15 - Port object indicator dynamic UI layer and character reward source integration` - Todo
 - `UIW-23` - `16 - Port UiTopCenter time and press-hold hint example` - Todo
 - `UIW-24` - `17 - Visual/layout parity and UIDevelopScene preview coverage audit` - Todo
