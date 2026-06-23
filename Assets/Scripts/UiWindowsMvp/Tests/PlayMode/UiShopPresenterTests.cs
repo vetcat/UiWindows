@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using ProjectContext.Localization;
 using ProjectContext.Shop;
+using ProjectContext.UiRequests;
 using UiWindowsMvp.SampleSceneWindows;
 using UiWindowsMvp.UIAdapter;
 using UnityEngine;
@@ -115,6 +116,52 @@ namespace UiWindowsMvp.Tests.PlayMode
             }
         }
 
+        [Test]
+        public void Presenter_ClickingItemRequestsModalAndUpdatesVisibilityThroughPorts()
+        {
+            var viewObject = new GameObject("UiShop Test View", typeof(RectTransform), typeof(UiShopView));
+            var windowObject = new GameObject("UiShop Test Window", typeof(RectTransform), typeof(UiShopWindow));
+            using var shop = new ShopService();
+            using var localization = new LocalizationService(SystemLanguage.English);
+            using var visibility = new UiShopVisibilityState();
+            var modal = new TrackingUiModalCommands();
+            using var showScope = new WindowPresenterShowScope();
+
+            try
+            {
+                var view = BuildView(viewObject);
+                var window = windowObject.GetComponent<UiShopWindow>();
+                var presenter = new UiShopPresenter(shop, shop, localization, modal, visibility, _ => view);
+
+                presenter.Bind(window);
+                presenter.Initialize();
+
+                Assert.That(GetCurrentValue<bool>(visibility, "IsShopVisible"), Is.False);
+
+                presenter.OnShowBegin(showScope);
+
+                Assert.That(GetCurrentValue<bool>(visibility, "IsShopVisible"), Is.True);
+
+                view.ShopItems[1].ButtonItem.onClick.Invoke();
+
+                Assert.That(GetCurrentValue<ShopItemData>(shop, "SelectedItem").Type, Is.EqualTo(ShopItemType.Item_2));
+                Assert.That(modal.ShowInfoOkCalls, Is.EqualTo(1));
+                Assert.That(modal.LastCaption, Is.EqualTo("Choice of item"));
+                Assert.That(modal.LastDescription, Is.EqualTo("The player selected item Item name 2"));
+
+                presenter.OnHideBegin();
+                showScope.Dispose();
+                presenter.OnHideEnd();
+
+                Assert.That(GetCurrentValue<bool>(visibility, "IsShopVisible"), Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(windowObject);
+                Object.DestroyImmediate(viewObject);
+            }
+        }
+
         internal static UiShopView BuildView(GameObject viewObject)
         {
             var view = viewObject.GetComponent<UiShopView>();
@@ -159,6 +206,44 @@ namespace UiWindowsMvp.Tests.PlayMode
             {
                 SelectItemCalls++;
                 inner.SelectItem(type);
+            }
+        }
+
+        private sealed class TrackingUiModalCommands : IUiModalCommands
+        {
+            public int ShowInfoOkCalls { get; private set; }
+            public string LastCaption { get; private set; }
+            public string LastDescription { get; private set; }
+
+            public void ShowInfoOk(string caption, string description, System.Action handlerClose = null)
+            {
+                ShowInfoOkCalls++;
+                LastCaption = caption;
+                LastDescription = description;
+            }
+
+            public void ShowInfoOkCancel(
+                string caption,
+                string description,
+                System.Action handlerOk = null,
+                System.Action handlerCancel = null)
+            {
+            }
+
+            public void ShowWait(string caption = "")
+            {
+            }
+
+            public void HideWait()
+            {
+            }
+
+            public void CompleteCurrent(UiModalResult result)
+            {
+            }
+
+            public void Clear()
+            {
             }
         }
     }

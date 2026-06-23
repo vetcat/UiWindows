@@ -16,6 +16,8 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         [SerializeField] private UiDownRightView uiDownRightViewPrefab;
 
+        [SerializeField] private UiDownLeftView uiDownLeftViewPrefab;
+
         [SerializeField] private UiSettingsView uiSettingsViewPrefab;
 
         [SerializeField] private UiShopView uiShopViewPrefab;
@@ -32,6 +34,8 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         [SerializeField] private bool showDownRightOnStart = true;
 
+        [SerializeField] private bool showDownLeftOnStart = true;
+
         [SerializeField] private bool showSettingsOnStart;
 
         [SerializeField] private bool showShopOnStart;
@@ -46,6 +50,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             var modalService = new UiModalService();
             var feedbackService = new UiFeedbackService();
             var fxTargetRegistry = new UiFxTargetRegistry();
+            var shopVisibilityState = new UiShopVisibilityState();
             var playerService = new PlayerService(playerSettings, feedbackService);
             var gameSettingsService = new GameSettingsService();
             var localizationService = new LocalizationService();
@@ -73,6 +78,13 @@ namespace UiWindowsMvp.SampleSceneWindows
                 new UiShopPresenterFactory(
                     shopService,
                     shopService,
+                    localizationService,
+                    modalService,
+                    shopVisibilityState);
+            var shopLauncher = new UiShopDemoLauncher(uiShopViewPrefab, shopPresenterFactory);
+            var downLeftPresenterFactory =
+                new UiDownLeftPresenterFactory(
+                    shopLauncher,
                     localizationService);
             var modalPresenterFactory = new UiModalPresenterFactory(modalService, modalService);
             var hintsPresenterFactory = new UiHintsPresenterFactory(feedbackService);
@@ -99,11 +111,15 @@ namespace UiWindowsMvp.SampleSceneWindows
             registry.Register<IUiFeedbackService>(feedbackService);
             registry.Register<IUiFxTargetResolver>(fxTargetRegistry);
             registry.Register<IUiFxTargetRegistry>(fxTargetRegistry);
+            registry.Register<IUiShopVisibilityReadModel>(shopVisibilityState);
+            registry.Register<IUiShopVisibilityCommands>(shopVisibilityState);
             registry.Register(fxTargetRegistry);
+            registry.Register(shopVisibilityState);
             registry.Register(presenterFactory);
             registry.Register(topRightPresenterFactory);
             registry.Register(settingsPresenterFactory);
             registry.Register(downRightPresenterFactory);
+            registry.Register(downLeftPresenterFactory);
             registry.Register(shopPresenterFactory);
             registry.Register(modalPresenterFactory);
             registry.Register(hintsPresenterFactory);
@@ -112,7 +128,9 @@ namespace UiWindowsMvp.SampleSceneWindows
             registry.Register(new UiTopRightDemoLauncher(uiTopRightViewPrefab, topRightPresenterFactory));
             registry.Register(settingsLauncher);
             registry.Register(new UiDownRightDemoLauncher(uiDownRightViewPrefab, downRightPresenterFactory));
-            registry.Register(new UiShopDemoLauncher(uiShopViewPrefab, shopPresenterFactory));
+            registry.Register(shopLauncher);
+            registry.Register(
+                new UiDownLeftDemoLauncher(uiDownLeftViewPrefab, downLeftPresenterFactory, shopVisibilityState));
             registry.Register(new UiModalDemoLauncher(uiModalViewPrefab, modalPresenterFactory, modalService));
             registry.Register(new UiHintsDemoLauncher(uiHintsViewPrefab, hintsPresenterFactory));
             registry.Register(new UiFxDemoLauncher(uiFxViewPrefab, fxPresenterFactory));
@@ -140,6 +158,12 @@ namespace UiWindowsMvp.SampleSceneWindows
             if (showDownRightOnStart)
             {
                 root.Services.Resolve<UiDownRightDemoLauncher>().Show();
+            }
+
+            root.Services.Resolve<UiDownLeftDemoLauncher>().Start();
+            if (showDownLeftOnStart)
+            {
+                root.Services.Resolve<UiDownLeftDemoLauncher>().Show();
             }
 
             root.Services.Resolve<UiModalDemoLauncher>().Start();

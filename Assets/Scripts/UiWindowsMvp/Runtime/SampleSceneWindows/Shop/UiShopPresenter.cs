@@ -1,6 +1,7 @@
 using System;
 using ProjectContext.Localization;
 using ProjectContext.Shop;
+using ProjectContext.UiRequests;
 using R3;
 using UiWindowsMvp.UIAdapter;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace UiWindowsMvp.SampleSceneWindows
         private readonly IShopReadModel readModel;
         private readonly IShopCommands commands;
         private readonly ILocalizationReadModel localizationReadModel;
+        private readonly IUiModalCommands modalCommands;
+        private readonly IUiShopVisibilityCommands visibilityCommands;
         private readonly Func<UiShopWindow, UiShopView> viewResolver;
 
         private UiShopWindow window;
@@ -27,7 +30,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             IShopReadModel readModel,
             IShopCommands commands,
             ILocalizationReadModel localizationReadModel)
-            : this(readModel, commands, localizationReadModel, ResolveView)
+            : this(readModel, commands, localizationReadModel, null, null, ResolveView)
         {
         }
 
@@ -36,11 +39,24 @@ namespace UiWindowsMvp.SampleSceneWindows
             IShopCommands commands,
             ILocalizationReadModel localizationReadModel,
             Func<UiShopWindow, UiShopView> viewResolver)
+            : this(readModel, commands, localizationReadModel, null, null, viewResolver)
+        {
+        }
+
+        internal UiShopPresenter(
+            IShopReadModel readModel,
+            IShopCommands commands,
+            ILocalizationReadModel localizationReadModel,
+            IUiModalCommands modalCommands,
+            IUiShopVisibilityCommands visibilityCommands,
+            Func<UiShopWindow, UiShopView> viewResolver)
         {
             this.readModel = readModel ?? throw new ArgumentNullException(nameof(readModel));
             this.commands = commands ?? throw new ArgumentNullException(nameof(commands));
             this.localizationReadModel =
                 localizationReadModel ?? throw new ArgumentNullException(nameof(localizationReadModel));
+            this.modalCommands = modalCommands;
+            this.visibilityCommands = visibilityCommands;
             this.viewResolver = viewResolver ?? throw new ArgumentNullException(nameof(viewResolver));
         }
 
@@ -67,6 +83,7 @@ namespace UiWindowsMvp.SampleSceneWindows
 
             view = ResolveRequiredView();
             view.EnsureLayout();
+            visibilityCommands?.SetShopVisible(true);
 
             groupBindings = new DisposableGroup();
             itemBindings = new DisposableGroup();
@@ -98,6 +115,7 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         public void OnHideEnd()
         {
+            visibilityCommands?.SetShopVisible(false);
         }
 
         public void Dispose()
@@ -108,6 +126,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             }
 
             disposed = true;
+            visibilityCommands?.SetShopVisible(false);
             groupBindings?.Dispose();
             itemBindings?.Dispose();
             view = null;
@@ -150,7 +169,7 @@ namespace UiWindowsMvp.SampleSceneWindows
                 SetText(itemView.TextName, Translate(itemData.Type.ToString()));
                 SetText(itemView.TextAmount, itemData.Amount.ToString());
 
-                UnityAction action = () => commands.SelectItem(itemView.Type);
+                UnityAction action = () => HandleItemClicked(itemView.Type);
                 itemView.ButtonItem.onClick.AddListener(action);
                 itemBindings?.Add(new DisposableAction(() => itemView.ButtonItem.onClick.RemoveListener(action)));
             }
@@ -213,6 +232,25 @@ namespace UiWindowsMvp.SampleSceneWindows
             {
                 itemViews[i].SetSelected(selectedItem != null && itemViews[i].Type == selectedItem.Type);
             }
+        }
+
+        private void HandleItemClicked(ShopItemType type)
+        {
+            commands.SelectItem(type);
+            RequestItemModal(type);
+        }
+
+        private void RequestItemModal(ShopItemType type)
+        {
+            if (modalCommands == null)
+            {
+                return;
+            }
+
+            var itemName = Translate(type.ToString());
+            modalCommands.ShowInfoOk(
+                Translate("ChoiceItemCaption"),
+                Translate("ChoiceItemDescription", itemName));
         }
 
         private void RefreshLocalizedText()
