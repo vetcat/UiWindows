@@ -54,7 +54,11 @@ After the Orchestrator resumes you, re-check the editor/tool state before contin
 
 Run the issue's requested checks. If a check cannot run, explain exactly why and what evidence remains.
 
+Keep test scope proportional. Run issue-specific focused tests and directly relevant existing suites first. Run broad unrelated suites only when the task touched shared infrastructure, they are cheap enough for the current flow, or the handoff explicitly requires them; otherwise report why they were not needed.
+
 After running IDE/editor tooling, rerun repository status and separate unrelated generated files from task changes before committing or reporting.
+
+Before final report, run text hygiene checks for changed text files. At minimum, changed `.cs`, `.md`, `.asmdef`, `.json`, `.yaml`, and `.yml` files should end with a final newline, and `git diff --check <integration-branch>...HEAD` should pass.
 
 For project-owned skill changes, validate skill frontmatter with a repository-provided validation wrapper when present or with the available system validator. If a cached validator cannot execute directly, run it through its interpreter. If the validator or dependency is unavailable, use and report a documented manual frontmatter fallback.
 
@@ -63,6 +67,7 @@ Verification evidence should include:
 - commands or tools run;
 - pass/fail result;
 - relevant errors or warnings;
+- text hygiene result, including final-newline and `git diff --check` checks;
 - manual checks when automation is unavailable;
 - any remaining risk.
 

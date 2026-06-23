@@ -53,6 +53,12 @@ If an Executor is blocked by tooling that requires visible human action, such as
 
 For project-owned skill validation, prefer a repository-provided validation wrapper when present, then an available system validator. If a cached validator script is not executable, invoke it through its interpreter instead of changing system cache permissions. If validator dependencies are missing, use and report a documented manual frontmatter check rather than silently skipping validation.
 
+## Verification Hygiene
+
+Keep verification proportional to the issue's risk and touched surface. Executor handoffs should request focused tests plus directly relevant existing suites. Broad unrelated suites are useful only when the task touched shared infrastructure, the suite is cheap, or the Executor explicitly justifies the extra coverage.
+
+Before an Executor final report, changed text files such as `.cs`, `.md`, `.asmdef`, `.json`, `.yaml`, and `.yml` should end with a final newline, and `git diff --check <integration-branch>...HEAD` should pass. Treat repeated missing-final-newline findings as review hygiene defects that should normally be fixed by the same Executor before acceptance.
+
 ## Mode Routing
 
 - For orchestration, read `references/orchestrator.md`.

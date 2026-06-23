@@ -220,6 +220,9 @@ Default task flow after the successful `UIW-20` trial:
 - The Orchestrator should avoid full context forks unless the task truly needs the whole thread, but must still give the Executor enough context for safe implementation through Linear or a full direct prompt.
 - If the Executor reports `BLOCKED_HUMAN_ACTION_REQUIRED`, for example Unity MCP is blocked by a Unity Editor domain reload or modal confirmation, the Orchestrator must surface the required action in this human-facing chat, wait for confirmation, then resume the same Executor when possible.
 - The Orchestrator must independently review the Executor result and request follow-up from the same sub-agent when the fix is inside that implementation context.
+- If an Executor `wait_agent` call times out on a Unity-heavy task, the Orchestrator should first use read-only status checks such as `git status --short --branch` and then wait again or request a status update; do not assume failure from one timeout.
+- Executor handoffs must require final text hygiene before reporting: changed `.cs`, `.md`, and other text files should end with a final newline, and `git diff --check main...HEAD` should pass.
+- Verification scope in Executor handoffs should be focused: require issue-specific tests plus directly relevant existing suites; broad unrelated suites should be run only when touched, cheap, or specifically justified.
 - The Orchestrator closes the sub-agent after accepting or abandoning its result.
 
 ### Orchestrator
@@ -239,7 +242,7 @@ The Orchestrator should:
 - Require the Executor to create a dedicated branch from latest `main` using `feature/<issue-slug>`.
 - Require the Executor to commit completed task changes before final report unless explicitly blocked.
 - After Executor completion, review committed git diff, acceptance criteria, verification evidence, Linear comments, branch/upstream hygiene, and final repository status.
-- Run an independent Orchestrator spot-check proportional to risk, for example `git diff --check`, targeted diagnostics, focused tests, or forbidden dependency scans.
+- Run an independent Orchestrator spot-check proportional to risk, for example `git diff --check`, final-newline checks for changed text files, targeted diagnostics, focused tests, or forbidden dependency scans.
 - Only recommend merging/closing when acceptance criteria and verification are satisfied.
 - If all child issues under a parent are `Done` or `Canceled`, run the parent reconciliation review before saying the parent is complete. If the implemented result is narrower than the original parent goal, either create/follow up missing tasks or ask Vitaly for explicit reduced-scope acceptance.
 - After acceptance and when Vitaly asks to complete closure, add a focused `Closure Handoff` comment to Linear, then launch a Closure Executor sub-agent to merge the accepted task branch into `main`, push `main`, update Linear status/final notes, and report final status. The Orchestrator should perform closure directly only as a reported fallback.
@@ -259,6 +262,8 @@ The Executor should:
 - If the issue is a child of a parent plan, report which parent acceptance target was advanced and which known parent gaps remain outside this issue's scope.
 - Make code/config/docs changes needed for that issue.
 - Run the issue's verification steps.
+- Keep verification proportional to the issue: run focused tests and directly relevant existing suites, and call out any broader suite as intentional.
+- Before final report, verify changed text files end with a final newline and `git diff --check main...HEAD` passes.
 - Update Linear with implementation notes and verification results.
 - Commit completed task changes before final report unless blocked or explicitly told not to commit.
 - Return changed files, branch name, commits, verification results, final repository status, and any unresolved risks.
