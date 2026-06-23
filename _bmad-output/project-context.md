@@ -41,10 +41,12 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `UIW-20` completed the down-right settings launcher follow-up.
 - `UIW-21` completed the down-left shop launcher and shop/modal interaction follow-up.
 - Next ordered child issue: `UIW-22` - `15 - Port object indicator dynamic UI layer and character reward source integration`.
+- Linear child issue statuses are the source of truth for task progress. Local files such as `AGENTS.md` and this project context may record issue order, durable facts, and recent snapshots, but future agents must query Linear for current child status when Linear is available.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
 - No OpenUI infrastructure has been imported into this project.
 - Process correction from the `UIW-1` readiness review on 2026-06-21: closed child issues do not prove that a parent/umbrella issue is complete. Broad parent goals such as "most OpenUI examples/layouts" require a parent reconciliation review and traceability matrix before parent closure. The `issue-task-flow` skill, `AGENTS.md`, and this context now require that gate for future parent plans.
+- Process correction from the `UIW-21` closure review on 2026-06-23: task progress should not be maintained as a duplicate status ledger in `AGENTS.md` or project context. After mechanical closure succeeds, the Orchestrator must perform a post-closure documentation drift check and make a small context-only commit if local docs still contain stale transient task state.
 - `.ai/mcp/mcp.json` is currently empty.
 - Working tree was clean after the repository investigation.
 
@@ -526,14 +528,15 @@ Future AI chat workflow:
 2. Read this `project-context.md`.
 3. Open Linear issue `UIW-1`.
 4. Review child issues ordered by numeric prefix.
-5. Pick the first child issue that is not `Done` or `Canceled`, unless Vitaly explicitly chooses another task.
+5. Read current child issue statuses from Linear and pick the first child issue that is not `Done` or `Canceled`, unless Vitaly explicitly chooses another task.
 6. Verify available Linear, Rider, Unity, and validation tooling through actual session tools/resources; report unavailable or timed-out tooling explicitly.
 7. Start from the latest `main`, then create a dedicated branch for that Linear issue.
 8. Use `feature/<issue-slug>` for Executor task branches. When Linear provides a generated branch name such as `owner/uiw-2-task-title`, preserve the generated issue slug but replace the leading owner namespace with `feature/`, for example `feature/uiw-2-task-title`. If no generated slug is available, use `feature/<issue-id>-<normalized-task-title>`.
 9. Work only on that issue's scope, verify its acceptance criteria, rerun git status after editor/tool checks, then update Linear status and notes.
-10. After the task is accepted/closed, merge the task branch back into `main`, push `main`, verify local `main` is not still ahead of `origin/main`, and update any relevant parent-plan next-task marker.
+10. After the task is accepted/closed, merge the task branch back into `main`, push `main`, verify local `main` is not still ahead of `origin/main`, then run a post-closure documentation drift check against `AGENTS.md`, this project context, and relevant docs.
+11. If local docs contain stale transient status for the closed issue, make and push a small context-only commit. Do not treat local status text as authoritative over Linear.
 
-Current child issue sequence:
+Child issue order reference; query Linear for current status:
 
 - `UIW-12` - `00 - Establish UI.Windows fork and pinned UPM dependency workflow`
 - `UIW-2` - `01 - Integrate UI.Windows-submodule and resolve Unity compatibility`
@@ -541,21 +544,21 @@ Current child issue sequence:
 - `UIW-13` - `03 - Integrate R3 reactive foundation for MVP`
 - `UIW-4` - `03x - Canceled: custom reactive primitives superseded by R3`
 - `UIW-5` - `04 - Implement MVP presenter lifecycle adapter for UI.Windows with R3`
-- `UIW-6` - `05 - Port Player model/service from OpenUI with R3` - Done
-- `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3` - Done
-- `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows` - Done
-- `UIW-9` - `08 - Port settings and localization slice with R3` - Done
-- `UIW-10` - `09 - Port shop and collection pooling slice with R3` - Done
-- `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration` - Done
-- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs` - Done
-- `UIW-18` - `11 - Audit UIW-1 completion against original OpenUI migration scope` - Done
-- `UIW-19` - `12 - Port UiTopRight coin HUD and coin FX target integration` - Done
-- `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation` - Done
-- `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction` - Done
-- `UIW-22` - `15 - Port object indicator dynamic UI layer and character reward source integration` - Todo
-- `UIW-23` - `16 - Port UiTopCenter time and press-hold hint example` - Todo
-- `UIW-24` - `17 - Visual/layout parity and UIDevelopScene preview coverage audit` - Todo
-- `UIW-25` - `18 - Integrated SampleScene acceptance workflow and final UIW-1 reconciliation` - Todo
+- `UIW-6` - `05 - Port Player model/service from OpenUI with R3`
+- `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3`
+- `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows`
+- `UIW-9` - `08 - Port settings and localization slice with R3`
+- `UIW-10` - `09 - Port shop and collection pooling slice with R3`
+- `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration`
+- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs`
+- `UIW-18` - `11 - Audit UIW-1 completion against original OpenUI migration scope`
+- `UIW-19` - `12 - Port UiTopRight coin HUD and coin FX target integration`
+- `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation`
+- `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction`
+- `UIW-22` - `15 - Port object indicator dynamic UI layer and character reward source integration`
+- `UIW-23` - `16 - Port UiTopCenter time and press-hold hint example`
+- `UIW-24` - `17 - Visual/layout parity and UIDevelopScene preview coverage audit`
+- `UIW-25` - `18 - Integrated SampleScene acceptance workflow and final UIW-1 reconciliation`
 
 Parent/umbrella issue closure rule:
 
@@ -584,6 +587,7 @@ Orchestrator mode:
 - If review finds implementation issues, prefer sending a narrow follow-up to the same sub-agent when its context is useful.
 - If all child issues under a parent are closed, run the parent reconciliation review before saying the parent is complete.
 - After acceptance and when Vitaly asks to complete closure, add a focused `Closure Handoff` comment to Linear, then launch a Closure Executor sub-agent to merge the accepted task branch into `main`, push `main`, verify `ahead origin/main` is clear, and update Linear/parent-plan notes. Perform closure directly only as a reported fallback.
+- After closure succeeds, run the post-closure documentation drift check before the final human report. If `AGENTS.md`, this context file, or relevant docs still contain stale transient status for the closed issue, update only that context, commit/push it on `main`, and report the commit.
 
 Executor mode:
 
@@ -593,6 +597,7 @@ Executor mode:
 - Start from latest `main`, create a dedicated `feature/<issue-slug>` branch, and derive the issue slug from the Linear-generated branch name when available by replacing its leading owner namespace with `feature/`.
 - Do not leave the task branch misleadingly tracking `origin/main`; unset upstream or push/set upstream to the matching remote feature branch.
 - Stay within the issue scope.
+- Do not update `AGENTS.md` or other local rules docs merely to record task progress; Linear holds progress state. If a local context update is required, record durable facts and avoid transient language such as `review pending`, `implemented on branch`, or `requires closure`.
 - If the issue is a child of a parent plan, report which parent acceptance target was advanced and which known parent gaps remain outside this issue's scope.
 - Run verification from the issue and project context, including Rider MCP for changed C# files when available and Unity MCP for Unity editor/Console/test state.
 - Report unavailable, timed-out, or skipped MCP tooling explicitly.
@@ -606,6 +611,7 @@ Closure Executor mode:
 - Use only when the Orchestrator has accepted implementation work and provided a `Closure Handoff`.
 - Read the latest Linear comment titled `Closure Handoff`; if it is missing, ambiguous, or inaccessible, stop and report instead of guessing.
 - Perform only the authorized mechanical closure actions: merge accepted branch/commit into the named integration branch, push the integration branch, update Linear final note/status, and update parent/plan notes only when explicitly authorized.
+- Do not perform post-closure documentation drift review or local context edits. That belongs to the Orchestrator after closure.
 - Do not review acceptance criteria, edit files manually, resolve merge conflicts, run broad implementation verification, or close parent/umbrella issues without explicit parent reconciliation authorization.
 - Stop and report on unexpected dirty working tree, accepted branch/commit mismatch, divergent integration branch, merge conflict, failed push, missing tracker access, or tracker update failure.
 - Return merge result, pushed head, Linear updates, final `git status --short --branch`, and blockers.

@@ -10,10 +10,11 @@ Use Orchestrator mode to coordinate issue work without doing the implementation 
 4. Open the parent task plan or tracker query named by the project.
 5. Identify the next issue by project ordering rules.
 6. If the project uses ordered titles or numeric prefixes, sort by that explicit order instead of tracker API return order.
-7. Verify blockers, status, labels, comments, and acceptance criteria.
-8. Read relevant comments on completed blockers, predecessor tasks, or setup tasks when they define workflow or constraints for the selected issue.
-9. Map the selected child issue to the parent acceptance target it advances, and note parent targets that remain open or intentionally deferred.
-10. Confirm the branch naming convention and integration branch. For Executor work, default to `feature/<issue-slug>` unless local project instructions say otherwise.
+7. Read current issue status from the tracker when available. Treat local docs as ordering/context snapshots, not as the authoritative progress ledger.
+8. Verify blockers, status, labels, comments, and acceptance criteria.
+9. Read relevant comments on completed blockers, predecessor tasks, or setup tasks when they define workflow or constraints for the selected issue.
+10. Map the selected child issue to the parent acceptance target it advances, and note parent targets that remain open or intentionally deferred.
+11. Confirm the branch naming convention and integration branch. For Executor work, default to `feature/<issue-slug>` unless local project instructions say otherwise.
 
 If the next task is unclear, report the ambiguity and ask for a choice instead of guessing.
 
@@ -80,7 +81,9 @@ If the original Executor cannot be resumed, launch a replacement Executor with t
 
 After the Orchestrator has reviewed and accepted an implementation result, delegate mechanical closure to a Closure Executor sub-agent when sub-agent tools are available. This keeps the human-facing chat focused on decisions and review while agents perform routine repository/tracker operations.
 
-The Orchestrator must make the acceptance decision before closure delegation. The Closure Executor does not review the implementation, reinterpret acceptance criteria, edit files, or resolve merge conflicts.
+The Orchestrator must make the acceptance decision before closure delegation. The Closure Executor does not review the implementation, reinterpret acceptance criteria, edit files, resolve merge conflicts, or perform local documentation reconciliation.
+
+Post-closure documentation drift is an Orchestrator follow-up after the Closure Executor succeeds. Keep the closure handoff mechanical and do not include local file edits for documentation drift.
 
 Write a Linear comment titled `Closure Handoff` before launching the Closure Executor:
 
@@ -134,6 +137,7 @@ If Linear is unavailable, the issue cannot be opened, or that handoff comment is
 Hard rules:
 - Perform only the authorized closure actions.
 - Do not edit files manually.
+- Do not perform local documentation drift review.
 - Do not resolve merge conflicts.
 - Stop on unexpected dirty status, accepted branch/commit mismatch, failed merge, failed push, or tracker update failure.
 - Final report must include merge result, push result, Linear updates, final repository status, and blockers.
@@ -200,6 +204,10 @@ Issue tracker updates:
 - Add implementation notes and verification results.
 - Do not close the issue unless explicitly asked.
 
+Local documentation:
+- Do not update `AGENTS.md` or other rules docs merely to record task progress or mirror tracker status. The tracker is the progress source of truth.
+- If implementation changes durable project facts, update canonical context/docs with stable facts only and avoid transient phrases such as `review pending`, `implemented on branch`, or `requires closure`.
+
 Final response must include:
 - Branch name
 - Commits
@@ -260,5 +268,7 @@ Only after acceptance criteria and verification are satisfied:
 3. Write a `Closure Handoff` Linear comment with exact authorized actions and stop conditions.
 4. Launch a Closure Executor sub-agent when available, or report a fallback before doing closure directly.
 5. Review the Closure Executor report: merge result, pushed integration branch, Linear updates, parent/plan note updates, final repository status, and blockers.
-6. If closure succeeded, confirm the next task should start from the updated integration branch.
-7. If closure was blocked, surface the blocker and decide whether to fix, retry with the same Closure Executor, launch a replacement, or perform a direct fallback.
+6. If closure succeeded, run a post-closure documentation drift check before the final human report. Scan local instructions, project context, and relevant docs for the closed issue id/title and stale transient state such as `Todo`, `In Progress`, `review pending`, `implemented on branch`, `requires closure`, or obsolete next-task markers.
+7. If drift is found, make a small context-only commit on the integration branch, push it, and include the commit in the closure result. Do not treat local progress text as authoritative over tracker status.
+8. Confirm the next task should start from the updated integration branch.
+9. If closure was blocked, surface the blocker and decide whether to fix, retry with the same Closure Executor, launch a replacement, or perform a direct fallback.

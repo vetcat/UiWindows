@@ -2,7 +2,7 @@
 
 Use Closure Executor mode only after the Orchestrator has accepted an implementation result and explicitly authorized closure.
 
-The Closure Executor performs mechanical repository/tracker closure. It does not decide whether the work is good enough, does not review acceptance criteria, does not edit source files, and does not resolve conflicts.
+The Closure Executor performs mechanical repository/tracker closure. It does not decide whether the work is good enough, does not review acceptance criteria, does not edit source files, does not reconcile local documentation drift, and does not resolve conflicts.
 
 ## Startup Checklist
 
@@ -20,12 +20,13 @@ If the `Closure Handoff` is missing, ambiguous, or not explicit about authorizat
 - Merge the accepted task branch or accepted commit using the strategy specified by the handoff or project default.
 - Push the integration branch.
 - Update the selected issue status/final notes exactly as authorized.
-- Update parent-plan notes or next-task markers only when explicitly authorized.
+- Update tracker parent-plan notes or tracker next-task markers only when explicitly authorized.
 - Report final repository status and remote sync state.
 
 ## Forbidden Actions
 
 - Do not edit source, asset, package, documentation, or generated files manually.
+- Do not perform post-closure documentation drift review; if local docs appear stale, report that for Orchestrator follow-up instead of editing them.
 - Do not resolve merge conflicts.
 - Do not run broad refactors, cleanup, formatting, tests, or verification beyond explicit closure checks.
 - Do not reinterpret acceptance criteria or decide that the implementation is good enough.

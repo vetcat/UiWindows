@@ -40,6 +40,8 @@ After the Orchestrator resumes you, re-check the editor/tool state before contin
 - Keep changes minimal and aligned with existing project patterns.
 - Do not broaden scope to adjacent tasks.
 - When implementation changes the repository's factual baseline, update the canonical local context or project docs referenced by local instructions before finalizing. Examples include new dependencies, verified environment state, architecture decisions, workflow changes, or completed setup that makes earlier context stale.
+- Do not update `AGENTS.md`, rules docs, or project context merely to mirror tracker status or record transient task progress. The issue tracker is the progress source of truth when available.
+- If a local context update is required, record durable facts and avoid transient wording such as `review pending`, `implemented on branch`, or `requires closure`; closure facts should be reconciled by the Orchestrator's post-closure documentation drift check unless the task explicitly includes documentation work.
 - Use IDE diagnostics/build/refactor/format tools for changed code when available, and report any skipped or unavailable IDE tooling.
 - Use editor-specific tools for editor refresh/compile, tests, Console state, generated asset state, and live API checks when available.
 - For editor/tool prompts that require human action, use `BLOCKED_HUMAN_ACTION_REQUIRED` instead of silently skipping the check.

@@ -35,6 +35,14 @@ Treat local project instructions as authoritative over this generic skill.
 
 When a project uses ordered issue titles or numeric prefixes, sort issues by that explicit project ordering. Do not rely on tracker API return order unless the project says API order is authoritative.
 
+## Tracker Status Source
+
+When an issue tracker is available, treat the tracker issue status as the authoritative source for task progress. Local files such as `AGENTS.md`, project context, architecture notes, and sprint docs may provide ordering, durable facts, constraints, and snapshots, but they are not the live progress ledger unless the project explicitly says no tracker is available.
+
+Use local task lists for ordering and context only, then query the tracker for current status before selecting, closing, or reporting work. If local docs disagree with the tracker, report the discrepancy and prefer the tracker for workflow decisions.
+
+Do not update local rules or context files merely to mirror every issue status transition. Local documentation updates should capture durable changes: new architecture facts, new dependencies, new workflow rules, parent reconciliation results, or closure facts that future agents need.
+
 ## Parent And Epic Reconciliation
 
 Closing child issues is not proof that a parent plan, epic, or umbrella issue is complete. When working from a parent issue, preserve the parent outcome separately from each child's local scope.
@@ -42,6 +50,12 @@ Closing child issues is not proof that a parent plan, epic, or umbrella issue is
 Before preparing or closing child work, identify which parent acceptance target the child advances and which parent targets remain open or intentionally deferred. When the parent uses broad wording such as "most", "representative", "finalize", "complete", or "migration", require an explicit coverage list or traceability matrix that maps requested outcomes to implemented artifacts, verification evidence, and deferred gaps.
 
 When all known child issues are `Done`, `Canceled`, or otherwise inactive, do not mark or recommend the parent as complete by default. First run a parent reconciliation review against the original parent description, comments, local project context, and current repository state. If the implemented result is narrower than the original parent goal, report the mismatch and either create a follow-up/audit issue or ask for an explicit scope-change acceptance.
+
+## Post-Closure Documentation Drift
+
+After a Closure Executor or direct fallback closure reports success, the Orchestrator must run a post-closure documentation drift check before the final human-facing closure report. At minimum, scan local instructions, project context, and relevant task docs for the closed issue id/title and stale transient language such as `Todo`, `In Progress`, `review pending`, `implemented on branch`, `requires closure`, or obsolete "next task" markers.
+
+If drift is found, the Orchestrator should make a small context-only commit on the integration branch, push it, and report that commit separately from the implementation merge. Keep the Closure Executor mechanical; do not delegate local documentation drift review or reconciliation to Closure Executor.
 
 ## Capability Discovery
 
@@ -80,11 +94,12 @@ Prefer the project's configured issue tracker and branch naming conventions. If 
 - Implementation Executors do not merge or close tasks unless the user explicitly asks.
 - Closure Executors merge/push/update tracker only after Orchestrator acceptance and an explicit `Closure Handoff` authorizes the exact closure actions.
 - Orchestrators decide acceptance and authorize closure only after acceptance and verification are satisfied, and only when the user asks to complete closure.
+- After successful closure, Orchestrators complete the post-closure documentation drift check before declaring the task fully closed.
 
 ## Output Expectations
 
 Keep outputs operational:
 
-- Orchestrator outputs should include the chosen task, blocker status, relevant tool availability, delegation mode, handoff comments/prompts, sub-agent results, and review/closure criteria.
+- Orchestrator outputs should include the chosen task, blocker status, relevant tool availability, delegation mode, handoff comments/prompts, sub-agent results, review/closure criteria, and post-closure documentation drift result when closure was performed.
 - Executor outputs should include branch name, changed files, commits, tool availability/fallbacks, verification results, issue updates, and unresolved risks.
 - Closure Executor outputs should include accepted branch/commit, integration branch result, merge/push status, tracker updates, final repository status, and any blockers.
