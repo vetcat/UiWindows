@@ -231,8 +231,10 @@ UIW-20 sub-agent Executor flow trial on 2026-06-22:
 
 - The trial is accepted as the default future flow for issue work: keep one human-facing Orchestrator chat and launch a focused Executor sub-agent for one Linear issue when sub-agent tools are available.
 - The intended interaction model is: Vitaly talks to the Orchestrator; the Orchestrator starts and controls specialized agents; durable task communication lives in Linear handoff comments and final notes whenever Linear is available.
-- The purpose of the flow is to preserve the Orchestrator's context window for continued delegation, review, and human-facing decisions. It is not a token-saving rule for any role.
-- The separate Executor chat flow remains the fallback when sub-agent tools are unavailable, blocked, or explicitly requested.
+- The purpose of the flow is to preserve the Orchestrator's context window for continued delegation, review, retry/follow-up control, and human-facing decisions. It is not a token-saving rule for any role.
+- In this project, when Vitaly asks the Orchestrator to take the next issue, implement a specific issue, review/control an implementation, or close/finish a task, that is explicit authorization to use the delegated sub-agent workflow. Vitaly does not need to repeat the literal words "sub-agent" or "delegate" on every task.
+- The Orchestrator owns planning, handoff quality, review, acceptance decisions, retry/follow-up control, and final accountability. It should not spend its context window on low-level implementation, repository mechanics, or tracker closure while a suitable sub-agent path is available.
+- The separate Executor or Closure Executor chat flow remains the fallback when sub-agent tools are unavailable, blocked, unsuitable for required isolation, or explicitly requested.
 - The Orchestrator should write the full task-specific prompt into the selected Linear issue as the latest comment titled `Executor Handoff`.
 - The Orchestrator should launch the Executor sub-agent with a short bootstrap prompt containing project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment. The short prompt is only a pointer to the full task contract, not a reduced-context implementation brief.
 - If Linear is unavailable or the handoff comment cannot be created/read, do not use a link-only handoff; either pass the full prompt directly or stop and report the blocker.
@@ -244,7 +246,7 @@ UIW-20 sub-agent Executor flow trial on 2026-06-22:
 - Executors should commit task changes before final report unless explicitly blocked. Uncommitted changes are reviewable, but not closure-ready.
 - Task branches should not misleadingly track `origin/main`; unset upstream for local-only branches or track the matching remote feature branch after push.
 - Orchestrator acceptance still requires independent review: inspect committed diff, acceptance criteria, Linear notes, verification evidence, branch hygiene, final repository status, and run spot-checks proportional to risk.
-- After Orchestrator acceptance and explicit user request to complete closure, use a Closure Executor sub-agent for mechanical merge/push/Linear closure when sub-agent tools are available. The Orchestrator should write a `Closure Handoff` Linear comment with accepted branch/commits, exact authorized actions, final note/status, and stop conditions. The Closure Executor must not review, edit files, resolve conflicts, or decide acceptance; it stops on unexpected dirty state, branch/commit mismatch, merge conflict, failed push, or tracker failure.
+- After Orchestrator acceptance and user request to complete closure, use a Closure Executor sub-agent for mechanical merge/push/Linear closure when sub-agent tools are available. Requests such as "закрывай работу над таском" count as authorization for the Closure Executor workflow in this project. The Orchestrator should write a `Closure Handoff` Linear comment with accepted branch/commits, exact authorized actions, final note/status, and stop conditions. The Closure Executor must not review, edit files, resolve conflicts, or decide acceptance; it stops on unexpected dirty state, branch/commit mismatch, merge conflict, failed push, or tracker failure. Direct Orchestrator closure is a last-resort fallback only when no sub-agent or separate-chat Closure Executor path is available, or when Vitaly explicitly requests direct Orchestrator closure without agents.
 - After acceptance or abandonment, close the sub-agent so stale Executor context does not remain active.
 
 UI.Windows fork workflow established on 2026-06-07:
@@ -590,18 +592,18 @@ Orchestrator mode:
 
 - Use when Vitaly asks a chat to coordinate, delegate, prepare prompts, review Executor sub-agent/fallback chat work, complete closure through a Closure Executor, or decide the next task.
 - Vitaly should interact with the Orchestrator; the Orchestrator starts and controls implementation and closure agents, with durable handoffs stored in Linear whenever available.
-- Do not implement the selected task directly unless Vitaly explicitly asks.
+- Do not implement the selected task directly unless Vitaly explicitly asks the Orchestrator to do the implementation personally without an Executor.
 - Read `AGENTS.md`, this context file, `UIW-1`, and the relevant child issue.
 - Pick the first child issue under `UIW-1` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
 - Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
 - Verify available multi-agent, Linear, Rider, Unity, and validation tools before preparing or reviewing task work.
 - Verify blockers before creating implementation prompts.
-- Add a focused `Executor Handoff` comment to the Linear issue, then launch one short-prompt Executor sub-agent for one Linear issue when sub-agent tools are available; otherwise create a separate-chat Executor prompt.
+- Add a focused `Executor Handoff` comment to the Linear issue, then launch one short-prompt Executor sub-agent for one Linear issue when sub-agent tools are available; otherwise create a separate-chat Executor prompt. Direct Orchestrator implementation is a last-resort fallback only when no Executor path is available or Vitaly explicitly asks for direct Orchestrator work.
 - Do not edit the shared task branch while a sub-agent Executor is actively implementing.
 - After Executor completion, review committed diff, acceptance criteria, verification evidence, Linear notes, branch name/upstream hygiene, final repository status, and run independent spot-checks proportional to risk.
 - If review finds implementation issues, prefer sending a narrow follow-up to the same sub-agent when its context is useful.
 - If all child issues under a parent are closed, run the parent reconciliation review before saying the parent is complete.
-- After acceptance and when Vitaly asks to complete closure, add a focused `Closure Handoff` comment to Linear, then launch a Closure Executor sub-agent to merge the accepted task branch into `main`, push `main`, verify `ahead origin/main` is clear, and update Linear/parent-plan notes. Perform closure directly only as a reported fallback.
+- After acceptance and when Vitaly asks to complete closure, add a focused `Closure Handoff` comment to Linear, then launch a Closure Executor sub-agent to merge the accepted task branch into `main`, push `main`, verify `ahead origin/main` is clear, and update Linear/parent-plan notes. If sub-agent tools are unavailable, use a separate-chat Closure Executor fallback when practical. Perform closure directly only when no Closure Executor path is available or Vitaly explicitly asks for direct Orchestrator closure without agents, and report that fallback before doing mechanical work.
 - After closure succeeds, run the post-closure documentation drift check before the final human report. If `AGENTS.md`, this context file, or relevant docs still contain stale transient status for the closed issue, update only that context, commit/push it on `main`, and report the commit.
 
 Executor mode:

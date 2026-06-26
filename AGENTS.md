@@ -209,10 +209,13 @@ Default task flow after the successful `UIW-20` trial:
 
 - Keep one human-facing chat in Orchestrator mode.
 - The intended interaction model is: Vitaly talks to the Orchestrator; the Orchestrator starts and controls specialized agents; durable task communication lives in Linear handoff comments and final notes whenever Linear is available.
-- The purpose of this flow is to preserve the Orchestrator's context window for continued delegation, review, and human-facing decisions. It is not a token-saving rule for any role.
-- When sub-agent tools are available, the Orchestrator should launch one Executor sub-agent for one Linear issue instead of asking Vitaly to open a separate Executor chat.
-- After accepting an implementation result, the Orchestrator should launch a Closure Executor sub-agent for mechanical merge/push/Linear closure when sub-agent tools are available, instead of spending Orchestrator context on routine closure commands.
-- A separate Executor chat remains the fallback when sub-agent tools are unavailable, blocked, or explicitly requested.
+- The purpose of this flow is to preserve the Orchestrator's context window for continued delegation, review, repeat follow-up calls, and human-facing decisions. It is not a token-saving rule for any role.
+- In this project, when Vitaly asks the Orchestrator to take the next issue, implement a Linear issue, review/control an implementation, or close/finish a task, that is explicit authorization to use the project sub-agent workflow. Vitaly does not need to repeat the words "sub-agent" or "delegate" on every task.
+- The Orchestrator owns planning, handoff quality, review, acceptance decisions, retries/follow-ups, and final accountability. It should not spend its context window on low-level implementation, repository mechanics, or tracker closure when a suitable sub-agent path is available.
+- When sub-agent tools are available, the Orchestrator must launch one Executor sub-agent for one Linear issue instead of implementing code/config/docs itself or asking Vitaly to open a separate Executor chat.
+- After accepting an implementation result, the Orchestrator must launch a Closure Executor sub-agent for mechanical merge/push/Linear closure when sub-agent tools are available, instead of doing routine repository/tracker closure itself.
+- A separate Executor or Closure Executor chat remains the fallback when sub-agent tools are unavailable, blocked, unsuitable for the required isolation, or explicitly requested.
+- Direct Orchestrator execution of implementation or mechanical closure is a last-resort fallback only when no sub-agent or separate-chat Executor path is available, or when Vitaly explicitly asks the Orchestrator to do the work personally without sub-agents. Lack of the literal word "sub-agent" in a task/closure request is not a valid reason for direct fallback.
 - Before launching the Executor, write the full task-specific prompt into the selected Linear issue as the latest comment titled `Executor Handoff`.
 - Launch the sub-agent with a short bootstrap prompt containing the project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment. The short prompt is only a pointer to the full task contract, not a reduced-context implementation brief.
 - If Linear is unavailable or the handoff comment cannot be created/read, do not use a link-only handoff; either pass the full prompt directly or stop and report the blocker.
@@ -238,7 +241,7 @@ The Orchestrator should:
 - Pick the first child issue under `UIW-1` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
 - Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
 - Verify blocker status before preparing implementation work.
-- Avoid implementing the task directly unless Vitaly explicitly asks it to.
+- Avoid implementing the task directly unless Vitaly explicitly asks the Orchestrator to do the implementation personally without an Executor.
 - Verify multi-agent, Linear, Rider, Unity, and validation tool availability before delegating or reviewing.
 - Add a focused `Executor Handoff` comment to the Linear issue, then launch a short-prompt Executor sub-agent for exactly one Linear issue when sub-agent tools are available; otherwise write a focused separate-chat Executor prompt.
 - Relay Executor `BLOCKED_HUMAN_ACTION_REQUIRED` reports to Vitaly immediately, including exact human action, branch/status, last successful step, and resume instruction; resume the same Executor after Vitaly confirms when possible.
@@ -248,7 +251,7 @@ The Orchestrator should:
 - Run an independent Orchestrator spot-check proportional to risk, for example `git diff --check`, final-newline checks for changed text files, targeted diagnostics, focused tests, or forbidden dependency scans.
 - Only recommend merging/closing when acceptance criteria and verification are satisfied.
 - If all child issues under a parent are `Done` or `Canceled`, run the parent reconciliation review before saying the parent is complete. If the implemented result is narrower than the original parent goal, either create/follow up missing tasks or ask Vitaly for explicit reduced-scope acceptance.
-- After acceptance and when Vitaly asks to complete closure, add a focused `Closure Handoff` comment to Linear, then launch a Closure Executor sub-agent to merge the accepted task branch into `main`, push `main`, update Linear status/final notes, and report final status. The Orchestrator should perform closure directly only as a reported fallback.
+- After acceptance and when Vitaly asks to complete closure, add a focused `Closure Handoff` comment to Linear, then launch a Closure Executor sub-agent to merge the accepted task branch into `main`, push `main`, update Linear status/final notes, and report final status. The Orchestrator must not perform closure directly unless sub-agent/separate-chat closure is unavailable or Vitaly explicitly requests direct Orchestrator closure.
 - After closure succeeds, perform the post-closure documentation drift check, reconcile stale local context with Linear/repository state when needed, commit/push that context-only update, and only then give the final "closed and merged" report.
 
 ### Executor

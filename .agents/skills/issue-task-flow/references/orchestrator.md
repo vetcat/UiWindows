@@ -35,11 +35,13 @@ For a parent/audit issue, the expected Orchestrator output is the traceability m
 
 ## Executor Delegation Modes
 
-Preferred mode when available: keep the current chat as Orchestrator and spawn specialized sub-agents for bounded work. Use an implementation Executor for one issue's code/config/docs work, and a Closure Executor for mechanical post-acceptance merge/push/tracker closure. The goal is to preserve the Orchestrator's context window for long-lived coordination, spawning agents, review, and human-facing decisions. This is not a token-saving rule for any role.
+Default mode when available: keep the current chat as Orchestrator and spawn specialized sub-agents for bounded work. Use an implementation Executor for one issue's code/config/docs work, and a Closure Executor for mechanical post-acceptance merge/push/tracker closure. The goal is to preserve the Orchestrator's context window for long-lived coordination, spawning agents, review, follow-up retries, and human-facing decisions. This is not a token-saving rule for any role.
+
+When project instructions establish this delegated flow, user requests such as "take the next task", "implement this issue", "review the Executor result", "close the task", or "complete closure" are explicit authorization to run the corresponding sub-agent workflow. Do not require the user to include the literal words "sub-agent" or "delegate" every time. The Orchestrator owns planning, handoff quality, review, acceptance decisions, retry/follow-up control, and final accountability; it should not perform low-level implementation, repository mechanics, or tracker closure itself when a suitable agent path exists.
 
 Use a short bootstrap prompt instead of forking the full conversation context only when the Executor can read the complete task contract from Linear or another explicit handoff. Do not make the Executor infer missing scope, acceptance criteria, verification, or project constraints from a deliberately underspecified prompt.
 
-Fallback mode: create a focused prompt for a separate Executor chat when sub-agent tools are unavailable, the user explicitly wants a separate chat, or the implementation requires isolation that the current sub-agent runtime cannot provide.
+Fallback mode: create a focused prompt for a separate Executor chat when sub-agent tools are unavailable, the user explicitly wants a separate chat, or the implementation requires isolation that the current sub-agent runtime cannot provide. Direct Orchestrator implementation is a last-resort fallback only when no sub-agent or separate-chat Executor path is available, or when the user explicitly asks the Orchestrator to do the implementation personally without agents.
 
 Default handoff storage: write the full task-specific Executor prompt into the selected issue as a Linear comment titled `Executor Handoff` before spawning the sub-agent. Then give the sub-agent a short bootstrap prompt with project path, issue ID/link, and instructions to read the latest `Executor Handoff` comment. This keeps the durable task contract in Linear for humans, replacement sub-agents, and later review; the short bootstrap is only a pointer to that contract.
 
@@ -80,6 +82,8 @@ If the original Executor cannot be resumed, launch a replacement Executor with t
 ## Closure Delegation
 
 After the Orchestrator has reviewed and accepted an implementation result, delegate mechanical closure to a Closure Executor sub-agent when sub-agent tools are available. This keeps the human-facing chat focused on decisions and review while agents perform routine repository/tracker operations.
+
+A user request such as "close this task", "finish closure", or "закрывай работу над таском" is explicit authorization to launch the Closure Executor in projects where this delegated flow is the default. Do not treat the absence of the literal word "sub-agent" as a reason to do repository/tracker closure directly.
 
 The Orchestrator must make the acceptance decision before closure delegation. The Closure Executor does not review the implementation, reinterpret acceptance criteria, edit files, resolve merge conflicts, or perform local documentation reconciliation.
 
@@ -143,7 +147,7 @@ Hard rules:
 - Final report must include merge result, push result, Linear updates, final repository status, and blockers.
 ```
 
-If sub-agent tooling or Linear handoff access is unavailable, the Orchestrator may perform closure directly only after reporting the fallback. For separate-chat fallback, paste the full `Closure Handoff` content directly if Linear access is uncertain.
+If sub-agent tooling or Linear handoff access is unavailable, first use a separate-chat Closure Executor fallback when practical and paste the full `Closure Handoff` content directly if Linear access is uncertain. The Orchestrator may perform closure directly only when no Closure Executor path is available or the user explicitly asks for direct Orchestrator closure, and must report that fallback reason before doing the mechanical work.
 
 ## Delegation Prompt Template
 
@@ -266,9 +270,9 @@ Only after acceptance criteria and verification are satisfied:
 1. Record the accepted branch, accepted commits, verification evidence, and Orchestrator acceptance summary.
 2. If this was the final active child under a parent, run the Parent Reconciliation Gate before authorizing any parent closure.
 3. Write a `Closure Handoff` Linear comment with exact authorized actions and stop conditions.
-4. Launch a Closure Executor sub-agent when available, or report a fallback before doing closure directly.
+4. Launch a Closure Executor sub-agent when available. If sub-agent tooling is unavailable, use a separate-chat Closure Executor fallback when practical. Direct Orchestrator closure is allowed only when no Closure Executor path is available or the user explicitly asks for direct Orchestrator closure; report that fallback reason before doing mechanical work.
 5. Review the Closure Executor report: merge result, pushed integration branch, Linear updates, parent/plan note updates, final repository status, and blockers.
 6. If closure succeeded, run a post-closure documentation drift check before the final human report. Scan local instructions, project context, and relevant docs for the closed issue id/title and stale transient state such as `Todo`, `In Progress`, `review pending`, `implemented on branch`, `requires closure`, or obsolete next-task markers.
 7. If drift is found, make a small context-only commit on the integration branch, push it, and include the commit in the closure result. Do not treat local progress text as authoritative over tracker status.
 8. Confirm the next task should start from the updated integration branch.
-9. If closure was blocked, surface the blocker and decide whether to fix, retry with the same Closure Executor, launch a replacement, or perform a direct fallback.
+9. If closure was blocked, surface the blocker and decide whether to fix, retry with the same Closure Executor, launch a replacement Closure Executor, or use a separate-chat Closure Executor fallback. Direct Orchestrator fallback remains the last resort.
