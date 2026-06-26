@@ -43,7 +43,10 @@ namespace ProjectContext.Localization
                     ["ChoiceItemCaption"] = "Choice of item",
                     ["ChoiceItemDescription"] = "The player selected item {0}",
                     ["ShopAmount"] = "Amount: {0}",
-                    ["ShopGroup"] = "Group: {0}"
+                    ["ShopGroup"] = "Group: {0}",
+                    ["TimeTemplate"] = "Time : {0}",
+                    ["HintDescription"] = "Test hint description, hint can be very large",
+                    ["PressAndHold"] = "press and hold"
                 },
                 [SystemLanguage.French] = new Dictionary<string, string>
                 {
@@ -67,7 +70,10 @@ namespace ProjectContext.Localization
                     ["ChoiceItemCaption"] = "Choix d'objet",
                     ["ChoiceItemDescription"] = "Le joueur a sélectionné {0}",
                     ["ShopAmount"] = "Quantité : {0}",
-                    ["ShopGroup"] = "Groupe : {0}"
+                    ["ShopGroup"] = "Groupe : {0}",
+                    ["TimeTemplate"] = "Temps : {0}",
+                    ["HintDescription"] = "Description de l'indice de test, l'indice peut être très volumineux",
+                    ["PressAndHold"] = "appuyez et maintenez"
                 },
                 [SystemLanguage.German] = new Dictionary<string, string>
                 {
@@ -91,7 +97,10 @@ namespace ProjectContext.Localization
                     ["ChoiceItemCaption"] = "Gegenstandsauswahl",
                     ["ChoiceItemDescription"] = "Der Spieler hat {0} ausgewählt",
                     ["ShopAmount"] = "Menge: {0}",
-                    ["ShopGroup"] = "Gruppe: {0}"
+                    ["ShopGroup"] = "Gruppe: {0}",
+                    ["TimeTemplate"] = "Zeit : {0}",
+                    ["HintDescription"] = "Testhinweisbeschreibung, Hinweis kann sehr groß sein",
+                    ["PressAndHold"] = "drücken und halten"
                 },
                 [SystemLanguage.Russian] = new Dictionary<string, string>
                 {
@@ -115,7 +124,10 @@ namespace ProjectContext.Localization
                     ["ChoiceItemCaption"] = "Выбор предмета",
                     ["ChoiceItemDescription"] = "Игрок выбрал {0}",
                     ["ShopAmount"] = "Количество: {0}",
-                    ["ShopGroup"] = "Группа: {0}"
+                    ["ShopGroup"] = "Группа: {0}",
+                    ["TimeTemplate"] = "Время : {0}",
+                    ["HintDescription"] = "Тестовое описание хинта, хинт может быть очень большим",
+                    ["PressAndHold"] = "нажать и удерживать"
                 }
             };
 
