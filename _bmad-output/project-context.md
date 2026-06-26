@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-21-complete-next-uiw-22
+status: uiw-22-complete-next-uiw-23
 ---
 
 # Project Context for AI Agents
@@ -40,7 +40,8 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `UIW-19` completed the top-right coin HUD and coin FX target integration follow-up.
 - `UIW-20` completed the down-right settings launcher follow-up.
 - `UIW-21` completed the down-left shop launcher and shop/modal interaction follow-up.
-- Next ordered child issue: `UIW-22` - `15 - Port object indicator dynamic UI layer and character reward source integration`.
+- `UIW-22` completed the object indicator dynamic UI layer and character reward source integration follow-up.
+- Next ordered child issue: `UIW-23` - `16 - Port UiTopCenter time and press-hold hint example`.
 - Linear child issue statuses are the source of truth for task progress. Local files such as `AGENTS.md` and this project context may record issue order, durable facts, and recent snapshots, but future agents must query Linear for current child status when Linear is available.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
@@ -210,7 +211,21 @@ UIW-21 down-left shop launcher implementation snapshot on 2026-06-23:
 - Focused PlayMode coverage includes `UiDownLeftPresenterTests.Presenter_BindsShopButtonAndRefreshesLocalizedLabelOnlyWhileShown`, `UiShopPresenterTests.Presenter_ClickingItemRequestsModalAndUpdatesVisibilityThroughPorts`, and `UiDownLeftWindowLifecycleTests.LauncherOpensShop_HidesWhileShopVisible_AndItemClickShowsModalOncePerCycle`; existing SampleScene lifecycle test cleanup now includes `UiDownLeftWindow` because it auto-starts with SampleScene.
 - Verification on the implementation branch passed: Rider formatting/targeted diagnostics/build, Unity compile/Console, Unity prefab info/hierarchy, `SampleScene` validation, focused UIW-21 PlayMode tests 3/3, `UiWindowsMvp.Tests.PlayMode` 28/28, `ProjectContext.Player.Tests.PlayMode` 15/15, `git diff --check`, and forbidden dependency/lifecycle scans. No new UniRx, Zenject, OpenUI runtime, or `SetActive(` lifecycle usage was introduced, and DOTween did not leak into `Assets/Scripts/ProjectContext`.
 - `UIW-21` closure completed on 2026-06-23: implementation commit `ae588ee` was merged to `main` with merge commit `6ed3b76`, pushed to `origin/main`, and Linear was moved to `Done`.
-- This advances the `UIW-1` target for OpenUI down-left shop navigation and shop/modal behavior only. `UIW-22` through `UIW-25` remain parent gaps outside this issue's scope.
+- This advances the `UIW-1` target for OpenUI down-left shop navigation and shop/modal behavior only. `UIW-23` through `UIW-25` remain parent gaps outside this issue's scope.
+
+UIW-22 object indicator dynamic UI implementation snapshot on 2026-06-26:
+
+- `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiObjectIndicatorView.prefab` ports the representative object indicator view with serialized body, indicator item, icon, health slider, reward button, and text references.
+- `UiObjectIndicatorWindow`, `UiObjectIndicatorView`, `UiObjectIndicatorPresenter`, `UiObjectIndicatorPresenterFactory`, `UiObjectIndicatorRuntimeWindowSource`, `UiObjectIndicatorDemoLauncher`, `UiObjectIndicatorDemoTarget`, and world-to-screen adapter ports live under `Assets/Scripts/UiWindowsMvp/Runtime/SampleSceneWindows/ObjectIndicators`.
+- `UiObjectIndicatorPresenter` follows an `IUiObjectIndicatorAnchor` through an `IUiWorldToScreenAdapter`, registers `UiFxTarget.CharacterReward` only while shown, and guards frame updates and reward clicks during `OnHideBegin` to `OnHideEnd` transitions so hidden pooled windows cannot re-show or mutate player state while the show scope is still alive.
+- `ProjectContext.UiRequests` now supports source-aware FX requests through `UiFxRequest.Source`, `UiFxTarget.CharacterReward`, and `IUiFeedbackCommands.RequestCollectFxFrom` / `RequestSpendFxFrom` without exposing Unity UI or DOTween types from `ProjectContext`.
+- `PlayerService` now offers source-aware coin FX commands while preserving the existing coin mutation and FX request APIs.
+- `UiFxPresenter` and `UiFxView` route semantic FX source and target anchors through `IUiFxTargetResolver`, preserving fallback anchor behavior when a source or target is absent.
+- `Assets/Scenes/SampleScene.unity` wires `UiObjectIndicatorView.prefab` into `UiTopLeftDemoInstaller` and opens the object indicator slice through the UI.Windows `WindowSystem.Show` path on start.
+- Focused PlayMode coverage includes object indicator presenter show/hide behavior, live-show-scope hide-transition regression coverage, SampleScene lifecycle/pooling coverage, source-to-target FX routing, and player-service source-aware FX request checks.
+- Verification passed on 2026-06-26: Unity compile and Console check, Rider diagnostics/build, focused PlayMode tests, `UiWindowsMvp.Tests.PlayMode` 31/31 after review follow-up, earlier combined relevant PlayMode suite 46/46, `SampleScene` validation, `git diff --check`, final-newline checks, forbidden dependency/lifecycle scans, and DOTween leakage scan.
+- `UIW-22` closure completed on 2026-06-26: implementation commit `a419904` was merged to `main` with merge commit `c1be7c0`, pushed to `origin/main`, and Linear was moved to `Done`.
+- This advances the `UIW-1` target for OpenUI object indicator / dynamic UI layer and representative character reward source integration only. `UIW-23` through `UIW-25` remain parent gaps outside this issue's scope.
 
 UIW-20 sub-agent Executor flow trial on 2026-06-22:
 
