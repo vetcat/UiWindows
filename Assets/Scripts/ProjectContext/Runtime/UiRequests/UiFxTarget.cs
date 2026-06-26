@@ -4,6 +4,7 @@ namespace ProjectContext.UiRequests
     {
         Coins,
         Experience,
-        Health
+        Health,
+        CharacterReward
     }
 }

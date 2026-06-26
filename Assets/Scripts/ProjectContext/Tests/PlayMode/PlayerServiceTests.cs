@@ -144,13 +144,22 @@ namespace ProjectContext.Player.Tests.PlayMode
 
             service.AddCoinsWithFx(25);
             service.RemoveCoinsWithFx(10);
+            service.AddCoinsWithFxFrom(7, UiFxTarget.CharacterReward);
 
-            Assert.That(GetCurrentValue<int>(service, "Coins"), Is.EqualTo(15));
-            Assert.That(feedback.Requests, Has.Count.EqualTo(2));
+            Assert.That(GetCurrentValue<int>(service, "Coins"), Is.EqualTo(22));
+            Assert.That(feedback.Requests, Has.Count.EqualTo(3));
             Assert.That(feedback.Requests[0].Kind, Is.EqualTo(UiFxKind.Collect));
             Assert.That(feedback.Requests[0].Amount, Is.EqualTo(25));
+            Assert.That(feedback.Requests[0].Source, Is.Null);
+            Assert.That(feedback.Requests[0].Target, Is.EqualTo(UiFxTarget.Coins));
             Assert.That(feedback.Requests[1].Kind, Is.EqualTo(UiFxKind.Spend));
             Assert.That(feedback.Requests[1].Amount, Is.EqualTo(10));
+            Assert.That(feedback.Requests[1].Source, Is.Null);
+            Assert.That(feedback.Requests[1].Target, Is.EqualTo(UiFxTarget.Coins));
+            Assert.That(feedback.Requests[2].Kind, Is.EqualTo(UiFxKind.Collect));
+            Assert.That(feedback.Requests[2].Amount, Is.EqualTo(7));
+            Assert.That(feedback.Requests[2].Source, Is.EqualTo(UiFxTarget.CharacterReward));
+            Assert.That(feedback.Requests[2].Target, Is.EqualTo(UiFxTarget.Coins));
         }
 
         [Test]
@@ -243,9 +252,19 @@ namespace ProjectContext.Player.Tests.PlayMode
                 Requests.Add(new UiFxRequest(UiFxKind.Collect, amount, target));
             }
 
+            public void RequestCollectFxFrom(int amount, UiFxTarget source, UiFxTarget target = UiFxTarget.Coins)
+            {
+                Requests.Add(new UiFxRequest(UiFxKind.Collect, amount, source, target));
+            }
+
             public void RequestSpendFx(int amount, UiFxTarget target = UiFxTarget.Coins)
             {
                 Requests.Add(new UiFxRequest(UiFxKind.Spend, amount, target));
+            }
+
+            public void RequestSpendFxFrom(int amount, UiFxTarget source, UiFxTarget target = UiFxTarget.Coins)
+            {
+                Requests.Add(new UiFxRequest(UiFxKind.Spend, amount, source, target));
             }
         }
     }

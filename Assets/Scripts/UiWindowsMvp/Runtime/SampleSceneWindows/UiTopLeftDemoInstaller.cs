@@ -28,6 +28,8 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         [SerializeField] private UiFxView uiFxViewPrefab;
 
+        [SerializeField] private UiObjectIndicatorView uiObjectIndicatorViewPrefab;
+
         [SerializeField] private bool showOnStart = true;
 
         [SerializeField] private bool showTopRightOnStart = true;
@@ -35,6 +37,8 @@ namespace UiWindowsMvp.SampleSceneWindows
         [SerializeField] private bool showDownRightOnStart = true;
 
         [SerializeField] private bool showDownLeftOnStart = true;
+
+        [SerializeField] private bool showObjectIndicatorOnStart = true;
 
         [SerializeField] private bool showSettingsOnStart;
 
@@ -51,6 +55,8 @@ namespace UiWindowsMvp.SampleSceneWindows
             var feedbackService = new UiFeedbackService();
             var fxTargetRegistry = new UiFxTargetRegistry();
             var shopVisibilityState = new UiShopVisibilityState();
+            var objectIndicatorTarget = new UiObjectIndicatorDemoTarget();
+            var objectIndicatorScreenAdapter = new CameraWorldToScreenAdapter();
             var playerService = new PlayerService(playerSettings, feedbackService);
             var gameSettingsService = new GameSettingsService();
             var localizationService = new LocalizationService();
@@ -89,6 +95,14 @@ namespace UiWindowsMvp.SampleSceneWindows
             var modalPresenterFactory = new UiModalPresenterFactory(modalService, modalService);
             var hintsPresenterFactory = new UiHintsPresenterFactory(feedbackService);
             var fxPresenterFactory = new UiFxPresenterFactory(feedbackService, fxTargetRegistry);
+            var objectIndicatorPresenterFactory =
+                new UiObjectIndicatorPresenterFactory(
+                    playerService,
+                    playerService,
+                    playerSettings,
+                    objectIndicatorTarget,
+                    objectIndicatorScreenAdapter,
+                    fxTargetRegistry);
 
             registry.Register<IPlayerSettings>(playerSettings);
             registry.Register<IPlayerReadModel>(playerService);
@@ -113,8 +127,12 @@ namespace UiWindowsMvp.SampleSceneWindows
             registry.Register<IUiFxTargetRegistry>(fxTargetRegistry);
             registry.Register<IUiShopVisibilityReadModel>(shopVisibilityState);
             registry.Register<IUiShopVisibilityCommands>(shopVisibilityState);
+            registry.Register<IUiObjectIndicatorAnchor>(objectIndicatorTarget);
+            registry.Register<IUiWorldToScreenAdapter>(objectIndicatorScreenAdapter);
             registry.Register(fxTargetRegistry);
             registry.Register(shopVisibilityState);
+            registry.Register(objectIndicatorTarget);
+            registry.Register(objectIndicatorScreenAdapter);
             registry.Register(presenterFactory);
             registry.Register(topRightPresenterFactory);
             registry.Register(settingsPresenterFactory);
@@ -124,6 +142,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             registry.Register(modalPresenterFactory);
             registry.Register(hintsPresenterFactory);
             registry.Register(fxPresenterFactory);
+            registry.Register(objectIndicatorPresenterFactory);
             registry.Register(new UiTopLeftDemoLauncher(uiTopLeftViewPrefab, presenterFactory));
             registry.Register(new UiTopRightDemoLauncher(uiTopRightViewPrefab, topRightPresenterFactory));
             registry.Register(settingsLauncher);
@@ -134,6 +153,9 @@ namespace UiWindowsMvp.SampleSceneWindows
             registry.Register(new UiModalDemoLauncher(uiModalViewPrefab, modalPresenterFactory, modalService));
             registry.Register(new UiHintsDemoLauncher(uiHintsViewPrefab, hintsPresenterFactory));
             registry.Register(new UiFxDemoLauncher(uiFxViewPrefab, fxPresenterFactory));
+            registry.Register(new UiObjectIndicatorDemoLauncher(
+                uiObjectIndicatorViewPrefab,
+                objectIndicatorPresenterFactory));
         }
 
         private void Start()
@@ -169,6 +191,11 @@ namespace UiWindowsMvp.SampleSceneWindows
             root.Services.Resolve<UiModalDemoLauncher>().Start();
             root.Services.Resolve<UiHintsDemoLauncher>().Show();
             root.Services.Resolve<UiFxDemoLauncher>().Show();
+
+            if (showObjectIndicatorOnStart)
+            {
+                root.Services.Resolve<UiObjectIndicatorDemoLauncher>().Show();
+            }
 
             if (showSettingsOnStart)
             {

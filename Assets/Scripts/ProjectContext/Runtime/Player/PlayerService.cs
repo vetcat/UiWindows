@@ -105,11 +105,27 @@ namespace ProjectContext.Player
             AddCoins(normalizedAmount);
         }
 
+        public void AddCoinsWithFxFrom(int amount, UiFxTarget source, UiFxTarget target = UiFxTarget.Coins)
+        {
+            ThrowIfDisposed();
+            var normalizedAmount = Math.Max(0, amount);
+            feedbackCommands?.RequestCollectFxFrom(normalizedAmount, source, target);
+            AddCoins(normalizedAmount);
+        }
+
         public void RemoveCoinsWithFx(int amount)
         {
             ThrowIfDisposed();
             var normalizedAmount = Math.Max(0, amount);
             feedbackCommands?.RequestSpendFx(normalizedAmount, UiFxTarget.Coins);
+            RemoveCoins(normalizedAmount);
+        }
+
+        public void RemoveCoinsWithFxFrom(int amount, UiFxTarget source, UiFxTarget target = UiFxTarget.Coins)
+        {
+            ThrowIfDisposed();
+            var normalizedAmount = Math.Max(0, amount);
+            feedbackCommands?.RequestSpendFxFrom(normalizedAmount, source, target);
             RemoveCoins(normalizedAmount);
         }
 
