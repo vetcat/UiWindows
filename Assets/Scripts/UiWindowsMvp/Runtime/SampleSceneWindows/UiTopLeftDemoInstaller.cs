@@ -14,6 +14,8 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         [SerializeField] private UiTopRightView uiTopRightViewPrefab;
 
+        [SerializeField] private UiTopCenterView uiTopCenterViewPrefab;
+
         [SerializeField] private UiDownRightView uiDownRightViewPrefab;
 
         [SerializeField] private UiDownLeftView uiDownLeftViewPrefab;
@@ -33,6 +35,8 @@ namespace UiWindowsMvp.SampleSceneWindows
         [SerializeField] private bool showOnStart = true;
 
         [SerializeField] private bool showTopRightOnStart = true;
+
+        [SerializeField] private bool showTopCenterOnStart = true;
 
         [SerializeField] private bool showDownRightOnStart = true;
 
@@ -57,6 +61,8 @@ namespace UiWindowsMvp.SampleSceneWindows
             var shopVisibilityState = new UiShopVisibilityState();
             var objectIndicatorTarget = new UiObjectIndicatorDemoTarget();
             var objectIndicatorScreenAdapter = new CameraWorldToScreenAdapter();
+            var topCenterTimeProvider = new SystemUiTopCenterTimeProvider();
+            var topCenterHoldTimer = new R3UiTopCenterHoldTimer();
             var playerService = new PlayerService(playerSettings, feedbackService);
             var gameSettingsService = new GameSettingsService();
             var localizationService = new LocalizationService();
@@ -69,6 +75,12 @@ namespace UiWindowsMvp.SampleSceneWindows
                     healthCommandStep,
                     xpCommandStep);
             var topRightPresenterFactory = new UiTopRightPresenterFactory(playerService, fxTargetRegistry);
+            var topCenterPresenterFactory =
+                new UiTopCenterPresenterFactory(
+                    topCenterTimeProvider,
+                    localizationService,
+                    feedbackService,
+                    topCenterHoldTimer);
             var settingsPresenterFactory =
                 new UiSettingsPresenterFactory(
                     gameSettingsService,
@@ -125,6 +137,8 @@ namespace UiWindowsMvp.SampleSceneWindows
             registry.Register<IUiFeedbackService>(feedbackService);
             registry.Register<IUiFxTargetResolver>(fxTargetRegistry);
             registry.Register<IUiFxTargetRegistry>(fxTargetRegistry);
+            registry.Register<IUiTopCenterTimeProvider>(topCenterTimeProvider);
+            registry.Register<IUiTopCenterHoldTimer>(topCenterHoldTimer);
             registry.Register<IUiShopVisibilityReadModel>(shopVisibilityState);
             registry.Register<IUiShopVisibilityCommands>(shopVisibilityState);
             registry.Register<IUiObjectIndicatorAnchor>(objectIndicatorTarget);
@@ -135,6 +149,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             registry.Register(objectIndicatorScreenAdapter);
             registry.Register(presenterFactory);
             registry.Register(topRightPresenterFactory);
+            registry.Register(topCenterPresenterFactory);
             registry.Register(settingsPresenterFactory);
             registry.Register(downRightPresenterFactory);
             registry.Register(downLeftPresenterFactory);
@@ -145,6 +160,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             registry.Register(objectIndicatorPresenterFactory);
             registry.Register(new UiTopLeftDemoLauncher(uiTopLeftViewPrefab, presenterFactory));
             registry.Register(new UiTopRightDemoLauncher(uiTopRightViewPrefab, topRightPresenterFactory));
+            registry.Register(new UiTopCenterDemoLauncher(uiTopCenterViewPrefab, topCenterPresenterFactory));
             registry.Register(settingsLauncher);
             registry.Register(new UiDownRightDemoLauncher(uiDownRightViewPrefab, downRightPresenterFactory));
             registry.Register(shopLauncher);
@@ -175,6 +191,11 @@ namespace UiWindowsMvp.SampleSceneWindows
             if (showTopRightOnStart)
             {
                 root.Services.Resolve<UiTopRightDemoLauncher>().Show();
+            }
+
+            if (showTopCenterOnStart)
+            {
+                root.Services.Resolve<UiTopCenterDemoLauncher>().Show();
             }
 
             if (showDownRightOnStart)

@@ -195,6 +195,7 @@ namespace UiWindowsMvp.Tests.PlayMode
             DestroyObjectsImmediate<UiModalWindow>();
             DestroyObjectsImmediate<UiHintsWindow>();
             DestroyObjectsImmediate<UiFxWindow>();
+            DestroyObjectsImmediate<UiTopCenterWindow>();
             DestroyObjectsImmediate<UiDownLeftWindow>();
             DestroyObjectsImmediate<UiDownRightWindow>();
             DestroyObjectsImmediate<UiTopRightWindow>();

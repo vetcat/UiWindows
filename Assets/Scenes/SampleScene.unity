@@ -458,6 +458,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UiWindowsMvp.SampleSceneWindows::UiWindowsMvp.SampleSceneWindows.UiTopLeftDemoInstaller
   uiTopLeftViewPrefab: {fileID: 5731412208773537847, guid: 54bcce7a83a494c748871bc23ed972d4, type: 3}
   uiTopRightViewPrefab: {fileID: 8094793304544816040, guid: a85490ee58fe440878ed56ca7ec5f0fe, type: 3}
+  uiTopCenterViewPrefab: {fileID: 7604246865818799853, guid: 7180fa66c2eee4b548cb59471f76a4ba, type: 3}
   uiDownRightViewPrefab: {fileID: 5057004304820587488, guid: 0053b508678b048c9b9393c3a4a67c25, type: 3}
   uiDownLeftViewPrefab: {fileID: 7600000000000000003, guid: e47a70fbe9994ef3ad8e2128666e8749, type: 3}
   uiSettingsViewPrefab: {fileID: 3280582240713721807, guid: 50bd3bfbb05954b3a908aaf0aeb41c19, type: 3}
@@ -468,6 +469,7 @@ MonoBehaviour:
   uiObjectIndicatorViewPrefab: {fileID: 6563954041089387011, guid: 54a586c5d471a4bcb9c306f8076b7a5a, type: 3}
   showOnStart: 1
   showTopRightOnStart: 1
+  showTopCenterOnStart: 1
   showDownRightOnStart: 1
   showDownLeftOnStart: 1
   showObjectIndicatorOnStart: 1
