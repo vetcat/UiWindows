@@ -8,6 +8,7 @@
     "ProjectContext.Settings",
     "ProjectContext.Shop",
     "ProjectContext.UiRequests",
+    "R3",
     "UiWindowsMvp.SampleSceneWindows",
     "UiWindowsMvp.UIAdapter",
     "UI.Windows"

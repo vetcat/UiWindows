@@ -23,6 +23,7 @@ namespace UiWindowsMvp.SampleSceneWindows
         private readonly List<UiFxItemView> activeItems = new();
         private readonly Stack<UiFxItemView> pooledItems = new();
         private readonly Vector3[] targetCorners = new Vector3[4];
+        private Vector2 fallbackCollectSourceAnchoredPosition;
         private Vector2 fallbackCollectTargetAnchoredPosition;
         private Vector2 fallbackSpendSourceAnchoredPosition;
         private int requestIndex;
@@ -32,7 +33,13 @@ namespace UiWindowsMvp.SampleSceneWindows
         public int ActiveFxCount => activeItems.Count;
         public int PooledFxCount => pooledItems.Count;
         public string LastFxText => lastFxText;
-        public Vector2 CollectTargetAnchoredPosition => CollectTarget != null ? CollectTarget.anchoredPosition : Vector2.zero;
+
+        public Vector2 CollectSourceAnchoredPosition =>
+            CollectSource != null ? CollectSource.anchoredPosition : Vector2.zero;
+
+        public Vector2 CollectTargetAnchoredPosition =>
+            CollectTarget != null ? CollectTarget.anchoredPosition : Vector2.zero;
+
         public Vector2 SpendSourceAnchoredPosition => SpendSource != null ? SpendSource.anchoredPosition : Vector2.zero;
 
         public void EnsureLayout()
@@ -59,8 +66,19 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         public void PlayFx(UiFxRequest request, RectTransform targetTransform)
         {
+            if (request.Kind == UiFxKind.Spend)
+            {
+                PlayFx(request, targetTransform, null);
+                return;
+            }
+
+            PlayFx(request, null, targetTransform);
+        }
+
+        public void PlayFx(UiFxRequest request, RectTransform sourceTransform, RectTransform targetTransform)
+        {
             EnsureLayout();
-            ApplyResolvedTarget(targetTransform);
+            ApplyResolvedAnchors(request.Kind, sourceTransform, targetTransform);
 
             if (request.Kind == UiFxKind.Spend)
             {
@@ -131,36 +149,58 @@ namespace UiWindowsMvp.SampleSceneWindows
             sequence.OnComplete(() => Complete(sequence, item));
         }
 
-        private void ApplyResolvedTarget(RectTransform targetTransform)
+        private void ApplyResolvedAnchors(
+            UiFxKind kind,
+            RectTransform sourceTransform,
+            RectTransform targetTransform)
         {
-            if (targetTransform == null || Body == null)
+            ResetResolvedAnchors();
+
+            if (Body == null)
             {
-                ResetResolvedTarget();
                 return;
             }
 
-            if (TryResolveLocalPoint(targetTransform, out var anchoredPosition) == false)
+            var hasSourcePosition = TryResolveLocalPoint(sourceTransform, out var sourcePosition);
+            var hasTargetPosition = TryResolveLocalPoint(targetTransform, out var targetPosition);
+
+            if (kind == UiFxKind.Spend)
             {
-                ResetResolvedTarget();
+                if (SpendSource != null && hasSourcePosition)
+                {
+                    SpendSource.anchoredPosition = sourcePosition;
+                    return;
+                }
+
+                if (SpendSource != null && hasTargetPosition)
+                {
+                    SpendSource.anchoredPosition = targetPosition;
+                }
+
                 return;
             }
 
-            if (CollectTarget != null)
+            if (CollectSource != null && hasSourcePosition)
             {
-                CollectTarget.anchoredPosition = anchoredPosition;
+                CollectSource.anchoredPosition = sourcePosition;
             }
 
-            if (SpendSource != null)
+            if (CollectTarget != null && hasTargetPosition)
             {
-                SpendSource.anchoredPosition = anchoredPosition;
+                CollectTarget.anchoredPosition = targetPosition;
             }
         }
 
-        private void ResetResolvedTarget()
+        private void ResetResolvedAnchors()
         {
             if (fallbackAnchorsCaptured == false)
             {
                 CaptureFallbackAnchors();
+            }
+
+            if (CollectSource != null)
+            {
+                CollectSource.anchoredPosition = fallbackCollectSourceAnchoredPosition;
             }
 
             if (CollectTarget != null)
@@ -176,11 +216,12 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         private void CaptureFallbackAnchors()
         {
-            if (fallbackAnchorsCaptured || CollectTarget == null || SpendSource == null)
+            if (fallbackAnchorsCaptured || CollectSource == null || CollectTarget == null || SpendSource == null)
             {
                 return;
             }
 
+            fallbackCollectSourceAnchoredPosition = CollectSource.anchoredPosition;
             fallbackCollectTargetAnchoredPosition = CollectTarget.anchoredPosition;
             fallbackSpendSourceAnchoredPosition = SpendSource.anchoredPosition;
             fallbackAnchorsCaptured = true;
@@ -188,6 +229,12 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         private bool TryResolveLocalPoint(RectTransform targetTransform, out Vector2 anchoredPosition)
         {
+            if (targetTransform == null || Body == null)
+            {
+                anchoredPosition = Vector2.zero;
+                return false;
+            }
+
             targetTransform.GetWorldCorners(targetCorners);
             var worldCenter = (targetCorners[0] + targetCorners[2]) * 0.5f;
             var sourceCamera = GetRectTransformCamera(targetTransform);

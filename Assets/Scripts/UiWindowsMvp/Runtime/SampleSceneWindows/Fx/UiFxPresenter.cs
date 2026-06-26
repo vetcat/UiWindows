@@ -116,12 +116,13 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         private void PlayFx(UiFxRequest request)
         {
-            view.PlayFx(request, ResolveTarget(request.Target));
+            view.PlayFx(request, ResolveTarget(request.Source), ResolveTarget(request.Target));
         }
 
-        private RectTransform ResolveTarget(UiFxTarget target)
+        private RectTransform ResolveTarget(UiFxTarget? target)
         {
-            return targetResolver != null && targetResolver.TryGetTarget(target, out var rectTransform)
+            return target.HasValue && targetResolver != null &&
+                   targetResolver.TryGetTarget(target.Value, out var rectTransform)
                 ? rectTransform
                 : null;
         }

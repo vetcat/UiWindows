@@ -27,10 +27,22 @@ namespace ProjectContext.UiRequests
             fxRequests.OnNext(new UiFxRequest(UiFxKind.Collect, amount, target));
         }
 
+        public void RequestCollectFxFrom(int amount, UiFxTarget source, UiFxTarget target = UiFxTarget.Coins)
+        {
+            ThrowIfDisposed();
+            fxRequests.OnNext(new UiFxRequest(UiFxKind.Collect, amount, source, target));
+        }
+
         public void RequestSpendFx(int amount, UiFxTarget target = UiFxTarget.Coins)
         {
             ThrowIfDisposed();
             fxRequests.OnNext(new UiFxRequest(UiFxKind.Spend, amount, target));
+        }
+
+        public void RequestSpendFxFrom(int amount, UiFxTarget source, UiFxTarget target = UiFxTarget.Coins)
+        {
+            ThrowIfDisposed();
+            fxRequests.OnNext(new UiFxRequest(UiFxKind.Spend, amount, source, target));
         }
 
         public void Dispose()
