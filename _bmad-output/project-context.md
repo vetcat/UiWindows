@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-22-complete-next-uiw-23
+status: uiw-23-complete-next-uiw-24
 ---
 
 # Project Context for AI Agents
@@ -41,7 +41,8 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `UIW-20` completed the down-right settings launcher follow-up.
 - `UIW-21` completed the down-left shop launcher and shop/modal interaction follow-up.
 - `UIW-22` completed the object indicator dynamic UI layer and character reward source integration follow-up.
-- Next ordered child issue: `UIW-23` - `16 - Port UiTopCenter time and press-hold hint example`.
+- `UIW-23` completed the top-center time and press-hold hint example follow-up.
+- Next ordered child issue: `UIW-24` - `17 - Visual/layout parity and UIDevelopScene preview coverage audit`.
 - Linear child issue statuses are the source of truth for task progress. Local files such as `AGENTS.md` and this project context may record issue order, durable facts, and recent snapshots, but future agents must query Linear for current child status when Linear is available.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting adapted UI prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
@@ -211,7 +212,7 @@ UIW-21 down-left shop launcher implementation snapshot on 2026-06-23:
 - Focused PlayMode coverage includes `UiDownLeftPresenterTests.Presenter_BindsShopButtonAndRefreshesLocalizedLabelOnlyWhileShown`, `UiShopPresenterTests.Presenter_ClickingItemRequestsModalAndUpdatesVisibilityThroughPorts`, and `UiDownLeftWindowLifecycleTests.LauncherOpensShop_HidesWhileShopVisible_AndItemClickShowsModalOncePerCycle`; existing SampleScene lifecycle test cleanup now includes `UiDownLeftWindow` because it auto-starts with SampleScene.
 - Verification on the implementation branch passed: Rider formatting/targeted diagnostics/build, Unity compile/Console, Unity prefab info/hierarchy, `SampleScene` validation, focused UIW-21 PlayMode tests 3/3, `UiWindowsMvp.Tests.PlayMode` 28/28, `ProjectContext.Player.Tests.PlayMode` 15/15, `git diff --check`, and forbidden dependency/lifecycle scans. No new UniRx, Zenject, OpenUI runtime, or `SetActive(` lifecycle usage was introduced, and DOTween did not leak into `Assets/Scripts/ProjectContext`.
 - `UIW-21` closure completed on 2026-06-23: implementation commit `ae588ee` was merged to `main` with merge commit `6ed3b76`, pushed to `origin/main`, and Linear was moved to `Done`.
-- This advances the `UIW-1` target for OpenUI down-left shop navigation and shop/modal behavior only. `UIW-23` through `UIW-25` remain parent gaps outside this issue's scope.
+- This advances the `UIW-1` target for OpenUI down-left shop navigation and shop/modal behavior only. `UIW-24` and `UIW-25` remain current parent gaps; `UIW-23` was completed later.
 
 UIW-22 object indicator dynamic UI implementation snapshot on 2026-06-26:
 
@@ -225,7 +226,20 @@ UIW-22 object indicator dynamic UI implementation snapshot on 2026-06-26:
 - Focused PlayMode coverage includes object indicator presenter show/hide behavior, live-show-scope hide-transition regression coverage, SampleScene lifecycle/pooling coverage, source-to-target FX routing, and player-service source-aware FX request checks.
 - Verification passed on 2026-06-26: Unity compile and Console check, Rider diagnostics/build, focused PlayMode tests, `UiWindowsMvp.Tests.PlayMode` 31/31 after review follow-up, earlier combined relevant PlayMode suite 46/46, `SampleScene` validation, `git diff --check`, final-newline checks, forbidden dependency/lifecycle scans, and DOTween leakage scan.
 - `UIW-22` closure completed on 2026-06-26: implementation commit `a419904` was merged to `main` with merge commit `c1be7c0`, pushed to `origin/main`, and Linear was moved to `Done`.
-- This advances the `UIW-1` target for OpenUI object indicator / dynamic UI layer and representative character reward source integration only. `UIW-23` through `UIW-25` remain parent gaps outside this issue's scope.
+- This advances the `UIW-1` target for OpenUI object indicator / dynamic UI layer and representative character reward source integration only. `UIW-24` and `UIW-25` remain current parent gaps; `UIW-23` was completed later.
+
+UIW-23 top-center time and press-hold hint implementation snapshot on 2026-06-26:
+
+- `Assets/Prefabs/UiWindowsMvp/SampleSceneWindows/UiTopCenterView.prefab` ports the OpenUI top-center time/press-hold hint visual shape with body, hint area, local time text, press-and-hold text, and hold input references.
+- `UiTopCenterWindow`, `UiTopCenterView`, `UiTopCenterPresenter`, `UiTopCenterPresenterFactory`, `UiTopCenterRuntimeWindowSource`, `UiTopCenterDemoLauncher`, `UiTopCenterHoldInput`, `IUiTopCenterTimeProvider`, `SystemUiTopCenterTimeProvider`, `IUiTopCenterHoldTimer`, and `R3UiTopCenterHoldTimer` live under `Assets/Scripts/UiWindowsMvp/Runtime/SampleSceneWindows`.
+- `UiTopCenterPresenter` formats UTC time as `HH:mm:ss` through an injected time provider, renders it through localized `TimeTemplate`, refreshes `PressAndHold` on language changes, and emits localized `HintDescription` requests through `IUiFeedbackCommands.ShowHint` after a show-scoped hold timer.
+- Hold input is a narrow UI-layer pointer helper; pointer-up, pointer-exit, hide, and show-scope disposal cancel pending holds so hidden pooled windows cannot emit duplicate hint requests.
+- `ProjectContext.Localization.LocalizationService` now includes `TimeTemplate`, `HintDescription`, and `PressAndHold` keys for English, French, German, and Russian without adding UI.Windows, presenter, DOTween, OpenUI, Zenject, or UniRx dependencies to `ProjectContext`.
+- `Assets/Scenes/SampleScene.unity` wires `UiTopCenterView.prefab` into `UiTopLeftDemoInstaller`; the slice opens on start through the UI.Windows `WindowSystem.Show` path and reuses the existing hints overlay.
+- Focused PlayMode coverage includes localized time refresh, show-scope cleanup, hold cancellation, one-shot hint emission, hidden-window guard behavior, and pooled `WindowSystem.Show -> Hide -> reopen` lifecycle coverage.
+- Verification passed on 2026-06-26: Rider diagnostics/build, Unity compile and Console check, focused UIW-23 PlayMode tests 3/3, `UiWindowsMvp.Tests.PlayMode` 34/34, `ProjectContext.Player.Tests.PlayMode` 15/15, `SampleScene` validation, prefab inspection, `git diff --check`, final-newline checks, forbidden dependency/lifecycle scans, and DOTween leakage scan.
+- `UIW-23` closure completed on 2026-06-26: implementation commit `f304a3e` was merged to `main` with merge commit `c8fd85f`, pushed to `origin/main`, and Linear was moved to `Done`.
+- This advances the `UIW-1` target for OpenUI top-center time and press-hold hint behavior only. `UIW-24` and `UIW-25` remain parent gaps outside this issue's scope.
 
 UIW-20 sub-agent Executor flow trial on 2026-06-22:
 
