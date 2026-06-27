@@ -115,7 +115,7 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         public void OnHideEnd()
         {
-            visibilityCommands?.SetShopVisible(false);
+            TrySetShopHiddenForCleanup();
         }
 
         public void Dispose()
@@ -126,7 +126,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             }
 
             disposed = true;
-            visibilityCommands?.SetShopVisible(false);
+            TrySetShopHiddenForCleanup();
             groupBindings?.Dispose();
             itemBindings?.Dispose();
             view = null;
@@ -323,6 +323,23 @@ namespace UiWindowsMvp.SampleSceneWindows
         private void HideWindow()
         {
             window?.Hide(TransitionParameters.Default.ReplaceImmediately(true));
+        }
+
+        private void TrySetShopHiddenForCleanup()
+        {
+            if (visibilityCommands == null)
+            {
+                return;
+            }
+
+            try
+            {
+                visibilityCommands.SetShopVisible(false);
+            }
+            catch (ObjectDisposedException)
+            {
+                // CompositionRoot services may already be disposed when UI.Windows destroys bindings.
+            }
         }
 
         private string Translate(string key, params object[] args)

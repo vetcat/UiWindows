@@ -162,6 +162,42 @@ namespace UiWindowsMvp.Tests.PlayMode
             }
         }
 
+        [Test]
+        public void Presenter_CleanupToleratesDisposedVisibilityPortDuringTeardown()
+        {
+            var viewObject = new GameObject("UiShop Test View", typeof(RectTransform), typeof(UiShopView));
+            var windowObject = new GameObject("UiShop Test Window", typeof(RectTransform), typeof(UiShopWindow));
+            using var shop = new ShopService();
+            using var localization = new LocalizationService(SystemLanguage.English);
+            var visibility = new UiShopVisibilityState();
+            using var showScope = new WindowPresenterShowScope();
+
+            try
+            {
+                var view = BuildView(viewObject);
+                var window = windowObject.GetComponent<UiShopWindow>();
+                var presenter = new UiShopPresenter(shop, shop, localization, null, visibility, _ => view);
+
+                presenter.Bind(window);
+                presenter.Initialize();
+                presenter.OnShowBegin(showScope);
+                presenter.OnHideBegin();
+
+                visibility.Dispose();
+
+                Assert.DoesNotThrow(() => presenter.OnHideEnd());
+                showScope.Dispose();
+                Assert.DoesNotThrow(() => presenter.Dispose());
+                Assert.DoesNotThrow(() => presenter.Dispose());
+            }
+            finally
+            {
+                visibility.Dispose();
+                Object.DestroyImmediate(windowObject);
+                Object.DestroyImmediate(viewObject);
+            }
+        }
+
         internal static UiShopView BuildView(GameObject viewObject)
         {
             var view = viewObject.GetComponent<UiShopView>();
