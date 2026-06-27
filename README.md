@@ -4,6 +4,32 @@ This repository is a Unity reference project for building UI on top of `UI.Windo
 
 It is intended to be used as an information source for other Unity projects. Treat it as a working architecture sample, pattern library, and migration record rather than as a package that should be copied wholesale.
 
+## Project History
+
+This project was created as a synthesis of two existing UI architecture references:
+
+- [OpenUI](https://github.com/vetcat/OpenUI) was used as the source for the MVP / Model-View-View-Presenter concept, presenter/view responsibilities, UI behavior examples, and representative SampleScene layouts.
+- [UI.Windows-submodule](https://github.com/chromealex/UI.Windows-submodule) was used as the source for the window lifecycle model: loading, unloading, layouts, pooling, resource management, and runtime window ownership. This repository currently depends on the pinned fork `https://github.com/vetcat/UI.Windows-submodule.git#60a4bf6e47c85ad57935f633a53fc3ca8b707167`.
+
+The original problem with directly adopting OpenUI was that its sample approach creates UI prefabs at application start regardless of whether a player will use those windows in the current session. That is workable for small demos, but it is a poor fit for large Unity projects with many windows, mobile memory pressure, and session-specific UI usage.
+
+The task for this repository was:
+
+```text
+Keep the MVP / MVVP architecture idea and usage examples from OpenUI,
+but replace the eager prefab/window ownership approach with UI.Windows lifecycle,
+loading, unloading, layouts, pooling, and resource management.
+
+Do this without mandatory Zenject or UniRx.
+Use R3 as the reactive foundation.
+Use a simple CompositionRoot for explicit scene wiring.
+Port representative OpenUI UI examples onto the new approach.
+Verify pooled show/hide lifecycle, show-scoped subscription cleanup, and integrated SampleScene behavior.
+Document the resulting architecture so it can be reused as a reference for other Unity projects.
+```
+
+The project-owned implementation and documentation in this reference repository were produced end-to-end with OpenAI Codex as the LLM coding agent, under Vitaly's direction, review, and task acceptance. Third-party packages and referenced repositories remain external sources; Codex produced the integration code, migration code, tests, and project documentation in this repository.
+
 ## Current Status
 
 - The original migration plan `UIW-1` is complete and closed.
