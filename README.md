@@ -1,6 +1,6 @@
 # UI.Windows MVP Reference
 
-This repository is a Unity reference project for building UI on top of `UI.Windows-submodule` with a project-owned MVP / Model-View-View-Presenter layer, `Cysharp/R3` reactive model ports, and no mandatory Zenject or UniRx dependency.
+This repository is a Unity reference project for building UI on top of `UI.Windows-submodule` with a project-owned MVP / Model-View-View-Presenter layer and `Cysharp/R3` reactive model ports.
 
 It is intended to be used as an information source for other Unity projects. Treat it as a working architecture sample, pattern library, and migration record rather than as a package that should be copied wholesale.
 
@@ -20,7 +20,7 @@ Keep the MVP / MVVP architecture idea and usage examples from OpenUI,
 but replace the eager prefab/window ownership approach with UI.Windows lifecycle,
 loading, unloading, layouts, pooling, and resource management.
 
-Do this without mandatory Zenject or UniRx.
+Keep dependency ownership explicit and project-local.
 Use R3 as the reactive foundation.
 Use a simple CompositionRoot for explicit scene wiring.
 Port representative OpenUI UI examples onto the new approach.
@@ -58,8 +58,8 @@ Read README.md, docs/index.md, docs/uiwindows-mvp-openui-migration-guide.md,
 docs/reference-adoption-checklist.md, docs/reference-architecture-diagram.md,
 docs/r3-mvp-conventions.md, and docs/uiwindows-mvp-pooling-lifecycle.md first.
 Reuse the architecture patterns, lifecycle rules, and test strategy, but adapt names,
-models, prefabs, and scene composition to the target project. Do not import OpenUI,
-Zenject, UniRx, or bypass UI.Windows lifecycle with GameObject.SetActive.
+models, prefabs, and scene composition to the target project. Do not import OpenUI
+runtime infrastructure or bypass UI.Windows lifecycle with GameObject.SetActive.
 ```
 
 For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/ai-agent-reference-prompt.md).
@@ -68,8 +68,8 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 
 | Layer | Location | Responsibility |
 | --- | --- | --- |
-| Composition root | `Assets/Scripts/CompositionRoot` | Scene service construction, initialization, disposal, and explicit dependency wiring. No UI.Windows, MVP, OpenUI, Zenject, UniRx, or R3 dependency in the reusable runtime assembly. |
-| Model and ports | `Assets/Scripts/ProjectContext` | Project/application services and explicit read-model/command/request ports. May expose read-only R3 state or streams. Must not depend on UI.Windows windows, Unity UI views, presenters, DOTween, OpenUI, Zenject, or UniRx. |
+| Composition root | `Assets/Scripts/CompositionRoot` | Scene service construction, initialization, disposal, and explicit dependency wiring. No UI.Windows, MVP, OpenUI, or R3 dependency in the reusable runtime assembly. |
+| Model and ports | `Assets/Scripts/ProjectContext` | Project/application services and explicit read-model/command/request ports. May expose read-only R3 state or streams. Must not depend on UI.Windows windows, Unity UI views, presenters, DOTween, or OpenUI. |
 | UI adapter | `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` | Presenter contracts, UI.Windows window binding, lifecycle event forwarding, and show-scoped subscription ownership. |
 | UI implementation | `Assets/Scripts/UiWindowsMvp/Runtime/SampleSceneWindows` | UI.Windows windows, views, presenters, launcher examples, DOTween UI/effects rendering, and SampleScene-specific wiring. |
 | Prefabs | `Assets/Prefabs/UiWindowsMvp` | UI.Windows-compatible view prefabs with serialized Unity UI references. |
@@ -134,7 +134,6 @@ See [docs/r3-mvp-conventions.md](docs/r3-mvp-conventions.md), [docs/ui-windows-f
 
 - Do not copy this repository as a drop-in package unless the target project intentionally wants the sample scenes, sample models, and demo UI.
 - Do not import OpenUI runtime infrastructure just because OpenUI inspired the behavior.
-- Do not introduce Zenject or UniRx to reproduce the original OpenUI examples.
 - Do not move SampleScene-specific launcher or demo data into a production game's domain model.
 - Do not treat `UIDevelopScene` as runtime verification; use PlayMode tests and `SampleScene` lifecycle flows.
 - Do not preserve runtime-built fallback UI as a final production asset without reviewing the production hardening notes.
