@@ -25,6 +25,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - Unity version: `6000.4.4f1` from `ProjectSettings/ProjectVersion.txt`.
 - Current repository is a Unity project with base project settings plus project-owned CompositionRoot, R3 integration, UI.Windows MVP adapter code, R3-backed player/settings/localization/shop model services, and modal/hint/FX request ports under `Assets/Scripts`.
 - The repository is also intended to serve as a reference source for UI architecture work in other Unity projects. `README.md` is the public entry point, and `docs/index.md` is the curated documentation map for humans and AI agents.
+- Reference-adoption docs now include `docs/reference-adoption-checklist.md`, `docs/ai-agent-reference-prompt.md`, and `docs/reference-architecture-diagram.md` for external project adoption, AI-agent handoff prompts, and architecture/lifecycle diagrams.
 - `UI.Windows-submodule` is integrated as a fork-pinned UPM Git dependency.
 - R3 is integrated as the explicit reactive foundation for the MVP layer through NuGetForUnity plus the R3.Unity UPM package.
 - Free DOTween `1.2.825` is installed from the official Demigiant ZIP source under `Assets/Plugins/Demigiant/DOTween` for UI/effects rendering work.

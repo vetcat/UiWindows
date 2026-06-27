@@ -19,19 +19,24 @@ For humans:
 1. Start with this README.
 2. Read [docs/index.md](docs/index.md) for the documentation map.
 3. Read [docs/uiwindows-mvp-openui-migration-guide.md](docs/uiwindows-mvp-openui-migration-guide.md) for the core architecture rules.
-4. Read [Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md](Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md) before copying presenter lifecycle code.
-5. Inspect one complete vertical slice before porting the pattern, for example `UiTopLeft`, `UiSettings`, `UiShop`, or `UiModal`.
+4. Read [docs/reference-adoption-checklist.md](docs/reference-adoption-checklist.md) before applying the pattern to another project.
+5. Read [docs/reference-architecture-diagram.md](docs/reference-architecture-diagram.md) for the layer and lifecycle diagrams.
+6. Read [Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md](Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md) before copying presenter lifecycle code.
+7. Inspect one complete vertical slice before porting the pattern, for example `UiTopLeft`, `UiSettings`, `UiShop`, or `UiModal`.
 
 For AI agents in another project, provide this repository link and an instruction like:
 
 ```text
 Use https://github.com/vetcat/UiWindows as the UI architecture reference.
 Read README.md, docs/index.md, docs/uiwindows-mvp-openui-migration-guide.md,
+docs/reference-adoption-checklist.md, docs/reference-architecture-diagram.md,
 docs/r3-mvp-conventions.md, and docs/uiwindows-mvp-pooling-lifecycle.md first.
 Reuse the architecture patterns, lifecycle rules, and test strategy, but adapt names,
 models, prefabs, and scene composition to the target project. Do not import OpenUI,
 Zenject, UniRx, or bypass UI.Windows lifecycle with GameObject.SetActive.
 ```
+
+For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/ai-agent-reference-prompt.md).
 
 ## Architecture Summary
 
@@ -77,6 +82,9 @@ Zenject, UniRx, or bypass UI.Windows lifecycle with GameObject.SetActive.
 ## Documentation Map
 
 - [docs/index.md](docs/index.md) - documentation index and recommended read order.
+- [docs/reference-adoption-checklist.md](docs/reference-adoption-checklist.md) - step-by-step adoption checklist for another Unity project.
+- [docs/ai-agent-reference-prompt.md](docs/ai-agent-reference-prompt.md) - ready-to-use prompts for implementation and review agents.
+- [docs/reference-architecture-diagram.md](docs/reference-architecture-diagram.md) - layer, dependency, runtime show, and request-port diagrams.
 - [docs/project-architecture-skeleton.md](docs/project-architecture-skeleton.md) - folder, assembly, scene, and ownership boundaries.
 - [Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md](Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md) - current presenter/window adapter API and lifecycle mapping.
 - [docs/r3-mvp-conventions.md](docs/r3-mvp-conventions.md) - R3 dependency pins, public-port rules, and lifetime rules.
@@ -121,7 +129,7 @@ When adapting this architecture in another project, keep the same verification s
 These are already represented by the `UIW-26` production-hardening plan:
 
 - Add a concise mobile readiness baseline with profiler targets.
-- Consolidate repeated launcher/runtime window source boilerplate.
+- Consolidate repeated launcher/runtime window source boilerplate through `UIW-28`.
 - Document loading, first-show, and prewarm policy per window category.
 - Reduce runtime-built fallback UI in favor of prefab-first production assets.
 - Add local validation scripts for dependency boundaries, lifecycle shortcuts, final newlines, and documentation drift.

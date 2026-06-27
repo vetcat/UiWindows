@@ -5,18 +5,28 @@ This index helps humans and AI agents use the repository as a UI architecture re
 ## Recommended Read Order
 
 1. [../README.md](../README.md) - repository purpose, quick architecture summary, and reference usage prompt.
-2. [project-architecture-skeleton.md](project-architecture-skeleton.md) - folder, assembly, scene, and ownership boundaries.
-3. [uiwindows-mvp-openui-migration-guide.md](uiwindows-mvp-openui-migration-guide.md) - core UI.Windows MVP migration rules and request-port patterns.
-4. [../Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md](../Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md) - presenter/window adapter API and lifecycle mapping.
-5. [r3-mvp-conventions.md](r3-mvp-conventions.md) - R3 dependency pins, public-port rules, and subscription lifetime conventions.
-6. [uiwindows-mvp-pooling-lifecycle.md](uiwindows-mvp-pooling-lifecycle.md) - pooled window lifecycle, show-scope cleanup, and verification checklist.
-7. [uiwindows-mvp-final-reconciliation.md](uiwindows-mvp-final-reconciliation.md) - completed `UIW-1` traceability matrix and migration evidence.
-8. [uiwindows-mvp-production-hardening-plan.md](uiwindows-mvp-production-hardening-plan.md) - active hardening plan and known next improvements.
+2. [reference-adoption-checklist.md](reference-adoption-checklist.md) - step-by-step checklist for adopting the architecture in another Unity project.
+3. [ai-agent-reference-prompt.md](ai-agent-reference-prompt.md) - ready-to-use prompts for implementation and review agents.
+4. [reference-architecture-diagram.md](reference-architecture-diagram.md) - layer, dependency, runtime show, and request-port diagrams.
+5. [project-architecture-skeleton.md](project-architecture-skeleton.md) - folder, assembly, scene, and ownership boundaries.
+6. [uiwindows-mvp-openui-migration-guide.md](uiwindows-mvp-openui-migration-guide.md) - core UI.Windows MVP migration rules and request-port patterns.
+7. [../Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md](../Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md) - presenter/window adapter API and lifecycle mapping.
+8. [r3-mvp-conventions.md](r3-mvp-conventions.md) - R3 dependency pins, public-port rules, and subscription lifetime conventions.
+9. [uiwindows-mvp-pooling-lifecycle.md](uiwindows-mvp-pooling-lifecycle.md) - pooled window lifecycle, show-scope cleanup, and verification checklist.
+10. [uiwindows-mvp-final-reconciliation.md](uiwindows-mvp-final-reconciliation.md) - completed `UIW-1` traceability matrix and migration evidence.
+11. [uiwindows-mvp-production-hardening-plan.md](uiwindows-mvp-production-hardening-plan.md) - active hardening plan and known next improvements.
+
+## Reference Adoption
+
+- [reference-adoption-checklist.md](reference-adoption-checklist.md) explains how to transfer the architecture to another Unity project without copying demo code blindly.
+- [ai-agent-reference-prompt.md](ai-agent-reference-prompt.md) gives implementation and review prompts for AI agents using this repository as a source reference.
+- [reference-architecture-diagram.md](reference-architecture-diagram.md) gives Mermaid diagrams for the layer ownership, runtime show flow, request-port flow, and pooled-window rule.
 
 ## Architecture And Boundaries
 
 - [project-architecture-skeleton.md](project-architecture-skeleton.md) defines the repository's architectural layers and scene roles.
 - [../Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md](../Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md) defines the current presenter/window adapter API.
+- [reference-architecture-diagram.md](reference-architecture-diagram.md) gives a compact visual map of the same boundaries.
 - [r3-mvp-conventions.md](r3-mvp-conventions.md) defines the reactive state and subscription ownership rules.
 - [uiwindows-mvp-pooling-lifecycle.md](uiwindows-mvp-pooling-lifecycle.md) defines show-scoped lifecycle behavior for pooled UI.Windows windows.
 - [uiwindows-mvp-openui-migration-guide.md](uiwindows-mvp-openui-migration-guide.md) defines how OpenUI behavior was adapted without copying OpenUI infrastructure.
