@@ -18,7 +18,7 @@ It maps the original parent goal and OpenUI migration scope to current repositor
 
 ## Final Recommendation
 
-Recommendation: close `UIW-1` as complete after `UIW-25` is accepted, merged, and verified by the normal Orchestrator/Closure Executor flow.
+Recommendation: close `UIW-1` as complete when Vitaly explicitly authorizes parent closure. `UIW-25` was accepted, merged, pushed, and closed through the normal Orchestrator/Closure Executor flow on 2026-06-27.
 
 The repository now satisfies the parent plan's intended scope: a UI.Windows-owned lifecycle and resource/pooling layer, a project-owned MVP presenter adapter, R3-backed model/read-model ports, CompositionRoot wiring without Zenject, no UniRx dependency, and migrated representative OpenUI SampleScene UI examples and layouts. The implementation is not a literal OpenUI clone and does not import OpenUI infrastructure; that is an explicit project constraint, not a remaining gap.
 
@@ -80,4 +80,4 @@ The workflow loads `SampleScene`, resolves services and launchers through `Scene
 
 ## Closure Position
 
-`UIW-1` should remain open until `UIW-25` is accepted and closed. After that closure, the parent can be closed as complete with this document and the `UIW-25` Linear note as the final evidence package.
+`UIW-25` is accepted, merged, pushed, and closed. `UIW-1` can now be closed as complete with this document and the `UIW-25` Linear note as the final evidence package when Vitaly explicitly authorizes parent closure.

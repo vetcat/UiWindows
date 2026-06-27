@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-24-complete-next-uiw-25
+status: uiw-25-complete-uiw-1-ready-for-explicit-closure
 ---
 
 # Project Context for AI Agents
@@ -43,7 +43,8 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `UIW-22` completed the object indicator dynamic UI layer and character reward source integration follow-up.
 - `UIW-23` completed the top-center time and press-hold hint example follow-up.
 - `UIW-24` completed the visual/layout parity and `UIDevelopScene` preview coverage audit follow-up.
-- Next ordered child issue: `UIW-25` - `18 - Integrated SampleScene acceptance workflow and final UIW-1 reconciliation`.
+- `UIW-25` completed the integrated `SampleScene` acceptance workflow and final `UIW-1` reconciliation follow-up.
+- All ordered `UIW-1` child issues are now complete or canceled in the latest closure snapshot. Parent `UIW-1` remains open in Linear and is ready for explicit closure as complete if Vitaly authorizes that parent-level closure.
 - Linear child issue statuses are the source of truth for task progress. Local files such as `AGENTS.md` and this project context may record issue order, durable facts, and recent snapshots, but future agents must query Linear for current child status when Linear is available.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting all migrated `UiWindowsMvp` view prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
@@ -188,7 +189,7 @@ UIW-19 top-right HUD implementation snapshot on 2026-06-21:
 - Focused PlayMode coverage includes `UiTopRightPresenterTests.Presenter_BindsCoinsAndRegistersFxTargetOnlyWhileShown` and `UiTopRightWindowLifecycleTests.ReopenCyclesThroughWindowSystem_ReusePooledWindowAndRoutesFxTarget`; the full `UiWindowsMvp.Tests.PlayMode` suite passed `23/23` on the implementation branch.
 - `UIW-19` review follow-up fixed stale FX anchors by resetting `UiFxView` to fallback collect/spend targets when no registered UI target is available or coordinate resolution fails.
 - Closure verification passed on 2026-06-21: Rider build and targeted diagnostics passed, Unity `UiWindowsMvp.Tests.PlayMode` passed `23/23`, Unity Console had 0 errors and 0 warnings after clearing TestRunner logs, `git diff --check main...HEAD` passed, no new forbidden UniRx/Zenject/OpenUI/SetActive lifecycle dependency was introduced, and DOTween did not leak into `Assets/Scripts/ProjectContext`.
-- This advances the `UIW-1` target for UiTopRight coin HUD and coin FX target integration only. At `UIW-19` closure time, `UIW-20` through `UIW-25` were still parent gaps; follow-ups through `UIW-24` are now complete, leaving `UIW-25`.
+- This advanced the `UIW-1` target for UiTopRight coin HUD and coin FX target integration only. At `UIW-19` closure time, `UIW-20` through `UIW-25` were still parent gaps; those follow-ups later completed through `UIW-25`.
 
 UIW-20 down-right settings launcher implementation snapshot on 2026-06-22:
 
@@ -200,7 +201,7 @@ UIW-20 down-right settings launcher implementation snapshot on 2026-06-22:
 - `Assets/Scenes/SampleScene.unity` wires `UiDownRightView.prefab` into `UiTopLeftDemoInstaller` and opens it on start through `WindowSystem.Show`.
 - Focused PlayMode coverage includes `UiDownRightPresenterTests.Presenter_BindsSettingsButtonAndRefreshesLocalizedLabelOnlyWhileShown` and `UiDownRightWindowLifecycleTests.ReopenCyclesThroughWindowSystem_OpenSettingsWithoutDuplicateHandlers`; existing SampleScene lifecycle test cleanup now includes `UiDownRightWindow` because it auto-starts with SampleScene.
 - Verification on the implementation branch passed: Rider targeted diagnostics and solution build, Unity compile/Console, `UiWindowsMvp.Tests.PlayMode` 25/25, `ProjectContext` settings/localization tests 3/3, `git diff --check`, and forbidden dependency/lifecycle scans. No new UniRx, Zenject, OpenUI runtime, or `SetActive(` lifecycle usage was introduced.
-- This advances the `UIW-1` target for OpenUI down-right settings navigation layout only. At `UIW-20` closure time, `UIW-21` through `UIW-25` were still parent gaps outside that issue's scope; follow-ups through `UIW-24` are now complete, leaving `UIW-25`.
+- This advanced the `UIW-1` target for OpenUI down-right settings navigation layout only. At `UIW-20` closure time, `UIW-21` through `UIW-25` were still parent gaps outside that issue's scope; those follow-ups later completed through `UIW-25`.
 
 UIW-21 down-left shop launcher implementation snapshot on 2026-06-23:
 
@@ -213,7 +214,7 @@ UIW-21 down-left shop launcher implementation snapshot on 2026-06-23:
 - Focused PlayMode coverage includes `UiDownLeftPresenterTests.Presenter_BindsShopButtonAndRefreshesLocalizedLabelOnlyWhileShown`, `UiShopPresenterTests.Presenter_ClickingItemRequestsModalAndUpdatesVisibilityThroughPorts`, and `UiDownLeftWindowLifecycleTests.LauncherOpensShop_HidesWhileShopVisible_AndItemClickShowsModalOncePerCycle`; existing SampleScene lifecycle test cleanup now includes `UiDownLeftWindow` because it auto-starts with SampleScene.
 - Verification on the implementation branch passed: Rider formatting/targeted diagnostics/build, Unity compile/Console, Unity prefab info/hierarchy, `SampleScene` validation, focused UIW-21 PlayMode tests 3/3, `UiWindowsMvp.Tests.PlayMode` 28/28, `ProjectContext.Player.Tests.PlayMode` 15/15, `git diff --check`, and forbidden dependency/lifecycle scans. No new UniRx, Zenject, OpenUI runtime, or `SetActive(` lifecycle usage was introduced, and DOTween did not leak into `Assets/Scripts/ProjectContext`.
 - `UIW-21` closure completed on 2026-06-23: implementation commit `ae588ee` was merged to `main` with merge commit `6ed3b76`, pushed to `origin/main`, and Linear was moved to `Done`.
-- This advances the `UIW-1` target for OpenUI down-left shop navigation and shop/modal behavior only. At `UIW-21` closure time, `UIW-24` and `UIW-25` were pending; `UIW-23` and `UIW-24` completed later, leaving `UIW-25`.
+- This advanced the `UIW-1` target for OpenUI down-left shop navigation and shop/modal behavior only. At `UIW-21` closure time, `UIW-24` and `UIW-25` were pending; those follow-ups later completed through `UIW-25`.
 
 UIW-22 object indicator dynamic UI implementation snapshot on 2026-06-26:
 
@@ -227,7 +228,7 @@ UIW-22 object indicator dynamic UI implementation snapshot on 2026-06-26:
 - Focused PlayMode coverage includes object indicator presenter show/hide behavior, live-show-scope hide-transition regression coverage, SampleScene lifecycle/pooling coverage, source-to-target FX routing, and player-service source-aware FX request checks.
 - Verification passed on 2026-06-26: Unity compile and Console check, Rider diagnostics/build, focused PlayMode tests, `UiWindowsMvp.Tests.PlayMode` 31/31 after review follow-up, earlier combined relevant PlayMode suite 46/46, `SampleScene` validation, `git diff --check`, final-newline checks, forbidden dependency/lifecycle scans, and DOTween leakage scan.
 - `UIW-22` closure completed on 2026-06-26: implementation commit `a419904` was merged to `main` with merge commit `c1be7c0`, pushed to `origin/main`, and Linear was moved to `Done`.
-- This advances the `UIW-1` target for OpenUI object indicator / dynamic UI layer and representative character reward source integration only. At `UIW-22` closure time, `UIW-24` and `UIW-25` were pending; `UIW-23` and `UIW-24` completed later, leaving `UIW-25`.
+- This advanced the `UIW-1` target for OpenUI object indicator / dynamic UI layer and representative character reward source integration only. At `UIW-22` closure time, `UIW-24` and `UIW-25` were pending; those follow-ups later completed through `UIW-25`.
 
 UIW-23 top-center time and press-hold hint implementation snapshot on 2026-06-26:
 
@@ -240,7 +241,7 @@ UIW-23 top-center time and press-hold hint implementation snapshot on 2026-06-26
 - Focused PlayMode coverage includes localized time refresh, show-scope cleanup, hold cancellation, one-shot hint emission, hidden-window guard behavior, and pooled `WindowSystem.Show -> Hide -> reopen` lifecycle coverage.
 - Verification passed on 2026-06-26: Rider diagnostics/build, Unity compile and Console check, focused UIW-23 PlayMode tests 3/3, `UiWindowsMvp.Tests.PlayMode` 34/34, `ProjectContext.Player.Tests.PlayMode` 15/15, `SampleScene` validation, prefab inspection, `git diff --check`, final-newline checks, forbidden dependency/lifecycle scans, and DOTween leakage scan.
 - `UIW-23` closure completed on 2026-06-26: implementation commit `f304a3e` was merged to `main` with merge commit `c8fd85f`, pushed to `origin/main`, and Linear was moved to `Done`.
-- This advances the `UIW-1` target for OpenUI top-center time and press-hold hint behavior only. At `UIW-23` closure time, `UIW-24` and `UIW-25` were pending; `UIW-24` completed later, leaving `UIW-25`.
+- This advanced the `UIW-1` target for OpenUI top-center time and press-hold hint behavior only. At `UIW-23` closure time, `UIW-24` and `UIW-25` were pending; those follow-ups later completed through `UIW-25`.
 
 UIW-24 visual/layout parity and UIDevelopScene preview coverage snapshot on 2026-06-27:
 
@@ -250,7 +251,16 @@ UIW-24 visual/layout parity and UIDevelopScene preview coverage snapshot on 2026
 - `UIDevelopScene` remains a static prefab inspection scene only. It does not add `WindowSystem.Show`, presenters, CompositionRoot wiring, R3 model binding, runtime workflow, Zenject, UniRx, or OpenUI runtime infrastructure.
 - Accepted visual/layout deviations: the project uses one consolidated `UiModalView` for OpenUI's info OK / OK-Cancel / wait modal shapes; `UiFxView` idle preview is hierarchy/anchor-focused because runtime FX items are request-driven; `UiObjectIndicatorView` contains the representative indicator item structure rather than preserving OpenUI's separate indicator item prefab split; settings/shop generated rows remain runtime/model-driven.
 - `UIW-24` closure completed on 2026-06-27: implementation commit `4666928` was merged to `main` with merge commit `b2b0ee8`, pushed to `origin/main`, and Linear was moved to `Done`.
-- This advances the `UIW-1` visual/layout parity and static preview coverage target. `UIW-25` remains the final parent gap for integrated SampleScene acceptance workflow and final reconciliation.
+- This advanced the `UIW-1` visual/layout parity and static preview coverage target. `UIW-25` later completed the final integrated `SampleScene` acceptance and parent reconciliation gate.
+
+UIW-25 integrated SampleScene acceptance and final reconciliation snapshot on 2026-06-27:
+
+- `Assets/Scripts/UiWindowsMvp/Tests/PlayMode/SampleSceneIntegratedAcceptanceTests.cs` adds the final integrated `SampleScene` PlayMode acceptance workflow.
+- The acceptance workflow loads `SampleScene`, resolves services and launchers through `SceneCompositionRoot`, exercises migrated HUD, top-right coins, top-center hold hint, down-right settings, down-left shop/modal, hints, FX, object indicator reward source, pooled hide/reopen, representative hidden show-scope cleanup, and final `WindowSystem.Clean` presenter-binding disposal.
+- `docs/uiwindows-mvp-final-reconciliation.md` records the final `UIW-1` traceability matrix. Every listed parent target is mapped to implemented artifacts, verification evidence, and `Done` status, with accepted deviations documented as intentional architecture or visual choices rather than remaining gaps.
+- Verification passed on 2026-06-27: Rider diagnostics/build, Unity refresh/compile and Console, focused integrated PlayMode test 1/1, full `UiWindowsMvp.Tests.PlayMode` 35/35, `ProjectContext.Player.Tests.PlayMode` 15/15, validation for all 11 migrated prefabs, `SampleScene` and `UIDevelopScene` scene validation, `git diff --check`, final-newline checks, forbidden dependency/lifecycle scans, and DOTween leakage scan.
+- `UIW-25` closure completed on 2026-06-27: implementation commit `e07e0a9` was merged to `main` with merge commit `50c99cf`, pushed to `origin/main`, and Linear was moved to `Done`.
+- `UIW-1` remains open in Linear after `UIW-25` closure. The final reconciliation recommendation is to close `UIW-1` as complete when Vitaly explicitly authorizes parent closure.
 
 UIW-20 sub-agent Executor flow trial on 2026-06-22:
 

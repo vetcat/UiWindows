@@ -7,7 +7,7 @@ Issue: `UIW-24`
 
 This audit records the static visual/layout parity state for migrated `UiWindowsMvp` view prefabs against their OpenUI source references. It also records the `UIDevelopScene` static preview coverage baseline after the follow-up OpenUI view ports from `UIW-19` through `UIW-23`.
 
-This is not a runtime lifecycle test. `Assets/Scenes/Develop/UIDevelopScene.unity` remains a static prefab inspection scene. UI.Windows lifecycle, pooling, presenter binding, R3 subscriptions, and integrated SampleScene acceptance remain under `Assets/Scenes/SampleScene.unity`, PlayMode tests, and the follow-up `UIW-25` workflow.
+This is not a runtime lifecycle test. `Assets/Scenes/Develop/UIDevelopScene.unity` remains a static prefab inspection scene. UI.Windows lifecycle, pooling, presenter binding, R3 subscriptions, and integrated SampleScene acceptance remain under `Assets/Scenes/SampleScene.unity`, PlayMode tests, and the final `UIW-25` workflow.
 
 ## Preview Coverage Baseline
 
@@ -66,7 +66,7 @@ Current preview instances:
 
 No additional visual/layout defect requiring a new Linear issue was identified during this audit. The missing static preview coverage was applied directly in `UIDevelopScene`.
 
-`UIW-25` remains the next parent gap for integrated SampleScene acceptance workflow and final `UIW-1` reconciliation.
+`UIW-25` later completed the integrated SampleScene acceptance workflow and final `UIW-1` reconciliation.
 
 ## Verification Evidence
 
