@@ -20,6 +20,8 @@ Core direction:
 - Use a simple scene `CompositionRoot` for dependency wiring.
 - Port most `OpenUI` examples and layouts onto the new approach after a small vertical slice is proven.
 
+The original migration parent `UIW-1` was closed as complete on 2026-06-27. The active Linear parent for the next iteration is `UIW-26`, focused on production hardening, code readability, maintainability for AI/human agents, and mobile readiness.
+
 Do not import all OpenUI code blindly. Do not bypass `WindowSystem.Show/Hide` for UI.Windows lifecycle.
 Do not build a parallel custom Rx-like framework now that R3 is integrated.
 
@@ -166,38 +168,33 @@ Available issue labels for team `UiWindows`:
 - `Improvement`
 - `Bug`
 
-Main Linear task-plan:
+Completed predecessor plan:
 
 - Parent issue: `UIW-1` - `[Plan] UI.Windows MVP migration with R3, without Zenject/UniRx`
 - URL: https://linear.app/white-rabbits-rabbit-hole/issue/UIW-1/plan-uiwindows-mvp-migration-with-r3-without-zenjectunirx
-- Future agents should open `UIW-1`, inspect child issues ordered by numeric prefix, read current child issue statuses from Linear, and pick the first child issue that is not `Done` or `Canceled` unless the user says otherwise.
+- Status: closed as `Done` on 2026-06-27 after the final reconciliation in `docs/uiwindows-mvp-final-reconciliation.md`.
+
+Main Linear task-plan:
+
+- Parent issue: `UIW-26` - `[Plan] UI.Windows MVP production hardening and mobile readiness`
+- URL: https://linear.app/white-rabbits-rabbit-hole/issue/UIW-26/plan-uiwindows-mvp-production-hardening-and-mobile-readiness
+- Supporting plan doc: `docs/uiwindows-mvp-production-hardening-plan.md`
+- Purpose: harden the completed MVP migration for production-scale Unity/mobile use without reopening the already accepted migration scope.
+- Future agents should open `UIW-26`, inspect child issues ordered by numeric prefix, read current child issue statuses from Linear, and pick the first child issue that is not `Done` or `Canceled` unless the user says otherwise.
 - Linear child issue status is the source of truth for task progress. Local files such as `AGENTS.md` and `_bmad-output/project-context.md` may record issue order, durable context, and recent snapshots, but must not be treated as the authoritative progress ledger when Linear is available.
 - Closing child issues is not enough to close or accept the parent plan. For parent/umbrella issues, run a parent reconciliation review against the original parent description, comments, project context, and current repository state before recommending parent closure.
-- Broad parent wording such as "most", "representative", "finalize", "complete", or "migration" requires an explicit coverage list or traceability matrix: parent target -> implemented artifact -> verification evidence -> status (`Done`, `Partial`, `Deferred`, `Missing`).
+- Broad parent wording such as "production", "hardening", "mobile readiness", "complete", or "migration" requires an explicit coverage list or traceability matrix: parent target -> implemented artifact -> verification evidence -> status (`Done`, `Partial`, `Deferred`, `Missing`).
 
 Child issue order reference; query Linear for current status:
 
-- `UIW-12` - `00 - Establish UI.Windows fork and pinned UPM dependency workflow`
-- `UIW-2` - `01 - Integrate UI.Windows-submodule and resolve Unity compatibility`
-- `UIW-3` - `02 - Create project architecture skeleton and scene CompositionRoot`
-- `UIW-13` - `03 - Integrate R3 reactive foundation for MVP`
-- `UIW-4` - `03x - Canceled: custom reactive primitives superseded by R3`
-- `UIW-5` - `04 - Implement MVP presenter lifecycle adapter for UI.Windows with R3`
-- `UIW-6` - `05 - Port Player model/service from OpenUI with R3`
-- `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3`
-- `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows`
-- `UIW-9` - `08 - Port settings and localization slice with R3`
-- `UIW-10` - `09 - Port shop and collection pooling slice with R3`
-- `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration`
-- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs`
-- `UIW-18` - `11 - Audit UIW-1 completion against original OpenUI migration scope`
-- `UIW-19` - `12 - Port UiTopRight coin HUD and coin FX target integration`
-- `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation`
-- `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction`
-- `UIW-22` - `15 - Port object indicator dynamic UI layer and character reward source integration`
-- `UIW-23` - `16 - Port UiTopCenter time and press-hold hint example`
-- `UIW-24` - `17 - Visual/layout parity and UIDevelopScene preview coverage audit`
-- `UIW-25` - `18 - Integrated SampleScene acceptance workflow and final UIW-1 reconciliation`
+- `UIW-27` - `00 - Establish production hardening baseline and mobile readiness targets`
+- `UIW-28` - `01 - Consolidate UI.Windows MVP launcher and runtime window source infrastructure`
+- `UIW-29` - `02 - Define mobile loading, prewarm, and first-show policy`
+- `UIW-30` - `03 - Audit and optimize UI layout, raycast, and text settings for mobile`
+- `UIW-31` - `04 - Scale dynamic collections and object indicator update paths`
+- `UIW-32` - `05 - Move fallback-built UI toward prefab-first production assets`
+- `UIW-33` - `06 - Add production hardening validation gates for future agents`
+- `UIW-34` - `07 - Final production hardening reconciliation and next-stage readiness review`
 
 Task creation should use the Linear `save_issue` tool with `team: "UiWindows"`. Do not create test issues just to verify write permission unless the user explicitly asks.
 
@@ -237,8 +234,8 @@ Use this mode when the user says the chat is an orchestrator, asks to delegate a
 
 The Orchestrator should:
 
-- Read `AGENTS.md`, `_bmad-output/project-context.md`, `UIW-1`, and the relevant child issue.
-- Pick the first child issue under `UIW-1` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
+- Read `AGENTS.md`, `_bmad-output/project-context.md`, `UIW-26`, and the relevant child issue.
+- Pick the first child issue under `UIW-26` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
 - Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
 - Verify blocker status before preparing implementation work.
 - Avoid implementing the task directly unless Vitaly explicitly asks the Orchestrator to do the implementation personally without an Executor.

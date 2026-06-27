@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-25-complete-uiw-1-ready-for-explicit-closure
+status: uiw-1-closed-uiw-26-production-hardening-ready
 ---
 
 # Project Context for AI Agents
@@ -36,7 +36,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `docs/dotween-ui-fx-dependency.md` records the DOTween source/version, setup workflow, generated files, and usage boundary.
 - `docs/uiwindows-mvp-openui-migration-guide.md` records the final OpenUI migration rules for UI.Windows lifecycle, CompositionRoot boundaries, R3 request ports, presenter binding, pooling cleanup, DOTween usage, and prefab/scene roles.
 - `UIW-17` and `UIW-11` are complete; modal, hints, representative collect/spend FX ports, and final OpenUI migration docs are implemented.
-- `UIW-18` completed the parent reconciliation audit and confirmed the original `UIW-1` goal is not yet fully satisfied; follow-up child issues `UIW-19` through `UIW-25` were created from the audit gaps.
+- `UIW-18` completed the parent reconciliation audit and confirmed the original `UIW-1` goal was not yet fully satisfied at that time; follow-up child issues `UIW-19` through `UIW-25` were created from the audit gaps.
 - `UIW-19` completed the top-right coin HUD and coin FX target integration follow-up.
 - `UIW-20` completed the down-right settings launcher follow-up.
 - `UIW-21` completed the down-left shop launcher and shop/modal interaction follow-up.
@@ -44,7 +44,11 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `UIW-23` completed the top-center time and press-hold hint example follow-up.
 - `UIW-24` completed the visual/layout parity and `UIDevelopScene` preview coverage audit follow-up.
 - `UIW-25` completed the integrated `SampleScene` acceptance workflow and final `UIW-1` reconciliation follow-up.
-- All ordered `UIW-1` child issues are now complete or canceled in the latest closure snapshot. Parent `UIW-1` remains open in Linear and is ready for explicit closure as complete if Vitaly authorizes that parent-level closure.
+- `UIW-1` was closed as `Done` in Linear on 2026-06-27 after explicit Vitaly authorization and a final parent reconciliation review.
+- `UIW-26` is the active Linear parent plan for the next iteration: `[Plan] UI.Windows MVP production hardening and mobile readiness`.
+- `docs/uiwindows-mvp-production-hardening-plan.md` records the durable scope, non-goals, child issue order, execution flow, and final reconciliation rule for `UIW-26`.
+- `UIW-26` is not a reopening of the accepted migration scope. It is a production-hardening plan for readability, maintainability, validation gates, mobile loading/prewarm policy, UI layout/raycast/text optimization, dynamic collection scaling, object indicator scaling, and reducing runtime-built fallback UI.
+- The first ordered child issue under `UIW-26` is `UIW-27` - `00 - Establish production hardening baseline and mobile readiness targets`.
 - Linear child issue statuses are the source of truth for task progress. Local files such as `AGENTS.md` and this project context may record issue order, durable facts, and recent snapshots, but future agents must query Linear for current child status when Linear is available.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting all migrated `UiWindowsMvp` view prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
@@ -260,7 +264,7 @@ UIW-25 integrated SampleScene acceptance and final reconciliation snapshot on 20
 - `docs/uiwindows-mvp-final-reconciliation.md` records the final `UIW-1` traceability matrix. Every listed parent target is mapped to implemented artifacts, verification evidence, and `Done` status, with accepted deviations documented as intentional architecture or visual choices rather than remaining gaps.
 - Verification passed on 2026-06-27: Rider diagnostics/build, Unity refresh/compile and Console, focused integrated PlayMode test 1/1, full `UiWindowsMvp.Tests.PlayMode` 35/35, `ProjectContext.Player.Tests.PlayMode` 15/15, validation for all 11 migrated prefabs, `SampleScene` and `UIDevelopScene` scene validation, `git diff --check`, final-newline checks, forbidden dependency/lifecycle scans, and DOTween leakage scan.
 - `UIW-25` closure completed on 2026-06-27: implementation commit `e07e0a9` was merged to `main` with merge commit `50c99cf`, pushed to `origin/main`, and Linear was moved to `Done`.
-- `UIW-1` remains open in Linear after `UIW-25` closure. The final reconciliation recommendation is to close `UIW-1` as complete when Vitaly explicitly authorizes parent closure.
+- `UIW-1` parent closure completed on 2026-06-27 after Vitaly explicitly authorized parent-level closure. The follow-up production-hardening stage is tracked under `UIW-26`.
 
 UIW-20 sub-agent Executor flow trial on 2026-06-22:
 
@@ -559,6 +563,8 @@ Preferred implementation sequence:
 8. Port modal windows, hints, object indicators, and FX after core lifecycle is stable.
 9. Add editor/playmode tests equivalent to OpenUI's existing tests, but using CompositionRoot test setup instead of Zenject `TestBase`.
 
+This migration sequence was completed and reconciled under `UIW-1` on 2026-06-27. The active follow-up plan is production hardening and mobile readiness under `UIW-26`.
+
 ## Linear Task Plan
 
 Linear MCP access was verified on 2026-06-06.
@@ -569,16 +575,24 @@ Use the Linear team `UiWindows` for implementation tracking:
 - Available statuses: `Backlog`, `Todo`, `In Progress`, `Done`, `Canceled`, `Duplicate`
 - Available labels: `Feature`, `Improvement`, `Bug`
 
-Main parent issue:
+Completed predecessor parent:
 
 - `UIW-1` - `[Plan] UI.Windows MVP migration with R3, without Zenject/UniRx`
 - URL: https://linear.app/white-rabbits-rabbit-hole/issue/UIW-1/plan-uiwindows-mvp-migration-with-r3-without-zenjectunirx
+- Status: closed as `Done` on 2026-06-27 after the final reconciliation in `docs/uiwindows-mvp-final-reconciliation.md`.
+
+Main parent issue:
+
+- `UIW-26` - `[Plan] UI.Windows MVP production hardening and mobile readiness`
+- URL: https://linear.app/white-rabbits-rabbit-hole/issue/UIW-26/plan-uiwindows-mvp-production-hardening-and-mobile-readiness
+- Supporting plan doc: `docs/uiwindows-mvp-production-hardening-plan.md`
+- Scope: improve production readiness, mobile performance posture, source readability, validation gates, and maintainability of the completed UI.Windows MVP migration without reopening accepted `UIW-1` migration scope.
 
 Future AI chat workflow:
 
 1. Read `AGENTS.md`.
 2. Read this `project-context.md`.
-3. Open Linear issue `UIW-1`.
+3. Open Linear issue `UIW-26`.
 4. Review child issues ordered by numeric prefix.
 5. Read current child issue statuses from Linear and pick the first child issue that is not `Done` or `Canceled`, unless Vitaly explicitly chooses another task.
 6. Verify available Linear, Rider, Unity, and validation tooling through actual session tools/resources; report unavailable or timed-out tooling explicitly.
@@ -590,32 +604,19 @@ Future AI chat workflow:
 
 Child issue order reference; query Linear for current status:
 
-- `UIW-12` - `00 - Establish UI.Windows fork and pinned UPM dependency workflow`
-- `UIW-2` - `01 - Integrate UI.Windows-submodule and resolve Unity compatibility`
-- `UIW-3` - `02 - Create project architecture skeleton and scene CompositionRoot`
-- `UIW-13` - `03 - Integrate R3 reactive foundation for MVP`
-- `UIW-4` - `03x - Canceled: custom reactive primitives superseded by R3`
-- `UIW-5` - `04 - Implement MVP presenter lifecycle adapter for UI.Windows with R3`
-- `UIW-6` - `05 - Port Player model/service from OpenUI with R3`
-- `UIW-7` - `06 - Build first vertical slice: UiTopLeft on UI.Windows MVP with R3`
-- `UIW-8` - `07 - Verify pooling and R3 subscription lifecycle for MVP windows`
-- `UIW-9` - `08 - Port settings and localization slice with R3`
-- `UIW-10` - `09 - Port shop and collection pooling slice with R3`
-- `UIW-17` - `09a - Install DOTween dependency for UI.Windows MVP FX migration`
-- `UIW-11` - `10 - Port modal, hints, FX examples and finalize R3 migration docs`
-- `UIW-18` - `11 - Audit UIW-1 completion against original OpenUI migration scope`
-- `UIW-19` - `12 - Port UiTopRight coin HUD and coin FX target integration`
-- `UIW-20` - `13 - Port UiDownRight settings launcher into SampleScene navigation`
-- `UIW-21` - `14 - Port UiDownLeft shop launcher and shop/modal interaction`
-- `UIW-22` - `15 - Port object indicator dynamic UI layer and character reward source integration`
-- `UIW-23` - `16 - Port UiTopCenter time and press-hold hint example`
-- `UIW-24` - `17 - Visual/layout parity and UIDevelopScene preview coverage audit`
-- `UIW-25` - `18 - Integrated SampleScene acceptance workflow and final UIW-1 reconciliation`
+- `UIW-27` - `00 - Establish production hardening baseline and mobile readiness targets`
+- `UIW-28` - `01 - Consolidate UI.Windows MVP launcher and runtime window source infrastructure`
+- `UIW-29` - `02 - Define mobile loading, prewarm, and first-show policy`
+- `UIW-30` - `03 - Audit and optimize UI layout, raycast, and text settings for mobile`
+- `UIW-31` - `04 - Scale dynamic collections and object indicator update paths`
+- `UIW-32` - `05 - Move fallback-built UI toward prefab-first production assets`
+- `UIW-33` - `06 - Add production hardening validation gates for future agents`
+- `UIW-34` - `07 - Final production hardening reconciliation and next-stage readiness review`
 
 Parent/umbrella issue closure rule:
 
 - Do not treat all child issues being `Done` or `Canceled` as parent completion.
-- Before recommending closure for `UIW-1` or any future parent/umbrella plan, build a traceability matrix: parent target -> implemented artifact(s) -> verification evidence -> status (`Done`, `Partial`, `Deferred`, `Missing`).
+- Before recommending closure for `UIW-26` or any future parent/umbrella plan, build a traceability matrix: parent target -> implemented artifact(s) -> verification evidence -> status (`Done`, `Partial`, `Deferred`, `Missing`).
 - Broad parent wording such as "most", "representative", "finalize", "complete", "migration", or "ready" must be converted into an explicit coverage list before closure.
 - If completed child scopes are narrower than the original parent goal, call out the mismatch and either create follow-up tasks or ask Vitaly for explicit reduced-scope acceptance.
 
@@ -628,8 +629,8 @@ Orchestrator mode:
 - Use when Vitaly asks a chat to coordinate, delegate, prepare prompts, review Executor sub-agent/fallback chat work, complete closure through a Closure Executor, or decide the next task.
 - Vitaly should interact with the Orchestrator; the Orchestrator starts and controls implementation and closure agents, with durable handoffs stored in Linear whenever available.
 - Do not implement the selected task directly unless Vitaly explicitly asks the Orchestrator to do the implementation personally without an Executor.
-- Read `AGENTS.md`, this context file, `UIW-1`, and the relevant child issue.
-- Pick the first child issue under `UIW-1` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
+- Read `AGENTS.md`, this context file, `UIW-26`, and the relevant child issue.
+- Pick the first child issue under `UIW-26` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
 - Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
 - Verify available multi-agent, Linear, Rider, Unity, and validation tools before preparing or reviewing task work.
 - Verify blockers before creating implementation prompts.
