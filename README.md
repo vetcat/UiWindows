@@ -32,11 +32,11 @@ The project-owned implementation and documentation in this reference repository 
 
 ## Current Status
 
-- The original migration plan `UIW-1` is complete and closed.
+- The initial migration milestone is complete.
 - The migrated SampleScene UI covers representative OpenUI-inspired HUD, settings, shop, modal, hints, FX, object indicator, and integrated workflow examples.
-- The active follow-up plan is `UIW-26`: production hardening and mobile readiness.
+- The active follow-up phase is production hardening and mobile readiness.
 - The project is suitable as a reference for architecture, lifecycle, R3 ownership, test patterns, and prefab/scene organization.
-- Mobile performance budgets, prewarm policy, runtime fallback cleanup, and larger-data scaling are still being hardened under `UIW-26`.
+- Mobile performance budgets, prewarm policy, runtime fallback cleanup, and larger-data scaling are still being hardened.
 
 ## How To Use This Repository As A Reference
 
@@ -116,8 +116,8 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 - [docs/r3-mvp-conventions.md](docs/r3-mvp-conventions.md) - R3 dependency pins, public-port rules, and lifetime rules.
 - [docs/uiwindows-mvp-pooling-lifecycle.md](docs/uiwindows-mvp-pooling-lifecycle.md) - pooled UI.Windows window lifecycle and verification checklist.
 - [docs/uiwindows-mvp-openui-migration-guide.md](docs/uiwindows-mvp-openui-migration-guide.md) - final OpenUI-to-UI.Windows MVP migration rules.
-- [docs/uiwindows-mvp-final-reconciliation.md](docs/uiwindows-mvp-final-reconciliation.md) - traceability evidence for the completed `UIW-1` migration.
-- [docs/uiwindows-mvp-production-hardening-plan.md](docs/uiwindows-mvp-production-hardening-plan.md) - active `UIW-26` hardening plan.
+- [docs/uiwindows-mvp-final-reconciliation.md](docs/uiwindows-mvp-final-reconciliation.md) - traceability evidence for the completed migration milestone.
+- [docs/uiwindows-mvp-production-hardening-plan.md](docs/uiwindows-mvp-production-hardening-plan.md) - production hardening and mobile readiness plan.
 
 ## Dependency Baseline
 
@@ -137,7 +137,7 @@ See [docs/r3-mvp-conventions.md](docs/r3-mvp-conventions.md), [docs/ui-windows-f
 - Do not introduce Zenject or UniRx to reproduce the original OpenUI examples.
 - Do not move SampleScene-specific launcher or demo data into a production game's domain model.
 - Do not treat `UIDevelopScene` as runtime verification; use PlayMode tests and `SampleScene` lifecycle flows.
-- Do not preserve runtime-built fallback UI as a final production asset without reviewing `UIW-26` hardening notes.
+- Do not preserve runtime-built fallback UI as a final production asset without reviewing the production hardening notes.
 
 ## Verification References
 
@@ -146,16 +146,16 @@ The strongest current verification path is:
 - Presenter and model PlayMode tests under `Assets/Scripts/UiWindowsMvp/Tests/PlayMode` and `Assets/Scripts/ProjectContext/Tests/PlayMode`.
 - Real `WindowSystem.Show -> Hide -> Reopen` lifecycle tests for pooled windows.
 - `SampleSceneIntegratedAcceptanceTests.SampleScene_RunIntegratedMigratedWorkflowAndRepresentativeShowScopeCleanup`.
-- Static dependency and lifecycle scans recorded in issue closure notes and final reconciliation docs.
+- Static dependency and lifecycle scans recorded in the final reconciliation docs.
 
 When adapting this architecture in another project, keep the same verification shape: focused presenter tests, real UI.Windows lifecycle tests, and one integrated scene workflow that exercises representative navigation, requests, pooling, and cleanup.
 
 ## Recommended Next Reference Improvements
 
-These are already represented by the `UIW-26` production-hardening plan:
+These are already represented by the production-hardening plan:
 
 - Add a concise mobile readiness baseline with profiler targets.
-- Consolidate repeated launcher/runtime window source boilerplate through `UIW-28`.
+- Consolidate repeated launcher/runtime window source boilerplate.
 - Document loading, first-show, and prewarm policy per window category.
 - Reduce runtime-built fallback UI in favor of prefab-first production assets.
 - Add local validation scripts for dependency boundaries, lifecycle shortcuts, final newlines, and documentation drift.
