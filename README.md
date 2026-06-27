@@ -9,7 +9,7 @@ It is intended to be used as an information source for other Unity projects. Tre
 This project was created as a synthesis of two existing UI architecture references:
 
 - [OpenUI](https://github.com/vetcat/OpenUI) was used as the source for the MVP / Model-View-View-Presenter concept, presenter/view responsibilities, UI behavior examples, and representative SampleScene layouts.
-- [UI.Windows-submodule](https://github.com/chromealex/UI.Windows-submodule) was used as the source for the window lifecycle model: loading, unloading, layouts, pooling, resource management, and runtime window ownership. This repository currently depends on the pinned fork `https://github.com/vetcat/UI.Windows-submodule.git#60a4bf6e47c85ad57935f633a53fc3ca8b707167`.
+- [UI.Windows-submodule](https://github.com/chromealex/UI.Windows-submodule) was used as the source for the window lifecycle model: loading, unloading, layouts, pooling, resource management, and runtime window ownership.
 
 The original problem with directly adopting OpenUI was that its sample approach creates UI prefabs at application start regardless of whether a player will use those windows in the current session. That is workable for small demos, but it is a poor fit for large Unity projects with many windows, mobile memory pressure, and session-specific UI usage.
 
