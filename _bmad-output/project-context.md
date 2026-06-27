@@ -58,6 +58,8 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - No OpenUI infrastructure has been imported into this project.
 - Process correction from the `UIW-1` readiness review on 2026-06-21: closed child issues do not prove that a parent/umbrella issue is complete. Broad parent goals such as "most OpenUI examples/layouts" require a parent reconciliation review and traceability matrix before parent closure. The `issue-task-flow` skill, `AGENTS.md`, and this context now require that gate for future parent plans.
 - Process correction from the `UIW-21` closure review on 2026-06-23: task progress should not be maintained as a duplicate status ledger in `AGENTS.md` or project context. After mechanical closure succeeds, the Orchestrator must perform a post-closure documentation drift check and make a small context-only commit if local docs still contain stale transient task state.
+- Branch hygiene update from 2026-06-27: task branches are temporary working branches. After a task is accepted, merged into `main`, pushed, and closed, fully merged local and remote `feature/<issue-slug>` branches should be deleted after verifying `git branch --merged main` and `git branch -r --merged origin/main`. Durable history belongs in `main`, Linear notes, commits, and docs. Do not delete unmerged, active, or unclear-ownership branches without explicit human confirmation.
+- Stale fully merged `feature/*` branches were cleaned up locally and on `origin` on 2026-06-27; only `main` / `origin/main` remained after `git fetch --prune origin`.
 - `.ai/mcp/mcp.json` is currently empty.
 - Working tree was clean after the repository investigation.
 

@@ -338,6 +338,8 @@ If validator execution fails because `PyYAML` or another local dependency is mis
 - Do not implement task work directly on `main`, except for explicitly requested repository-maintenance changes.
 - After Unity, Rider, or editor checks, rerun `git status --short --branch` and separate generated/importer noise from task changes before committing or reporting.
 - After a task is accepted/closed, merge its branch back into `main`, push `main`, verify the local branch is not still ahead of `origin/main`, update Linear status/final notes, and update any parent-plan next-task marker when relevant.
+- Task branches are temporary working branches, not the durable project archive. After task closure is accepted and `main`/`origin/main` contain the work, delete the fully merged local `feature/<issue-slug>` branch and the matching remote `origin/feature/<issue-slug>` branch. Keep durable history in `main`, Linear notes, commits, and docs instead of stale branches.
+- Before deleting task branches, verify they are fully merged with `git branch --merged main` and `git branch -r --merged origin/main`. Do not delete a branch with unique unmerged commits, an active task, or unclear ownership without explicit human confirmation.
 - Do not overwrite unrelated user changes.
 - Keep third-party package internals unchanged unless a compatibility fix is unavoidable.
 - Prefer a small vertical slice before broad migration work.
