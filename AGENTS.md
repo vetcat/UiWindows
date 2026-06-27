@@ -22,6 +22,8 @@ Core direction:
 
 The original migration parent `UIW-1` was closed as complete on 2026-06-27. The active Linear parent for the next iteration is `UIW-26`, focused on production hardening, code readability, maintainability for AI/human agents, and mobile readiness.
 
+This repository is also intended to serve as a reference source for UI architecture work in other Unity projects. Use `README.md` as the public entry point and `docs/index.md` as the documentation map before deep-diving into implementation files.
+
 Do not import all OpenUI code blindly. Do not bypass `WindowSystem.Show/Hide` for UI.Windows lifecycle.
 Do not build a parallel custom Rx-like framework now that R3 is integrated.
 
