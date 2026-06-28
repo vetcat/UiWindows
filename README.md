@@ -36,7 +36,7 @@ The project-owned implementation and documentation in this reference repository 
 - The migrated SampleScene UI covers representative OpenUI-inspired HUD, settings, shop, modal, hints, FX, object indicator, and integrated workflow examples.
 - The active follow-up phase is production hardening and mobile readiness.
 - The project is suitable as a reference for architecture, lifecycle, R3 ownership, test patterns, and prefab/scene organization.
-- Mobile performance budgets, prewarm policy, runtime fallback cleanup, and larger-data scaling are still being hardened.
+- Mobile performance budgets, runtime fallback cleanup, and larger-data scaling are still being hardened. Loading, prewarm, first-show, and residency policy is documented for the migrated window families.
 
 ## How To Use This Repository As A Reference
 
@@ -118,6 +118,7 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 - [docs/uiwindows-mvp-openui-migration-guide.md](docs/uiwindows-mvp-openui-migration-guide.md) - final OpenUI-to-UI.Windows MVP migration rules.
 - [docs/uiwindows-mvp-final-reconciliation.md](docs/uiwindows-mvp-final-reconciliation.md) - traceability evidence for the completed migration milestone.
 - [docs/uiwindows-mvp-production-hardening-plan.md](docs/uiwindows-mvp-production-hardening-plan.md) - production hardening and mobile readiness plan.
+- [docs/uiwindows-mvp-loading-prewarm-policy.md](docs/uiwindows-mvp-loading-prewarm-policy.md) - loading, prewarm, first-show, and residency policy for migrated window families.
 
 ## Dependency Baseline
 
@@ -155,6 +156,6 @@ These are already represented by the production-hardening plan:
 
 - Add a concise mobile readiness baseline with profiler targets.
 - Consolidate repeated launcher/runtime window source boilerplate.
-- Document loading, first-show, and prewarm policy per window category.
+- Use the documented loading, first-show, and prewarm policy to drive target-device profiling.
 - Reduce runtime-built fallback UI in favor of prefab-first production assets.
 - Add local validation scripts for dependency boundaries, lifecycle shortcuts, final newlines, and documentation drift.

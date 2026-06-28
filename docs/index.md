@@ -16,6 +16,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 10. [uiwindows-mvp-final-reconciliation.md](uiwindows-mvp-final-reconciliation.md) - completed `UIW-1` traceability matrix and migration evidence.
 11. [uiwindows-mvp-production-hardening-plan.md](uiwindows-mvp-production-hardening-plan.md) - active hardening plan and known next improvements.
 12. [uiwindows-mvp-production-hardening-baseline.md](uiwindows-mvp-production-hardening-baseline.md) - Editor-only baseline evidence, mobile-readiness gaps, and initial production hardening targets.
+13. [uiwindows-mvp-loading-prewarm-policy.md](uiwindows-mvp-loading-prewarm-policy.md) - loading, prewarm, first-show, and residency policy for migrated window families.
 
 ## Reference Adoption
 
@@ -44,6 +45,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 - [uiwindows-mvp-visual-layout-parity-audit.md](uiwindows-mvp-visual-layout-parity-audit.md) records visual/layout parity and accepted deviations for migrated prefabs.
 - [uiwindows-mvp-production-hardening-plan.md](uiwindows-mvp-production-hardening-plan.md) records the next production/mobile hardening iteration.
 - [uiwindows-mvp-production-hardening-baseline.md](uiwindows-mvp-production-hardening-baseline.md) records the `UIW-27` Editor-only baseline evidence, target-device evidence gap, and initial mobile-readiness decision rules.
+- [uiwindows-mvp-loading-prewarm-policy.md](uiwindows-mvp-loading-prewarm-policy.md) records the `UIW-29` loading/prewarm strategy map and Editor-only first-show evidence.
 
 ## Code Entry Points
 
