@@ -96,13 +96,13 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 | Use case | Primary files |
 | --- | --- |
 | Presenter adapter lifecycle | `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/WindowPresenterBinding.cs`, `WindowPresenterBinder.cs`, `WindowPresenterShowScope.cs` |
-| Simple HUD binding | `UiTopLeftPresenter.cs`, `UiTopLeftWindow.cs`, `UiTopLeftRuntimeWindowSource.cs`, `UiTopLeftDemoLauncher.cs` |
+| Simple HUD binding | `UiTopLeftPresenter.cs`, `UiTopLeftWindow.cs`, `UiRuntimeWindowSource.cs`, `UiRuntimeWindowHandle.cs`, `UiTopLeftDemoLauncher.cs` |
 | Currency HUD and FX target | `UiTopRightPresenter.cs`, `UiFxTargetRegistry.cs`, `UiFxPresenter.cs` |
 | Settings and localization | `UiSettingsPresenter.cs`, `UiDownRightPresenter.cs`, `ProjectContext/Runtime/Settings`, `ProjectContext/Runtime/Localization` |
 | Shop collection pooling | `UiShopPresenter.cs`, `PooledViewCollection.cs`, `ProjectContext/Runtime/Shop` |
 | Modal request port | `ProjectContext/Runtime/UiRequests/UiModalService.cs`, `UiModalPresenter.cs`, `UiModalDemoLauncher.cs` |
 | Hint and FX request streams | `UiHintsPresenter.cs`, `UiFxPresenter.cs`, `ProjectContext/Runtime/UiRequests/UiFeedbackService.cs` |
-| Object indicator layer | `UiObjectIndicatorPresenter.cs`, `UiObjectIndicatorRuntimeWindowSource.cs`, `CameraWorldToScreenAdapter.cs` |
+| Object indicator layer | `UiObjectIndicatorPresenter.cs`, `UiRuntimeWindowHandle.cs`, `CameraWorldToScreenAdapter.cs` |
 | Integrated acceptance workflow | `Assets/Scripts/UiWindowsMvp/Tests/PlayMode/SampleSceneIntegratedAcceptanceTests.cs` |
 
 ## Documentation Map

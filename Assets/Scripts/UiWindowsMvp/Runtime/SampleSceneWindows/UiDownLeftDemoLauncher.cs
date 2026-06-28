@@ -1,18 +1,15 @@
 using System;
 using R3;
-using UiWindowsMvp.UIAdapter;
-using UnityEngine.UI.Windows;
 
 namespace UiWindowsMvp.SampleSceneWindows
 {
     public sealed class UiDownLeftDemoLauncher : IDisposable
     {
-        private readonly UiDownLeftView viewPrefab;
-        private readonly UiDownLeftPresenterFactory presenterFactory;
+        private const int LayoutTagId = 15;
+
+        private readonly UiRuntimeWindowHandle<UiDownLeftWindow, UiDownLeftView> windowHandle;
         private readonly IUiShopVisibilityReadModel shopVisibility;
 
-        private UiDownLeftRuntimeWindowSource runtimeSource;
-        private UiDownLeftWindow currentWindow;
         private IDisposable shopVisibilitySubscription;
         private bool wantsVisible;
         private bool disposed;
@@ -22,12 +19,17 @@ namespace UiWindowsMvp.SampleSceneWindows
             UiDownLeftPresenterFactory presenterFactory,
             IUiShopVisibilityReadModel shopVisibility)
         {
-            this.viewPrefab = viewPrefab != null ? viewPrefab : throw new ArgumentNullException(nameof(viewPrefab));
-            this.presenterFactory = presenterFactory ?? throw new ArgumentNullException(nameof(presenterFactory));
+            windowHandle = new UiRuntimeWindowHandle<UiDownLeftWindow, UiDownLeftView>(
+                viewPrefab,
+                presenterFactory,
+                nameof(UiDownLeftWindow),
+                LayoutTagId,
+                takeFocus: false,
+                "A WindowSystem must exist before showing the UiDownLeft demo slice.");
             this.shopVisibility = shopVisibility ?? throw new ArgumentNullException(nameof(shopVisibility));
         }
 
-        public UiDownLeftWindow CurrentWindow => currentWindow;
+        public UiDownLeftWindow CurrentWindow => windowHandle.CurrentWindow;
 
         public void Start()
         {
@@ -70,10 +72,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             disposed = true;
             shopVisibilitySubscription?.Dispose();
             shopVisibilitySubscription = null;
-            HideWindow();
-            currentWindow = null;
-            runtimeSource?.Dispose();
-            runtimeSource = null;
+            windowHandle.Dispose();
         }
 
         private void HandleShopVisibilityChanged(bool isShopVisible)
@@ -97,56 +96,12 @@ namespace UiWindowsMvp.SampleSceneWindows
 
         private void ShowWindow()
         {
-            if (WindowSystem.HasInstance() == false)
-            {
-                throw new InvalidOperationException(
-                    "A WindowSystem must exist before showing the UiDownLeft demo slice.");
-            }
-
-            if (currentWindow != null && currentWindow.GetState() < ObjectState.Hiding)
-            {
-                return;
-            }
-
-            runtimeSource ??= UiDownLeftRuntimeWindowSource.Create(viewPrefab);
-            var initialParameters = new InitialParameters
-            {
-                showSync = true
-            };
-
-            currentWindow = WindowSystem.Show(
-                runtimeSource.WindowSource,
-                initialParameters,
-                BindPresenter,
-                TransitionParameters.Default.ReplaceImmediately(true)).screen as UiDownLeftWindow;
+            windowHandle.Show();
         }
 
         private void HideWindow()
         {
-            if (currentWindow == null || WindowSystem.HasInstance() == false ||
-                currentWindow.GetState() >= ObjectState.Hiding)
-            {
-                return;
-            }
-
-            currentWindow.Hide(TransitionParameters.Default.ReplaceImmediately(true));
-        }
-
-        private void BindPresenter(WindowBase window)
-        {
-            if (window is not UiDownLeftWindow uiDownLeftWindow)
-            {
-                throw new InvalidOperationException(
-                    $"Expected {nameof(UiDownLeftWindow)}, got {window.GetType().Name}.");
-            }
-
-            currentWindow = uiDownLeftWindow;
-            if (WindowPresenterBinder.TryGetBinding(uiDownLeftWindow, out _))
-            {
-                return;
-            }
-
-            WindowPresenterBinder.Bind(uiDownLeftWindow, presenterFactory);
+            windowHandle.Hide();
         }
 
         private void ThrowIfDisposed()

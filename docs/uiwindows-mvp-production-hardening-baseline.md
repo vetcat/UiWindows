@@ -142,9 +142,10 @@ creates runtime UI.Windows source objects on first launcher show:
 - `preferences.forceSyncLoad = true`;
 - `InitialParameters.showSync = true` from launchers.
 
-Static scan found 11 `*DemoLauncher.cs` files using the same broad
-`runtimeSource ??=`, `WindowSystem.Show`, `WindowPresenterBinder.TryGetBinding`, and
-`WindowPresenterBinder.Bind` pattern. That is the starting point for `UIW-28`.
+The pre-consolidation static scan found 11 `*DemoLauncher.cs` files using the same
+broad `runtimeSource ??=`, `WindowSystem.Show`, `WindowPresenterBinder.TryGetBinding`,
+and `WindowPresenterBinder.Bind` pattern. The current code routes that shared path
+through `UiRuntimeWindowHandle.cs`.
 
 Mobile inference:
 
@@ -155,22 +156,17 @@ Mobile inference:
 
 ### Launcher And Runtime Source Duplication
 
-Static scan found 12 runtime-source-related files, including the shared generic source
-and specialized wrappers:
+The pre-consolidation scan found repeated runtime-source wrappers plus direct generic
+source use in modal, hints, and FX launchers. The durable runtime source pattern is now:
 
-- `UiRuntimeWindowSource.cs`
-- `UiTopLeftRuntimeWindowSource.cs`
-- `UiTopRightRuntimeWindowSource.cs`
-- `UiTopCenterRuntimeWindowSource.cs`
-- `UiDownLeftRuntimeWindowSource.cs`
-- `UiDownRightRuntimeWindowSource.cs`
-- `UiSettingsRuntimeWindowSource.cs`
-- `UiShopRuntimeWindowSource.cs`
-- `UiObjectIndicatorRuntimeWindowSource.cs`
-- plus direct generic-source use in modal, hints, and FX launchers.
+- `UiRuntimeWindowSource.cs` creates pooled UI.Windows runtime source objects.
+- `UiRuntimeWindowHandle.cs` owns the repeated lazy source creation, synchronous
+  `WindowSystem.Show`, immediate hide transition, and guarded presenter binding path.
+- Concrete launchers keep special behavior explicit, such as modal request state,
+  down-left shop visibility, object-indicator targeting, and feedback overlays.
 
-This is primarily structural cleanup for `UIW-28`; performance measurement should
-still verify that any consolidation preserves pooling and first-show behavior.
+Future performance measurement should still verify that source consolidation preserves
+pooling and first-show behavior.
 
 ### Shop Collection Rebuild
 
@@ -268,7 +264,7 @@ acceptance criteria.
 
 | Child issue | Classification | Baseline-driven reason |
 | --- | --- | --- |
-| `UIW-28` | Structural cleanup, measurement-informed | Repeated launcher/runtime-source patterns are clear in static scans. Verify behavior and first-show impact after consolidation. |
+| `UIW-28` | Structural cleanup, measurement-informed | Shared launcher/runtime-source mechanics live in `UiRuntimeWindowHandle.cs` and `UiRuntimeWindowSource.cs`. Verify behavior and first-show impact after consolidation. |
 | `UIW-29` | Measurement-driven policy | Cold startup and first-show are the highest mobile risks and need explicit prewarm/loading rules. |
 | `UIW-30` | Measurement-driven optimization | Raycast targets, legacy Text, BestFit, layout groups, CanvasScaler behavior, and mobile readability need audit and selective changes. |
 | `UIW-31` | Measurement-driven scaling | Shop collection rebuild and object indicator per-frame update paths need larger-data and multi-indicator evidence. |

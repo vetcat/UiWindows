@@ -33,6 +33,8 @@ Requests contain stable data such as caption, description, kind, amount, target,
 
 Presenters bind to concrete UI.Windows window wrappers after `WindowSystem.Show` has produced a window instance. Use `WindowPresenterBinder` once per pooled window instance.
 
+Runtime launchers in `SampleSceneWindows` use `UiRuntimeWindowHandle<TWindow, TView>` with `UiRuntimeWindowSource<TWindow, TView>` for the repeated lazy source creation, synchronous `WindowSystem.Show`, immediate hide transition, and guarded presenter binding path. Keep window-specific behavior, such as modal request state or shop-launcher visibility, explicit in the concrete launcher around that shared handle.
+
 Presenter show-scoped subscriptions belong in `IUiShowScope`:
 
 - R3 model/read-model subscriptions.
