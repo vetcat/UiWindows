@@ -15,6 +15,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 9. [uiwindows-mvp-pooling-lifecycle.md](uiwindows-mvp-pooling-lifecycle.md) - pooled window lifecycle, show-scope cleanup, and verification checklist.
 10. [uiwindows-mvp-final-reconciliation.md](uiwindows-mvp-final-reconciliation.md) - completed `UIW-1` traceability matrix and migration evidence.
 11. [uiwindows-mvp-production-hardening-plan.md](uiwindows-mvp-production-hardening-plan.md) - active hardening plan and known next improvements.
+12. [uiwindows-mvp-production-hardening-baseline.md](uiwindows-mvp-production-hardening-baseline.md) - Editor-only baseline evidence, mobile-readiness gaps, and initial production hardening targets.
 
 ## Reference Adoption
 
@@ -42,6 +43,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 - [uiwindows-mvp-final-reconciliation.md](uiwindows-mvp-final-reconciliation.md) is the final evidence package for the completed `UIW-1` migration.
 - [uiwindows-mvp-visual-layout-parity-audit.md](uiwindows-mvp-visual-layout-parity-audit.md) records visual/layout parity and accepted deviations for migrated prefabs.
 - [uiwindows-mvp-production-hardening-plan.md](uiwindows-mvp-production-hardening-plan.md) records the next production/mobile hardening iteration.
+- [uiwindows-mvp-production-hardening-baseline.md](uiwindows-mvp-production-hardening-baseline.md) records the `UIW-27` Editor-only baseline evidence, target-device evidence gap, and initial mobile-readiness decision rules.
 
 ## Code Entry Points
 
