@@ -156,12 +156,21 @@ The strongest current verification path is:
 
 When adapting this architecture in another project, keep the same verification shape: focused presenter tests, real UI.Windows lifecycle tests, and one integrated scene workflow that exercises representative navigation, requests, pooling, and cleanup.
 
-## Recommended Next Reference Improvements
+## Recommended Next-Stage Work
 
-These are already represented by the production-hardening plan:
+The completed `UIW-26` production-hardening phase covers the local reference-scene
+baseline, loading/prewarm policy, launcher consolidation, mobile UI cleanup,
+dynamic-path scaling, prefab-first fallback cleanup, and validation gates.
 
-- Add a concise mobile readiness baseline with profiler targets.
-- Consolidate repeated launcher/runtime window source boilerplate.
-- Use the documented loading, first-show, and prewarm policy to drive target-device profiling.
-- Reduce runtime-built fallback UI in favor of prefab-first production assets.
-- Extend local validation gates as new production-hardening risks become durable workflow rules.
+The remaining work is outside the closed migration and hardening milestones:
+
+- Run low-end Android target-device profiling for startup, cold first show, warm
+  reopen, frame pacing, memory, and managed allocations.
+- Use the profiling results to decide whether shop/settings/modal windows need
+  earlier prewarm, asynchronous loading, loading affordances, or cleanup-after-use.
+- Add shop visible-row virtualization only when real catalog size or profiling
+  evidence justifies the added state and edge cases.
+- Add object-indicator culling/throttling and source-specific multi-indicator FX
+  routing only when production scenes have multiple real targets and measured need.
+- Consider a TextMeshPro and layout simplification pass for production UI polish
+  after the target platform and content constraints are known.

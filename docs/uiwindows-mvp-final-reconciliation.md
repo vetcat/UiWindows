@@ -22,7 +22,7 @@ Closure result: `UIW-1` was closed as complete on 2026-06-27 after Vitaly explic
 
 The repository now satisfies the parent plan's intended scope: a UI.Windows-owned lifecycle and resource/pooling layer, a project-owned MVP presenter adapter, R3-backed model/read-model ports, CompositionRoot wiring without Zenject, no UniRx dependency, and migrated representative OpenUI SampleScene UI examples and layouts. The implementation is not a literal OpenUI clone and does not import OpenUI infrastructure; that is an explicit project constraint, not a remaining gap.
 
-No new migration child issue is required for `UIW-1` closure. The remaining differences are accepted architectural or visual deviations already documented in the migration and visual parity docs. The successor plan `UIW-26` tracks production hardening and mobile readiness improvements; it is not a remaining `UIW-1` migration gap.
+No new migration child issue is required for `UIW-1` closure. The remaining differences are accepted architectural or visual deviations already documented in the migration and visual parity docs. The successor plan `UIW-26` later tracked production hardening and mobile readiness improvements and was closed as complete on 2026-06-28; it was not a remaining `UIW-1` migration gap.
 
 ## Integrated SampleScene Evidence
 
@@ -80,4 +80,4 @@ The workflow loads `SampleScene`, resolves services and launchers through `Scene
 
 ## Closure Position
 
-`UIW-25` is accepted, merged, pushed, and closed. `UIW-1` is closed as complete, with this document and the `UIW-25` Linear note serving as the final evidence package. Further work continues under `UIW-26` as a new production-hardening iteration.
+`UIW-25` is accepted, merged, pushed, and closed. `UIW-1` is closed as complete, with this document and the `UIW-25` Linear note serving as the final evidence package. The later `UIW-26` production-hardening iteration is also closed; future work should start from a new explicit parent plan rather than treating `UIW-26` as active.
