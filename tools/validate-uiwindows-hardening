@@ -30,6 +30,20 @@ TEXT_EXTENSIONS = {
     ".yml",
 }
 
+BINARY_OR_GENERATED_EXTENSIONS = {
+    ".dll",
+    ".dylib",
+    ".exe",
+    ".pyd",
+    ".pyo",
+    ".pyc",
+    ".so",
+}
+
+GENERATED_PATH_SEGMENTS = {
+    "__pycache__",
+}
+
 SCAN_EXTENSIONS = {
     ".asmdef",
     ".asmref",
@@ -370,6 +384,10 @@ def collect_changed_paths(root: Path, base: str) -> set[Path]:
 
 
 def is_text_hygiene_candidate(path: Path) -> bool:
+    if path.suffix in BINARY_OR_GENERATED_EXTENSIONS:
+        return False
+    if GENERATED_PATH_SEGMENTS.intersection(path.parts):
+        return False
     if path.suffix in TEXT_EXTENSIONS:
         return True
     return len(path.parts) > 0 and path.parts[0] == "tools"
@@ -430,6 +448,25 @@ def run_self_tests() -> int:
         if test_setactive_matches:
             print("[fail] self-test did not exclude test-only SetActive usage")
             return 1
+
+        hygiene_expectations = {
+            Path("tools/validate-uiwindows-hardening"): True,
+            Path("tools/helper-script"): True,
+            Path("tools/helper.sh"): True,
+            Path("tools/__pycache__/validate-uiwindows-hardening.cpython-314.pyc"): False,
+            Path("tools/generated.pyc"): False,
+            Path("docs/uiwindows-mvp-validation-gates.md"): True,
+            Path("Assets/Content/UiWindowsMvp/Icon.png"): False,
+        }
+
+        for path, expected_result in hygiene_expectations.items():
+            actual_result = is_text_hygiene_candidate(path)
+            if actual_result != expected_result:
+                print("[fail] self-test final-newline candidate mismatch")
+                print(f"  path: {path}")
+                print(f"  expected: {expected_result}")
+                print(f"  actual: {actual_result}")
+                return 1
 
     print("[pass] validation-rule self-tests")
     return 0
