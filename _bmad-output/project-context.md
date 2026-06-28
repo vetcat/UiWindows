@@ -641,6 +641,7 @@ Orchestrator mode:
 - Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
 - Verify available multi-agent, Linear, Rider, Unity, and validation tools before preparing or reviewing task work.
 - Verify blockers before creating implementation prompts.
+- Before creating an Executor handoff, assess whether the selected task needs additional tools, access, target devices, sample data, design/acceptance inputs, or other human-provided context. If missing input would materially change implementation approach, verification, or acceptance criteria, ask Vitaly before launching the Executor; otherwise document the assumption or gap in the handoff.
 - Add a focused `Executor Handoff` comment to the Linear issue, then launch one short-prompt Executor sub-agent for one Linear issue when sub-agent tools are available; otherwise create a separate-chat Executor prompt. Direct Orchestrator implementation is a last-resort fallback only when no Executor path is available or Vitaly explicitly asks for direct Orchestrator work.
 - Do not edit the shared task branch while a sub-agent Executor is actively implementing.
 - After Executor completion, review committed diff, acceptance criteria, verification evidence, Linear notes, branch name/upstream hygiene, final repository status, and run independent spot-checks proportional to risk.

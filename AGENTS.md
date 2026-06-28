@@ -240,6 +240,7 @@ The Orchestrator should:
 - Pick the first child issue under `UIW-26` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
 - Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
 - Verify blocker status before preparing implementation work.
+- Before preparing an Executor handoff, assess whether the selected task needs additional tools, access, target devices, sample data, design/acceptance inputs, or other human-provided context. If the missing input would materially change implementation approach, verification, or acceptance criteria, ask Vitaly before launching the Executor; otherwise document the assumption or gap in the handoff.
 - Avoid implementing the task directly unless Vitaly explicitly asks the Orchestrator to do the implementation personally without an Executor.
 - Verify multi-agent, Linear, Rider, Unity, and validation tool availability before delegating or reviewing.
 - Add a focused `Executor Handoff` comment to the Linear issue, then launch a short-prompt Executor sub-agent for exactly one Linear issue when sub-agent tools are available; otherwise write a focused separate-chat Executor prompt.

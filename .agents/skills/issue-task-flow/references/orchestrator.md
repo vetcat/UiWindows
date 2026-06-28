@@ -13,8 +13,9 @@ Use Orchestrator mode to coordinate issue work without doing the implementation 
 7. Read current issue status from the tracker when available. Treat local docs as ordering/context snapshots, not as the authoritative progress ledger.
 8. Verify blockers, status, labels, comments, and acceptance criteria.
 9. Read relevant comments on completed blockers, predecessor tasks, or setup tasks when they define workflow or constraints for the selected issue.
-10. Map the selected child issue to the parent acceptance target it advances, and note parent targets that remain open or intentionally deferred.
-11. Confirm the branch naming convention and integration branch. For Executor work, default to `feature/<issue-slug>` unless local project instructions say otherwise.
+10. Assess whether the selected task needs additional tools, access, target devices, sample data, design/acceptance inputs, or other human-provided context before implementation starts. If missing input would materially change approach, verification, or acceptance, ask the human before launching the Executor; otherwise record the assumption or gap in the handoff.
+11. Map the selected child issue to the parent acceptance target it advances, and note parent targets that remain open or intentionally deferred.
+12. Confirm the branch naming convention and integration branch. For Executor work, default to `feature/<issue-slug>` unless local project instructions say otherwise.
 
 If the next task is unclear, report the ambiguity and ask for a choice instead of guessing.
 
