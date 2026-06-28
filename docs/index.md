@@ -21,6 +21,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 15. [uiwindows-mvp-dynamic-scaling.md](uiwindows-mvp-dynamic-scaling.md) - dynamic shop collection and object indicator update-source scaling decisions.
 16. [uiwindows-mvp-prefab-first-fallback-audit.md](uiwindows-mvp-prefab-first-fallback-audit.md) - prefab-first fallback decisions for migrated views and retained dynamic UI paths.
 17. [uiwindows-mvp-validation-gates.md](uiwindows-mvp-validation-gates.md) - local validation command and mandatory/conditional completion gates for future agents.
+18. [uiwindows-mvp-production-hardening-final-reconciliation.md](uiwindows-mvp-production-hardening-final-reconciliation.md) - final `UIW-26` traceability matrix, deferred gaps, and parent closure recommendation.
 
 ## Reference Adoption
 
@@ -54,6 +55,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 - [uiwindows-mvp-dynamic-scaling.md](uiwindows-mvp-dynamic-scaling.md) records the `UIW-31` shop collection and object indicator scaling decisions, implementation evidence, and deferred device-evidence gap.
 - [uiwindows-mvp-prefab-first-fallback-audit.md](uiwindows-mvp-prefab-first-fallback-audit.md) records the `UIW-32` prefab-first cleanup decisions and remaining justified runtime construction paths.
 - [uiwindows-mvp-validation-gates.md](uiwindows-mvp-validation-gates.md) records the `UIW-33` local validation command, automated scans, and mandatory/conditional completion gates.
+- [uiwindows-mvp-production-hardening-final-reconciliation.md](uiwindows-mvp-production-hardening-final-reconciliation.md) records the `UIW-34` final `UIW-26` traceability matrix, accepted deferred gaps, and parent closure recommendation.
 
 ## Code Entry Points
 

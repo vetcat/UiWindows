@@ -120,8 +120,10 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 - [docs/uiwindows-mvp-production-hardening-plan.md](docs/uiwindows-mvp-production-hardening-plan.md) - production hardening and mobile readiness plan.
 - [docs/uiwindows-mvp-loading-prewarm-policy.md](docs/uiwindows-mvp-loading-prewarm-policy.md) - loading, prewarm, first-show, and residency policy for migrated window families.
 - [docs/uiwindows-mvp-mobile-ui-audit.md](docs/uiwindows-mvp-mobile-ui-audit.md) - mobile UI layout, raycast, and legacy text audit for migrated prefabs.
+- [docs/uiwindows-mvp-dynamic-scaling.md](docs/uiwindows-mvp-dynamic-scaling.md) - dynamic shop collection and object indicator update-source scaling decisions.
 - [docs/uiwindows-mvp-prefab-first-fallback-audit.md](docs/uiwindows-mvp-prefab-first-fallback-audit.md) - prefab-first fallback decisions for migrated views and retained dynamic UI paths.
 - [docs/uiwindows-mvp-validation-gates.md](docs/uiwindows-mvp-validation-gates.md) - local validation command and mandatory/conditional gates for future agents.
+- [docs/uiwindows-mvp-production-hardening-final-reconciliation.md](docs/uiwindows-mvp-production-hardening-final-reconciliation.md) - final production-hardening traceability matrix, deferred gaps, and parent closure recommendation.
 
 ## Dependency Baseline
 
