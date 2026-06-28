@@ -36,9 +36,10 @@ The reconciliation reviewed:
 - The earlier `UIW-1` final reconciliation pattern in
   `docs/uiwindows-mvp-final-reconciliation.md`.
 
-Live Linear status checked on 2026-06-28 before this document:
+Live Linear status checked on 2026-06-28 during reconciliation and updated after
+`UIW-34` closure:
 
-| Issue | Title | Linear status at reconciliation start | Primary artifact |
+| Issue | Title | Final child issue status | Primary artifact |
 | --- | --- | --- | --- |
 | `UIW-27` | `00 - Establish production hardening baseline and mobile readiness targets` | `Done` | `docs/uiwindows-mvp-production-hardening-baseline.md` |
 | `UIW-28` | `01 - Consolidate UI.Windows MVP launcher and runtime window source infrastructure` | `Done` | `UiRuntimeWindowHandle<TWindow, TView>` |
@@ -47,12 +48,12 @@ Live Linear status checked on 2026-06-28 before this document:
 | `UIW-31` | `04 - Scale dynamic collections and object indicator update paths` | `Done` | `docs/uiwindows-mvp-dynamic-scaling.md` |
 | `UIW-32` | `05 - Move fallback-built UI toward prefab-first production assets` | `Done` | `docs/uiwindows-mvp-prefab-first-fallback-audit.md` |
 | `UIW-33` | `06 - Add production hardening validation gates for future agents` | `Done` | `tools/validate-uiwindows-hardening` |
-| `UIW-34` | `07 - Final production hardening reconciliation and next-stage readiness review` | `In Progress` | This document |
+| `UIW-34` | `07 - Final production hardening reconciliation and next-stage readiness review` | `Done` | This document |
 
 ## Final Recommendation
 
-`UIW-26` is ready for parent closure after `UIW-34` itself is reviewed, accepted,
-merged, pushed, and closed through the normal task flow.
+`UIW-26` is ready for an explicit parent closure decision. `UIW-34` has been
+reviewed, accepted, merged, pushed, and closed through the normal task flow.
 
 No additional `UIW-26` child issue is required before parent closure. The remaining
 mobile evidence gap is intentionally deferred by the parent plan and `UIW-27`
@@ -118,8 +119,8 @@ for architecture/dependency, lifecycle shortcut, diff whitespace, and final-newl
 checks, while still treating Rider, Unity, PlayMode, and target-device profiling as
 conditional evidence.
 
-`UIW-34` is this reconciliation. It should be accepted only if the document, final
-validation evidence, and Linear final reconciliation note are present.
+`UIW-34` completed this reconciliation. The document, final validation evidence,
+Linear final reconciliation note, Orchestrator review, and closure note are present.
 
 ## Accepted Deviations And Deferred Gaps
 
@@ -168,13 +169,13 @@ Verification run on 2026-06-28:
 - Rider diagnostics/build were not required because no C# files changed. Rider MCP
   availability was verified by listing the opened Unity solution modules.
 
-This verification is sufficient to recommend `UIW-26` closure after normal review
-and closure workflow. It remains Editor/local evidence only; it does not close the
-deferred low-end Android target-device evidence gap.
+This verification is sufficient to recommend an explicit `UIW-26` parent closure
+decision. It remains Editor/local evidence only; it does not close the deferred
+low-end Android target-device evidence gap.
 
 ## Closure Position
 
-Recommended parent decision: close `UIW-26` after `UIW-34` is accepted and closed.
+Recommended parent decision: close `UIW-26` when Vitaly authorizes parent closure.
 
 Recommended next-stage work, outside `UIW-26`, is a target-device profiling plan for
 low-end Android startup, cold first-show, frame pacing, memory, and allocation

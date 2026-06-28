@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-33-closed-uiw-34-ready
+status: uiw-34-closed-uiw-26-ready-for-parent-closure
 ---
 
 # Project Context for AI Agents
@@ -59,7 +59,8 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `UIW-31` completed dynamic shop collection and object indicator update-path scaling on 2026-06-28: `PooledViewCollection<TView>` now reuses active rows by count, `UiShopView.ScrollToTop()` rebuilds only the shop scroll content layout instead of forcing all canvases, `IUiObjectIndicatorUpdateSource` / `R3UiObjectIndicatorUpdateSource` share one UI-layer frame update source across visible object indicators, and `docs/uiwindows-mvp-dynamic-scaling.md` records the scaling decisions, Editor/test evidence, and deferred target-device gap. Closure fast-forwarded `main` to commit `aefbc46` and Linear moved `UIW-31` to `Done`.
 - `UIW-32` completed the prefab-first fallback cleanup on 2026-06-28: broad static `BuildDefaultLayout` fallback builders were removed from prefab-backed SampleScene views, missing prefab-assigned references now fail fast through `UiPrefabReferenceGuard`, presenter tests use `UiViewTestFixtures` for test-only view construction, and `docs/uiwindows-mvp-prefab-first-fallback-audit.md` records view-by-view reduced and retained runtime construction paths. Closure fast-forwarded `main` to commit `9249676` and Linear moved `UIW-32` to `Done`.
 - `UIW-33` completed the production hardening validation gates on 2026-06-28: `tools/validate-uiwindows-hardening` now provides the durable local architecture/dependency, lifecycle shortcut, diff whitespace, and final-newline gate; `docs/uiwindows-mvp-validation-gates.md` records mandatory Executor checks, conditional Rider/Unity editor checks, and the deferred target-device evidence boundary. Closure fast-forwarded `main` to commit `9210982` and Linear moved `UIW-33` to `Done`.
-- The next ordered child issue under `UIW-26` is `UIW-34` - `07 - Final production hardening reconciliation and next-stage readiness review`.
+- `UIW-34` completed the final production hardening reconciliation on 2026-06-28: `docs/uiwindows-mvp-production-hardening-final-reconciliation.md` records the final `UIW-26` traceability matrix, accepted deferred gaps, child issue evidence summary, and parent closure recommendation. Closure fast-forwarded `main` to commit `a44688e` and Linear moved `UIW-34` to `Done`.
+- All ordered child issues under `UIW-26` are now `Done` in Linear as of the post-closure check on 2026-06-28. `UIW-26` remains open and ready for an explicit parent closure decision; do not close it automatically without the parent closure authorization flow.
 - Linear child issue statuses are the source of truth for task progress. Local files such as `AGENTS.md` and this project context may record issue order, durable facts, and recent snapshots, but future agents must query Linear for current child status when Linear is available.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting all migrated `UiWindowsMvp` view prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
