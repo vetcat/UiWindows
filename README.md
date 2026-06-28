@@ -34,9 +34,9 @@ The project-owned implementation and documentation in this reference repository 
 
 - The initial migration milestone is complete.
 - The migrated SampleScene UI covers representative OpenUI-inspired HUD, settings, shop, modal, hints, FX, object indicator, and integrated workflow examples.
-- The active follow-up phase is production hardening and mobile readiness.
+- The production hardening and mobile readiness follow-up phase is complete.
 - The project is suitable as a reference for architecture, lifecycle, R3 ownership, test patterns, and prefab/scene organization.
-- Mobile performance budgets, runtime fallback cleanup, and larger-data scaling are still being hardened. Loading, prewarm, first-show, and residency policy is documented for the migrated window families.
+- Mobile performance budgets, runtime fallback cleanup, and larger-data scaling are documented and locally hardened for the reference scene. Low-end Android target-device profiling remains a deferred next-stage evidence gap.
 
 ## How To Use This Repository As A Reference
 
@@ -123,7 +123,7 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 - [docs/uiwindows-mvp-dynamic-scaling.md](docs/uiwindows-mvp-dynamic-scaling.md) - dynamic shop collection and object indicator update-source scaling decisions.
 - [docs/uiwindows-mvp-prefab-first-fallback-audit.md](docs/uiwindows-mvp-prefab-first-fallback-audit.md) - prefab-first fallback decisions for migrated views and retained dynamic UI paths.
 - [docs/uiwindows-mvp-validation-gates.md](docs/uiwindows-mvp-validation-gates.md) - local validation command and mandatory/conditional gates for future agents.
-- [docs/uiwindows-mvp-production-hardening-final-reconciliation.md](docs/uiwindows-mvp-production-hardening-final-reconciliation.md) - final production-hardening traceability matrix, deferred gaps, and parent closure recommendation.
+- [docs/uiwindows-mvp-production-hardening-final-reconciliation.md](docs/uiwindows-mvp-production-hardening-final-reconciliation.md) - final production-hardening traceability matrix, deferred gaps, and parent closure record.
 
 ## Dependency Baseline
 

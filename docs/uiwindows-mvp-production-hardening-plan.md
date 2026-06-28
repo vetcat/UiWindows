@@ -2,12 +2,13 @@
 
 Date: 2026-06-27
 Parent: `UIW-26` - `[Plan] UI.Windows MVP production hardening and mobile readiness`
+Status: closed as `Done` on 2026-06-28 after final reconciliation in `docs/uiwindows-mvp-production-hardening-final-reconciliation.md`.
 
 ## Purpose
 
 `UIW-1` completed the migration goal: UI.Windows owns lifecycle/loading/pooling, the project owns the MVP adapter layer, R3 is the reactive foundation, and representative OpenUI SampleScene surfaces are migrated without Zenject or UniRx.
 
-`UIW-26` is the next iteration. Its goal is to harden the implemented architecture for production-scale Unity/mobile work and for continued AI/human maintenance. This plan should improve readability, reduce repeated wiring, define mobile readiness evidence, and add validation gates without reopening the already accepted `UIW-1` migration scope.
+`UIW-26` was the next iteration. Its goal was to harden the implemented architecture for production-scale Unity/mobile work and for continued AI/human maintenance. The plan improved readability, reduced repeated wiring, defined mobile readiness evidence, and added validation gates without reopening the already accepted `UIW-1` migration scope.
 
 ## Non-Goals
 
@@ -38,7 +39,7 @@ Parent: `UIW-26` - `[Plan] UI.Windows MVP production hardening and mobile readin
 
 ## Child Issue Order
 
-Linear child issue status is the source of truth. Future agents should query Linear before choosing work.
+Linear child issue status is the source of truth. All listed child issues are complete in Linear as of `UIW-26` closure.
 
 - `UIW-27` - `00 - Establish production hardening baseline and mobile readiness targets`
 - `UIW-28` - `01 - Consolidate UI.Windows MVP launcher and runtime window source infrastructure`
@@ -49,9 +50,9 @@ Linear child issue status is the source of truth. Future agents should query Lin
 - `UIW-33` - `06 - Add production hardening validation gates for future agents`
 - `UIW-34` - `07 - Final production hardening reconciliation and next-stage readiness review`
 
-## Execution Flow
+## Historical Execution Flow
 
-Future Orchestrator chats should open `UIW-26`, inspect ordered child issues, and pick the first child issue that is not `Done` or `Canceled` unless Vitaly chooses another issue.
+This was the execution flow used while `UIW-26` was active. Future Orchestrator chats should not use this closed parent as the active task queue; use the next parent issue named by Vitaly or discovered from Linear.
 
 For each child issue:
 
@@ -73,4 +74,4 @@ For each child issue:
 - verification evidence
 - status: `Done`, `Partial`, `Deferred`, or `Missing`
 
-If the production-hardening result is narrower than the parent goal, create follow-up tasks or ask Vitaly for explicit reduced-scope acceptance before closing `UIW-26`.
+The final reconciliation completed this rule and supported parent closure with target-device profiling explicitly deferred outside `UIW-26`.

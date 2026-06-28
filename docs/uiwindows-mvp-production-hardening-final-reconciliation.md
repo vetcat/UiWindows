@@ -10,7 +10,7 @@ This document is the final reconciliation gate for `UIW-26`.
 
 It maps the parent production-hardening and mobile-readiness targets to current
 repository artifacts, verification evidence, accepted deviations, deferred gaps, and
-the parent closure recommendation. It should be read together with:
+the parent closure record. It should be read together with:
 
 - `docs/uiwindows-mvp-production-hardening-plan.md`
 - `docs/uiwindows-mvp-production-hardening-baseline.md`
@@ -52,8 +52,9 @@ Live Linear status checked on 2026-06-28 during reconciliation and updated after
 
 ## Final Recommendation
 
-`UIW-26` is ready for an explicit parent closure decision. `UIW-34` has been
-reviewed, accepted, merged, pushed, and closed through the normal task flow.
+`UIW-26` was closed as `Done` on 2026-06-28 after Vitaly explicitly authorized
+parent closure. `UIW-34` had been reviewed, accepted, merged, pushed, and closed
+through the normal task flow before parent closure.
 
 No additional `UIW-26` child issue is required before parent closure. The remaining
 mobile evidence gap is intentionally deferred by the parent plan and `UIW-27`
@@ -169,13 +170,14 @@ Verification run on 2026-06-28:
 - Rider diagnostics/build were not required because no C# files changed. Rider MCP
   availability was verified by listing the opened Unity solution modules.
 
-This verification is sufficient to recommend an explicit `UIW-26` parent closure
-decision. It remains Editor/local evidence only; it does not close the deferred
-low-end Android target-device evidence gap.
+This verification was sufficient for the explicit `UIW-26` parent closure decision.
+It remains Editor/local evidence only; it does not close the deferred low-end
+Android target-device evidence gap.
 
 ## Closure Position
 
-Recommended parent decision: close `UIW-26` when Vitaly authorizes parent closure.
+Parent decision: `UIW-26` was closed as `Done` on 2026-06-28 after Vitaly
+authorized parent closure.
 
 Recommended next-stage work, outside `UIW-26`, is a target-device profiling plan for
 low-end Android startup, cold first-show, frame pacing, memory, and allocation

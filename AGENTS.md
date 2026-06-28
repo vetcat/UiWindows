@@ -20,7 +20,7 @@ Core direction:
 - Use a simple scene `CompositionRoot` for dependency wiring.
 - Port most `OpenUI` examples and layouts onto the new approach after a small vertical slice is proven.
 
-The original migration parent `UIW-1` was closed as complete on 2026-06-27. The active Linear parent for the next iteration is `UIW-26`, focused on production hardening, code readability, maintainability for AI/human agents, and mobile readiness.
+The original migration parent `UIW-1` was closed as complete on 2026-06-27. The production-hardening parent `UIW-26` was closed as complete on 2026-06-28 after final reconciliation. No new active Linear parent is defined in this local context; query Linear or ask Vitaly before starting a new parent-plan workflow.
 
 This repository is also intended to serve as a reference source for UI architecture work in other Unity projects. Use `README.md` as the public entry point and `docs/index.md` as the documentation map before deep-diving into implementation files.
 
@@ -176,18 +176,19 @@ Completed predecessor plan:
 - URL: https://linear.app/white-rabbits-rabbit-hole/issue/UIW-1/plan-uiwindows-mvp-migration-with-r3-without-zenjectunirx
 - Status: closed as `Done` on 2026-06-27 after the final reconciliation in `docs/uiwindows-mvp-final-reconciliation.md`.
 
-Main Linear task-plan:
+Completed follow-up Linear task-plan:
 
 - Parent issue: `UIW-26` - `[Plan] UI.Windows MVP production hardening and mobile readiness`
 - URL: https://linear.app/white-rabbits-rabbit-hole/issue/UIW-26/plan-uiwindows-mvp-production-hardening-and-mobile-readiness
+- Status: closed as `Done` on 2026-06-28 after final reconciliation in `docs/uiwindows-mvp-production-hardening-final-reconciliation.md`.
 - Supporting plan doc: `docs/uiwindows-mvp-production-hardening-plan.md`
 - Purpose: harden the completed MVP migration for production-scale Unity/mobile use without reopening the already accepted migration scope.
-- Future agents should open `UIW-26`, inspect child issues ordered by numeric prefix, read current child issue statuses from Linear, and pick the first child issue that is not `Done` or `Canceled` unless the user says otherwise.
+- Future agents should treat `UIW-26` as historical/completed context, not as an active task queue. If Vitaly starts a new iteration, identify the new active parent from Linear or explicit user direction before selecting work.
 - Linear child issue status is the source of truth for task progress. Local files such as `AGENTS.md` and `_bmad-output/project-context.md` may record issue order, durable context, and recent snapshots, but must not be treated as the authoritative progress ledger when Linear is available.
 - Closing child issues is not enough to close or accept the parent plan. For parent/umbrella issues, run a parent reconciliation review against the original parent description, comments, project context, and current repository state before recommending parent closure.
 - Broad parent wording such as "production", "hardening", "mobile readiness", "complete", or "migration" requires an explicit coverage list or traceability matrix: parent target -> implemented artifact -> verification evidence -> status (`Done`, `Partial`, `Deferred`, `Missing`).
 
-Child issue order reference; query Linear for current status:
+Completed child issue order reference:
 
 - `UIW-27` - `00 - Establish production hardening baseline and mobile readiness targets`
 - `UIW-28` - `01 - Consolidate UI.Windows MVP launcher and runtime window source infrastructure`
@@ -236,8 +237,8 @@ Use this mode when the user says the chat is an orchestrator, asks to delegate a
 
 The Orchestrator should:
 
-- Read `AGENTS.md`, `_bmad-output/project-context.md`, `UIW-26`, and the relevant child issue.
-- Pick the first child issue under `UIW-26` that is not `Done` or `Canceled`, unless Vitaly chooses another task.
+- Read `AGENTS.md`, `_bmad-output/project-context.md`, the active parent issue when one exists, and the relevant child issue.
+- Pick the first child issue under the active parent that is not `Done` or `Canceled`, unless Vitaly chooses another task. `UIW-26` is closed and should not be used as the active parent for new work.
 - Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
 - Verify blocker status before preparing implementation work.
 - Before preparing an Executor handoff, assess whether the selected task needs additional tools, access, target devices, sample data, design/acceptance inputs, or other human-provided context. If the missing input would materially change implementation approach, verification, or acceptance criteria, ask Vitaly before launching the Executor; otherwise document the assumption or gap in the handoff.
