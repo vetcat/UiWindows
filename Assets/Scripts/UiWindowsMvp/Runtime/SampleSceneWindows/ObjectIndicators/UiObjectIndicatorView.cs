@@ -120,7 +120,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             ItemCanvasGroup = ItemRoot.gameObject.AddComponent<CanvasGroup>();
             var background = ItemRoot.gameObject.AddComponent<Image>();
             background.color = new Color(0.08f, 0.09f, 0.12f, 0.88f);
-            background.raycastTarget = true;
+            background.raycastTarget = false;
 
             ImageIcon = CreateImage("ImageIcon", ItemRoot, new Color(0.95f, 0.78f, 0.26f, 1f));
             var iconRect = (RectTransform)ImageIcon.transform;
@@ -180,6 +180,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             gameObject.transform.SetParent(parent, false);
             var image = gameObject.GetComponent<Image>();
             image.color = color;
+            image.raycastTarget = false;
             return image;
         }
 

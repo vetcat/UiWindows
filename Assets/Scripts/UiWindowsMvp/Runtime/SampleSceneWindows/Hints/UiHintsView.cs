@@ -129,6 +129,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             gameObject.transform.SetParent(parent, false);
             var image = gameObject.GetComponent<Image>();
             image.color = color;
+            image.raycastTarget = false;
             return (RectTransform)gameObject.transform;
         }
 

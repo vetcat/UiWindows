@@ -133,6 +133,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             gameObject.transform.SetParent(parent, false);
             var image = gameObject.GetComponent<Image>();
             image.color = color;
+            image.raycastTarget = false;
             return image;
         }
 
@@ -144,6 +145,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             var text = gameObject.GetComponent<Text>();
             text.text = value;
             text.color = Color.white;
+            text.raycastTarget = false;
             text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             return text;
         }

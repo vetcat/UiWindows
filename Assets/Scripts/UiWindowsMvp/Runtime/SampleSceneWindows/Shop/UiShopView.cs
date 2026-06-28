@@ -142,7 +142,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             contentLayout.childForceExpandHeight = true;
             contentLayout.childForceExpandWidth = false;
 
-            var groupsPanel = CreatePanel("GroupsPanel", content, new Color(0.12f, 0.14f, 0.17f, 0.95f));
+            var groupsPanel = CreatePanel("GroupsPanel", content, new Color(0.12f, 0.14f, 0.17f, 0.95f), false);
             AddLayoutElement(groupsPanel.gameObject, -1f, 112f, -1f, -1f);
             var groupsLayout = groupsPanel.gameObject.AddComponent<VerticalLayoutGroup>();
             groupsLayout.padding = new RectOffset(10, 10, 10, 10);
@@ -166,7 +166,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             groupItemsLayout.childForceExpandWidth = true;
             GroupPoolRoot = CreatePoolRoot("GroupPool", groupsPanel);
 
-            var itemsPanel = CreatePanel("ItemsPanel", content, new Color(0.11f, 0.12f, 0.15f, 0.95f));
+            var itemsPanel = CreatePanel("ItemsPanel", content, new Color(0.11f, 0.12f, 0.15f, 0.95f), false);
             AddLayoutElement(itemsPanel.gameObject, -1f, 430f, -1f, -1f);
             var itemsPanelLayout = itemsPanel.gameObject.AddComponent<VerticalLayoutGroup>();
             itemsPanelLayout.padding = new RectOffset(14, 14, 12, 14);
@@ -182,7 +182,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             AddLayoutElement(ScrollRect.gameObject, -1f, -1f, 1f, 1f);
             ShopItemPoolRoot = CreatePoolRoot("ShopItemPool", itemsPanel);
 
-            var detailsPanel = CreatePanel("DetailsPanel", content, new Color(0.14f, 0.15f, 0.18f, 0.95f));
+            var detailsPanel = CreatePanel("DetailsPanel", content, new Color(0.14f, 0.15f, 0.18f, 0.95f), false);
             AddLayoutElement(detailsPanel.gameObject, -1f, 300f, -1f, -1f);
             var detailsLayoutGroup = detailsPanel.gameObject.AddComponent<VerticalLayoutGroup>();
             detailsLayoutGroup.padding = new RectOffset(18, 18, 18, 18);
@@ -376,11 +376,16 @@ namespace UiWindowsMvp.SampleSceneWindows
             return rectTransform;
         }
 
-        private static RectTransform CreatePanel(string name, Transform parent, Color color)
+        private static RectTransform CreatePanel(
+            string name,
+            Transform parent,
+            Color color,
+            bool raycastTarget = true)
         {
             var rectTransform = CreateRect(name, parent);
             var image = rectTransform.gameObject.AddComponent<Image>();
             image.color = color;
+            image.raycastTarget = raycastTarget;
             return rectTransform;
         }
 
@@ -390,6 +395,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             gameObject.transform.SetParent(parent, false);
             var image = gameObject.GetComponent<Image>();
             image.color = color;
+            image.raycastTarget = false;
             return image;
         }
 

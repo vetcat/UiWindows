@@ -119,6 +119,7 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 - [docs/uiwindows-mvp-final-reconciliation.md](docs/uiwindows-mvp-final-reconciliation.md) - traceability evidence for the completed migration milestone.
 - [docs/uiwindows-mvp-production-hardening-plan.md](docs/uiwindows-mvp-production-hardening-plan.md) - production hardening and mobile readiness plan.
 - [docs/uiwindows-mvp-loading-prewarm-policy.md](docs/uiwindows-mvp-loading-prewarm-policy.md) - loading, prewarm, first-show, and residency policy for migrated window families.
+- [docs/uiwindows-mvp-mobile-ui-audit.md](docs/uiwindows-mvp-mobile-ui-audit.md) - mobile UI layout, raycast, and legacy text audit for migrated prefabs.
 
 ## Dependency Baseline
 

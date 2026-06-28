@@ -17,6 +17,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 11. [uiwindows-mvp-production-hardening-plan.md](uiwindows-mvp-production-hardening-plan.md) - active hardening plan and known next improvements.
 12. [uiwindows-mvp-production-hardening-baseline.md](uiwindows-mvp-production-hardening-baseline.md) - Editor-only baseline evidence, mobile-readiness gaps, and initial production hardening targets.
 13. [uiwindows-mvp-loading-prewarm-policy.md](uiwindows-mvp-loading-prewarm-policy.md) - loading, prewarm, first-show, and residency policy for migrated window families.
+14. [uiwindows-mvp-mobile-ui-audit.md](uiwindows-mvp-mobile-ui-audit.md) - mobile UI layout, raycast, and legacy text audit for migrated prefabs.
 
 ## Reference Adoption
 
@@ -46,6 +47,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 - [uiwindows-mvp-production-hardening-plan.md](uiwindows-mvp-production-hardening-plan.md) records the next production/mobile hardening iteration.
 - [uiwindows-mvp-production-hardening-baseline.md](uiwindows-mvp-production-hardening-baseline.md) records the `UIW-27` Editor-only baseline evidence, target-device evidence gap, and initial mobile-readiness decision rules.
 - [uiwindows-mvp-loading-prewarm-policy.md](uiwindows-mvp-loading-prewarm-policy.md) records the `UIW-29` loading/prewarm strategy map and Editor-only first-show evidence.
+- [uiwindows-mvp-mobile-ui-audit.md](uiwindows-mvp-mobile-ui-audit.md) records the `UIW-30` prefab raycast/text audit, before/after counts, and remaining mobile UI risks.
 
 ## Code Entry Points
 
