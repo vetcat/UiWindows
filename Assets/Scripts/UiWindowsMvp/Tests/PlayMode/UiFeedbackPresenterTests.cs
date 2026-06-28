@@ -19,7 +19,7 @@ namespace UiWindowsMvp.Tests.PlayMode
 
             try
             {
-                var view = viewObject.GetComponent<UiHintsView>();
+                var view = UiViewTestFixtures.Configure(viewObject.GetComponent<UiHintsView>());
                 var window = windowObject.GetComponent<UiHintsWindow>();
                 var presenter = new UiHintsPresenter(feedback, _ => view);
 
@@ -62,7 +62,7 @@ namespace UiWindowsMvp.Tests.PlayMode
 
             try
             {
-                var view = viewObject.GetComponent<UiFxView>();
+                var view = UiViewTestFixtures.Configure(viewObject.GetComponent<UiFxView>());
                 var window = windowObject.GetComponent<UiFxWindow>();
                 var presenter = new UiFxPresenter(feedback, _ => view);
 
@@ -108,7 +108,7 @@ namespace UiWindowsMvp.Tests.PlayMode
 
             try
             {
-                var view = viewObject.GetComponent<UiFxView>();
+                var view = UiViewTestFixtures.Configure(viewObject.GetComponent<UiFxView>());
                 var window = windowObject.GetComponent<UiFxWindow>();
                 var presenter = new UiFxPresenter(feedback, registry, _ => view);
 

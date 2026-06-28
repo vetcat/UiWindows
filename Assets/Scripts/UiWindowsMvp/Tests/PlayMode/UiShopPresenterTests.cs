@@ -258,8 +258,7 @@ namespace UiWindowsMvp.Tests.PlayMode
         internal static UiShopView BuildView(GameObject viewObject)
         {
             var view = viewObject.GetComponent<UiShopView>();
-            view.EnsureLayout();
-            return view;
+            return UiViewTestFixtures.Configure(view);
         }
 
         internal static T GetCurrentValue<T>(object owner, string propertyName)

@@ -146,8 +146,7 @@ namespace UiWindowsMvp.Tests.PlayMode
         internal static UiTopCenterView BuildView(GameObject viewObject)
         {
             var view = viewObject.GetComponent<UiTopCenterView>();
-            view.EnsureLayout();
-            return view;
+            return UiViewTestFixtures.Configure(view);
         }
 
         private sealed class FakeTimeProvider : IUiTopCenterTimeProvider, IDisposable

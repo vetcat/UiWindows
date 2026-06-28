@@ -35,7 +35,7 @@ namespace UiWindowsMvp.Tests.PlayMode
 
             try
             {
-                var view = viewObject.GetComponent<UiObjectIndicatorView>();
+                var view = UiViewTestFixtures.Configure(viewObject.GetComponent<UiObjectIndicatorView>());
                 var window = windowObject.GetComponent<UiObjectIndicatorWindow>();
                 var presenter = new UiObjectIndicatorPresenter(
                     service,
@@ -141,7 +141,7 @@ namespace UiWindowsMvp.Tests.PlayMode
 
             try
             {
-                var firstView = firstViewObject.GetComponent<UiObjectIndicatorView>();
+                var firstView = UiViewTestFixtures.Configure(firstViewObject.GetComponent<UiObjectIndicatorView>());
                 var firstWindow = firstWindowObject.GetComponent<UiObjectIndicatorWindow>();
                 var firstPresenter = new UiObjectIndicatorPresenter(
                     service,
@@ -152,7 +152,7 @@ namespace UiWindowsMvp.Tests.PlayMode
                     registry,
                     updateSource,
                     _ => firstView);
-                var secondView = secondViewObject.GetComponent<UiObjectIndicatorView>();
+                var secondView = UiViewTestFixtures.Configure(secondViewObject.GetComponent<UiObjectIndicatorView>());
                 var secondWindow = secondWindowObject.GetComponent<UiObjectIndicatorWindow>();
                 var secondPresenter = new UiObjectIndicatorPresenter(
                     service,

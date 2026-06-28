@@ -55,8 +55,9 @@ namespace UiWindowsMvp.SampleSceneWindows
                 return;
             }
 
-            BuildDefaultLayout();
-            CaptureFallbackAnchors();
+            throw UiPrefabReferenceGuard.Missing(
+                this,
+                "Body, FxRoot, PoolRoot, CollectSource, CollectTarget, SpendSource");
         }
 
         public void PlayFx(UiFxRequest request)
@@ -293,27 +294,6 @@ namespace UiWindowsMvp.SampleSceneWindows
             return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
         }
 
-        private void BuildDefaultLayout()
-        {
-            var root = (RectTransform)transform;
-            Stretch(root);
-
-            Body = CreateRect("Body", transform);
-            Stretch(Body);
-            FxRoot = CreateRect("FxRoot", Body);
-            Stretch(FxRoot);
-            PoolRoot = CreateRect("PoolRoot", Body);
-            Stretch(PoolRoot);
-            var poolGroup = PoolRoot.gameObject.AddComponent<CanvasGroup>();
-            poolGroup.alpha = 0f;
-            poolGroup.interactable = false;
-            poolGroup.blocksRaycasts = false;
-
-            CollectSource = CreateAnchor("CollectSource", Body, new Vector2(0.18f, 0.28f), new Vector2(0f, 0f));
-            CollectTarget = CreateAnchor("CollectTarget", Body, new Vector2(0f, 1f), new Vector2(80f, -64f));
-            SpendSource = CreateAnchor("SpendSource", Body, new Vector2(0f, 1f), new Vector2(80f, -64f));
-        }
-
         private static UiFxItemView CreateItem(RectTransform parent)
         {
             var itemRect = CreateRect("FxItem", parent);
@@ -343,21 +323,6 @@ namespace UiWindowsMvp.SampleSceneWindows
             item.TextAmount = amount;
             item.Release();
             return item;
-        }
-
-        private static RectTransform CreateAnchor(
-            string name,
-            Transform parent,
-            Vector2 anchor,
-            Vector2 anchoredPosition)
-        {
-            var rect = CreateRect(name, parent);
-            rect.anchorMin = anchor;
-            rect.anchorMax = anchor;
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = Vector2.zero;
-            rect.anchoredPosition = anchoredPosition;
-            return rect;
         }
 
         private static RectTransform CreateRect(string name, Transform parent)
@@ -417,16 +382,6 @@ namespace UiWindowsMvp.SampleSceneWindows
                 default:
                     return new Color(0.95f, 0.78f, 0.26f, 1f);
             }
-        }
-
-        private static void Stretch(RectTransform rectTransform)
-        {
-            rectTransform.localScale = Vector3.one;
-            rectTransform.anchorMin = Vector2.zero;
-            rectTransform.anchorMax = Vector2.one;
-            rectTransform.pivot = new Vector2(0.5f, 0.5f);
-            rectTransform.anchoredPosition = Vector2.zero;
-            rectTransform.sizeDelta = Vector2.zero;
         }
     }
 }

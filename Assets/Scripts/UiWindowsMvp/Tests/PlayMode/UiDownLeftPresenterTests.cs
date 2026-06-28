@@ -66,8 +66,7 @@ namespace UiWindowsMvp.Tests.PlayMode
         internal static UiDownLeftView BuildView(GameObject viewObject)
         {
             var view = viewObject.GetComponent<UiDownLeftView>();
-            view.EnsureLayout();
-            return view;
+            return UiViewTestFixtures.Configure(view);
         }
     }
 }

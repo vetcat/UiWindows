@@ -20,7 +20,7 @@ namespace UiWindowsMvp.Tests.PlayMode
 
             try
             {
-                var view = viewObject.GetComponent<UiModalView>();
+                var view = UiViewTestFixtures.Configure(viewObject.GetComponent<UiModalView>());
                 var window = windowObject.GetComponent<UiModalWindow>();
                 var presenter = new UiModalPresenter(modal, modal, _ => view);
 
@@ -56,7 +56,7 @@ namespace UiWindowsMvp.Tests.PlayMode
 
             try
             {
-                var view = viewObject.GetComponent<UiModalView>();
+                var view = UiViewTestFixtures.Configure(viewObject.GetComponent<UiModalView>());
                 var window = windowObject.GetComponent<UiModalWindow>();
                 var presenter = new UiModalPresenter(modal, modal, _ => view);
 
