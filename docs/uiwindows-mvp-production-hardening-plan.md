@@ -28,6 +28,14 @@ Parent: `UIW-26` - `[Plan] UI.Windows MVP production hardening and mobile readin
 - Move runtime-built fallback UI toward prefab-first production assets where practical.
 - Add lightweight validation commands that future agents can run before reporting task completion.
 
+## Mobile Readiness Inputs
+
+- Primary target class: low-end Android devices.
+- Runtime target: 60 FPS. Use the 16.67 ms frame budget as context for UI cost decisions while preserving headroom for gameplay and rendering.
+- Initial baseline mode: capture Editor/Unity Profiler evidence first. Target-device builds and profiling are intentionally out of scope until Vitaly authorizes device work.
+- Baseline docs must separate measured Editor evidence from mobile inference and explicitly mark unavailable target-device evidence as a device gap.
+- Highest mobile risk to track: cold startup and cold first-show speed on low-end Android devices.
+
 ## Child Issue Order
 
 Linear child issue status is the source of truth. Future agents should query Linear before choosing work.
