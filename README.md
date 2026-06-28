@@ -121,6 +121,7 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 - [docs/uiwindows-mvp-loading-prewarm-policy.md](docs/uiwindows-mvp-loading-prewarm-policy.md) - loading, prewarm, first-show, and residency policy for migrated window families.
 - [docs/uiwindows-mvp-mobile-ui-audit.md](docs/uiwindows-mvp-mobile-ui-audit.md) - mobile UI layout, raycast, and legacy text audit for migrated prefabs.
 - [docs/uiwindows-mvp-prefab-first-fallback-audit.md](docs/uiwindows-mvp-prefab-first-fallback-audit.md) - prefab-first fallback decisions for migrated views and retained dynamic UI paths.
+- [docs/uiwindows-mvp-validation-gates.md](docs/uiwindows-mvp-validation-gates.md) - local validation command and mandatory/conditional gates for future agents.
 
 ## Dependency Baseline
 
@@ -145,6 +146,7 @@ See [docs/r3-mvp-conventions.md](docs/r3-mvp-conventions.md), [docs/ui-windows-f
 
 The strongest current verification path is:
 
+- `tools/validate-uiwindows-hardening` for local architecture/dependency, lifecycle shortcut, diff whitespace, and final-newline gates.
 - Presenter and model PlayMode tests under `Assets/Scripts/UiWindowsMvp/Tests/PlayMode` and `Assets/Scripts/ProjectContext/Tests/PlayMode`.
 - Real `WindowSystem.Show -> Hide -> Reopen` lifecycle tests for pooled windows.
 - `SampleSceneIntegratedAcceptanceTests.SampleScene_RunIntegratedMigratedWorkflowAndRepresentativeShowScopeCleanup`.
@@ -160,4 +162,4 @@ These are already represented by the production-hardening plan:
 - Consolidate repeated launcher/runtime window source boilerplate.
 - Use the documented loading, first-show, and prewarm policy to drive target-device profiling.
 - Reduce runtime-built fallback UI in favor of prefab-first production assets.
-- Add local validation scripts for dependency boundaries, lifecycle shortcuts, final newlines, and documentation drift.
+- Extend local validation gates as new production-hardening risks become durable workflow rules.

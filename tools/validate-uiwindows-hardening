@@ -1,0 +1,444 @@
+#!/usr/bin/env python3
+"""Local UI.Windows MVP production-hardening validation gate."""
+
+from __future__ import annotations
+
+import argparse
+import subprocess
+import sys
+import tempfile
+from dataclasses import dataclass
+from pathlib import Path
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+TEXT_EXTENSIONS = {
+    ".asmdef",
+    ".asmref",
+    ".cs",
+    ".json",
+    ".md",
+    ".prefab",
+    ".sh",
+    ".txt",
+    ".unity",
+    ".uss",
+    ".uxml",
+    ".xml",
+    ".yaml",
+    ".yml",
+}
+
+SCAN_EXTENSIONS = {
+    ".asmdef",
+    ".asmref",
+    ".cs",
+    ".prefab",
+    ".unity",
+}
+
+
+@dataclass(frozen=True)
+class ScanScope:
+    path: str
+    include_extensions: frozenset[str] = frozenset(SCAN_EXTENSIONS)
+    exclude_segments: frozenset[str] = frozenset()
+
+
+@dataclass(frozen=True)
+class ScanRule:
+    name: str
+    description: str
+    scopes: tuple[ScanScope, ...]
+    tokens: tuple[str, ...]
+
+
+SCAN_RULES = (
+    ScanRule(
+        name="forbidden runtime dependencies and lifecycle bypasses",
+        description=(
+            "Production UI scopes must not import OpenUI runtime infrastructure, "
+            "Zenject, UniRx, or direct SetActive lifecycle shortcuts."
+        ),
+        scopes=(
+            ScanScope(
+                "Assets/Scripts",
+                exclude_segments=frozenset({"Tests"}),
+            ),
+            ScanScope(
+                "Assets/Prefabs/UiWindowsMvp",
+                include_extensions=frozenset({".prefab"}),
+            ),
+            ScanScope(
+                "Assets/Scenes/SampleScene.unity",
+                include_extensions=frozenset({".unity"}),
+            ),
+            ScanScope(
+                "Assets/Scenes/Develop/UIDevelopScene.unity",
+                include_extensions=frozenset({".unity"}),
+            ),
+        ),
+        tokens=(
+            "UniRx",
+            "Zenject",
+            "Libs.OpenUI",
+            "OpenUI",
+            "DiContainer",
+            "SignalBus",
+            "SetActive(",
+        ),
+    ),
+    ScanRule(
+        name="ProjectContext dependency boundary",
+        description=(
+            "ProjectContext runtime ports/services may use R3 but must not depend "
+            "on Unity UI, UI.Windows, presenters, DOTween, OpenUI, Zenject, or UniRx."
+        ),
+        scopes=(
+            ScanScope("Assets/Scripts/ProjectContext/Runtime"),
+        ),
+        tokens=(
+            "DG.Tweening",
+            "DOTween",
+            "UnityEngine.UI",
+            "UnityEngine.EventSystems",
+            "UnityEngine.UI.Windows",
+            "UiWindowsMvp",
+            "IUiPresenter",
+            "IWindowPresenter",
+            "WindowPresenter",
+            "WindowSystem",
+            "OpenUI",
+            "Zenject",
+            "UniRx",
+        ),
+    ),
+    ScanRule(
+        name="CompositionRoot.Runtime dependency boundary",
+        description=(
+            "CompositionRoot.Runtime must remain reusable scene bootstrap "
+            "infrastructure, independent from UI/MVP/reactive framework concerns."
+        ),
+        scopes=(
+            ScanScope("Assets/Scripts/CompositionRoot/Runtime"),
+        ),
+        tokens=(
+            "DG.Tweening",
+            "DOTween",
+            "UnityEngine.UI",
+            "UnityEngine.EventSystems",
+            "UnityEngine.UI.Windows",
+            "UiWindowsMvp",
+            "WindowSystem",
+            "IUiPresenter",
+            "IWindowPresenter",
+            "WindowPresenter",
+            "OpenUI",
+            "Zenject",
+            "UniRx",
+            "R3",
+        ),
+    ),
+)
+
+
+@dataclass(frozen=True)
+class Violation:
+    rule_name: str
+    path: Path
+    line_number: int
+    token: str
+    line: str
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Run local validation gates for UI.Windows MVP production-hardening "
+            "architecture, dependency, lifecycle, git diff, and final-newline checks."
+        )
+    )
+    parser.add_argument(
+        "--base",
+        default="main",
+        help="Integration branch/ref used for diff checks. Defaults to main.",
+    )
+    parser.add_argument(
+        "--root",
+        type=Path,
+        default=REPO_ROOT,
+        help=argparse.SUPPRESS,
+    )
+    parser.add_argument(
+        "--self-test",
+        action="store_true",
+        help="Run lightweight validation-rule self-tests and exit.",
+    )
+    args = parser.parse_args()
+
+    root = args.root.resolve()
+
+    if args.self_test:
+        return run_self_tests()
+
+    print("UI.Windows MVP production-hardening validation")
+    print(f"Repository: {root}")
+    print(f"Base ref: {args.base}")
+    print()
+
+    failures: list[str] = []
+
+    scan_violations = collect_scan_violations(root, SCAN_RULES)
+    if scan_violations:
+        failures.append("static architecture/dependency scan")
+        print("[fail] Static architecture/dependency scan")
+        for violation in scan_violations:
+            print(
+                f"  {format_path(violation.path, root)}:{violation.line_number}: "
+                f"{violation.rule_name}: matched {violation.token!r}"
+            )
+            print(f"    {violation.line.strip()}")
+    else:
+        print("[pass] Static architecture/dependency scan")
+
+    print()
+    for rule in SCAN_RULES:
+        print(f"  - {rule.name}: {rule.description}")
+
+    print()
+    diff_failures = run_diff_checks(root, args.base)
+    if diff_failures:
+        failures.extend(diff_failures)
+    else:
+        print("[pass] git diff --check for base range, staged diff, and worktree diff")
+
+    newline_failures, checked_files = check_final_newlines(root, args.base)
+    if newline_failures:
+        failures.append("final-newline check")
+        print("[fail] Final-newline check")
+        for path in newline_failures:
+            print(f"  {format_path(path, root)} does not end with a newline")
+    else:
+        print(f"[pass] Final-newline check for {checked_files} changed text file(s)")
+
+    print()
+    print("Manual editor gates still required when relevant:")
+    print("  - C# changes: Rider file diagnostics and Rider solution build.")
+    print("  - C# changes: Unity refresh/compile and Console error/warning check.")
+    print("  - Scene/prefab changes: Unity scene/prefab validation and Console check.")
+    print("  - UI lifecycle changes: focused PlayMode tests for affected windows.")
+    print("  - Device evidence: Android/iOS profiling remains explicit task scope, not part of this local shell gate.")
+
+    if failures:
+        print()
+        print("Validation failed:")
+        for failure in failures:
+            print(f"  - {failure}")
+        return 1
+
+    print()
+    print("Validation passed.")
+    return 0
+
+
+def collect_scan_violations(root: Path, rules: tuple[ScanRule, ...]) -> list[Violation]:
+    violations: list[Violation] = []
+    for rule in rules:
+        for file_path in iter_scope_files(root, rule.scopes):
+            try:
+                lines = file_path.read_text(encoding="utf-8", errors="replace").splitlines()
+            except OSError as exc:
+                violations.append(
+                    Violation(
+                        rule.name,
+                        file_path,
+                        0,
+                        "read-error",
+                        str(exc),
+                    )
+                )
+                continue
+
+            for line_number, line in enumerate(lines, start=1):
+                for token in rule.tokens:
+                    if token in line:
+                        violations.append(
+                            Violation(rule.name, file_path, line_number, token, line)
+                        )
+    return violations
+
+
+def iter_scope_files(root: Path, scopes: tuple[ScanScope, ...]) -> list[Path]:
+    files: list[Path] = []
+    seen: set[Path] = set()
+    for scope in scopes:
+        base = root / scope.path
+        if not base.exists():
+            continue
+
+        candidates = [base] if base.is_file() else sorted(base.rglob("*"))
+        for candidate in candidates:
+            if not candidate.is_file():
+                continue
+            if candidate.suffix not in scope.include_extensions:
+                continue
+
+            try:
+                relative = candidate.relative_to(root)
+            except ValueError:
+                continue
+
+            if scope.exclude_segments.intersection(relative.parts):
+                continue
+
+            if candidate not in seen:
+                seen.add(candidate)
+                files.append(candidate)
+    return files
+
+
+def run_diff_checks(root: Path, base: str) -> list[str]:
+    failures: list[str] = []
+    checks = (
+        (f"git diff --check {base}...HEAD", ("git", "diff", "--check", f"{base}...HEAD")),
+        ("git diff --check --cached", ("git", "diff", "--check", "--cached")),
+        ("git diff --check", ("git", "diff", "--check")),
+    )
+
+    for label, command in checks:
+        result = subprocess.run(
+            command,
+            cwd=root,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+        if result.returncode != 0:
+            failures.append(label)
+            print(f"[fail] {label}")
+            output = result.stdout.strip()
+            if output:
+                print(indent(output, "  "))
+    return failures
+
+
+def check_final_newlines(root: Path, base: str) -> tuple[list[Path], int]:
+    changed_paths = collect_changed_paths(root, base)
+    newline_failures: list[Path] = []
+    checked_files = 0
+
+    for path in sorted(changed_paths):
+        absolute = root / path
+        if not absolute.is_file():
+            continue
+        if not is_text_hygiene_candidate(path):
+            continue
+
+        checked_files += 1
+        data = absolute.read_bytes()
+        if data and not data.endswith(b"\n"):
+            newline_failures.append(absolute)
+
+    return newline_failures, checked_files
+
+
+def collect_changed_paths(root: Path, base: str) -> set[Path]:
+    commands = (
+        ("git", "diff", "--name-only", "--diff-filter=ACMRT", f"{base}...HEAD"),
+        ("git", "diff", "--cached", "--name-only", "--diff-filter=ACMRT"),
+        ("git", "diff", "--name-only", "--diff-filter=ACMRT"),
+        ("git", "ls-files", "--others", "--exclude-standard"),
+    )
+    paths: set[Path] = set()
+    for command in commands:
+        result = subprocess.run(
+            command,
+            cwd=root,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        if result.returncode != 0:
+            continue
+        for line in result.stdout.splitlines():
+            if line:
+                paths.add(Path(line))
+    return paths
+
+
+def is_text_hygiene_candidate(path: Path) -> bool:
+    if path.suffix in TEXT_EXTENSIONS:
+        return True
+    return len(path.parts) > 0 and path.parts[0] == "tools"
+
+
+def format_path(path: Path, root: Path) -> str:
+    try:
+        return str(path.relative_to(root))
+    except ValueError:
+        return str(path)
+
+
+def indent(text: str, prefix: str) -> str:
+    return "\n".join(prefix + line for line in text.splitlines())
+
+
+def run_self_tests() -> int:
+    with tempfile.TemporaryDirectory(prefix="uiw-validate-") as temp_dir:
+        root = Path(temp_dir)
+
+        write_file(
+            root / "Assets/Scripts/UiWindowsMvp/Runtime/BadLifecycle.cs",
+            "public sealed class BadLifecycle { void Hide() { gameObject.SetActive(false); } }\n",
+        )
+        write_file(
+            root / "Assets/Scripts/UiWindowsMvp/Tests/PlayMode/AllowedTest.cs",
+            "public sealed class AllowedTest { void Hide() { gameObject.SetActive(false); } }\n",
+        )
+        write_file(
+            root / "Assets/Scripts/ProjectContext/Runtime/BadTween.cs",
+            "using DG.Tweening;\n",
+        )
+        write_file(
+            root / "Assets/Scripts/CompositionRoot/Runtime/BadReactive.cs",
+            "using R3;\n",
+        )
+
+        violations = collect_scan_violations(root, SCAN_RULES)
+        matched = {(violation.rule_name, violation.token) for violation in violations}
+        expected = {
+            ("forbidden runtime dependencies and lifecycle bypasses", "SetActive("),
+            ("ProjectContext dependency boundary", "DG.Tweening"),
+            ("CompositionRoot.Runtime dependency boundary", "R3"),
+        }
+
+        if not expected.issubset(matched):
+            print("[fail] self-test expected violations were not all detected")
+            print(f"Expected subset: {sorted(expected)}")
+            print(f"Matched: {sorted(matched)}")
+            return 1
+
+        test_setactive_matches = [
+            violation
+            for violation in violations
+            if "AllowedTest.cs" in str(violation.path)
+            and violation.token == "SetActive("
+        ]
+        if test_setactive_matches:
+            print("[fail] self-test did not exclude test-only SetActive usage")
+            return 1
+
+    print("[pass] validation-rule self-tests")
+    return 0
+
+
+def write_file(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+
+if __name__ == "__main__":
+    sys.exit(main())

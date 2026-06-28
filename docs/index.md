@@ -20,6 +20,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 14. [uiwindows-mvp-mobile-ui-audit.md](uiwindows-mvp-mobile-ui-audit.md) - mobile UI layout, raycast, and legacy text audit for migrated prefabs.
 15. [uiwindows-mvp-dynamic-scaling.md](uiwindows-mvp-dynamic-scaling.md) - dynamic shop collection and object indicator update-source scaling decisions.
 16. [uiwindows-mvp-prefab-first-fallback-audit.md](uiwindows-mvp-prefab-first-fallback-audit.md) - prefab-first fallback decisions for migrated views and retained dynamic UI paths.
+17. [uiwindows-mvp-validation-gates.md](uiwindows-mvp-validation-gates.md) - local validation command and mandatory/conditional completion gates for future agents.
 
 ## Reference Adoption
 
@@ -52,6 +53,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 - [uiwindows-mvp-mobile-ui-audit.md](uiwindows-mvp-mobile-ui-audit.md) records the `UIW-30` prefab raycast/text audit, before/after counts, and remaining mobile UI risks.
 - [uiwindows-mvp-dynamic-scaling.md](uiwindows-mvp-dynamic-scaling.md) records the `UIW-31` shop collection and object indicator scaling decisions, implementation evidence, and deferred device-evidence gap.
 - [uiwindows-mvp-prefab-first-fallback-audit.md](uiwindows-mvp-prefab-first-fallback-audit.md) records the `UIW-32` prefab-first cleanup decisions and remaining justified runtime construction paths.
+- [uiwindows-mvp-validation-gates.md](uiwindows-mvp-validation-gates.md) records the `UIW-33` local validation command, automated scans, and mandatory/conditional completion gates.
 
 ## Code Entry Points
 
