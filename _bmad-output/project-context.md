@@ -12,7 +12,7 @@ sections_completed:
   - reactive_dependency_follow_up
   - risks
 existing_patterns_found: 8
-status: uiw-30-closed-uiw-31-ready
+status: uiw-31-closed-uiw-32-ready
 ---
 
 # Project Context for AI Agents
@@ -56,7 +56,8 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - `UIW-28` completed the UI.Windows MVP launcher/runtime-source consolidation on 2026-06-28: `UiRuntimeWindowHandle<TWindow, TView>` now centralizes the repeated lazy runtime-source creation, synchronous `WindowSystem.Show`, immediate UI.Windows hide transition, and guarded presenter binding path while preserving special behavior in concrete launchers. Closure fast-forwarded `main` to commit `f4c4328` and Linear moved `UIW-28` to `Done`.
 - `UIW-29` completed the mobile loading, prewarm, and first-show policy on 2026-06-28: `docs/uiwindows-mvp-loading-prewarm-policy.md` now maps each migrated SampleScene window family to a loading/residency strategy, records Editor-only first-show and warm-reopen evidence, and preserves the deferred low-end Android device-evidence gap. Closure fast-forwarded `main` to commit `f8cf3bd` and Linear moved `UIW-29` to `Done`.
 - `UIW-30` completed the mobile UI layout, raycast, and text settings audit on 2026-06-28: `docs/uiwindows-mvp-mobile-ui-audit.md` records the migrated prefab before/after inventory, active raycast targets were reduced from 41 to 25, fixed-label legacy Text BestFit was reduced from 9 to 5, runtime fallback builders were aligned with the same raycast intent, and target-device evidence remains deferred. Closure fast-forwarded `main` to commit `733e3f0` and Linear moved `UIW-30` to `Done`.
-- The next ordered child issue under `UIW-26` is `UIW-31` - `04 - Scale dynamic collections and object indicator update paths`.
+- `UIW-31` completed dynamic shop collection and object indicator update-path scaling on 2026-06-28: `PooledViewCollection<TView>` now reuses active rows by count, `UiShopView.ScrollToTop()` rebuilds only the shop scroll content layout instead of forcing all canvases, `IUiObjectIndicatorUpdateSource` / `R3UiObjectIndicatorUpdateSource` share one UI-layer frame update source across visible object indicators, and `docs/uiwindows-mvp-dynamic-scaling.md` records the scaling decisions, Editor/test evidence, and deferred target-device gap. Closure fast-forwarded `main` to commit `aefbc46` and Linear moved `UIW-31` to `Done`.
+- The next ordered child issue under `UIW-26` is `UIW-32` - `05 - Move fallback-built UI toward prefab-first production assets`.
 - Linear child issue statuses are the source of truth for task progress. Local files such as `AGENTS.md` and this project context may record issue order, durable facts, and recent snapshots, but future agents must query Linear for current child status when Linear is available.
 - `Assets/Scenes/Develop/UIDevelopScene.unity` is a static prefab layout-check scene for visually inspecting all migrated `UiWindowsMvp` view prefabs under a Canvas.
 - Do not create one runtime demo scene per UI prefab or slice by default; additional `Assets/Scenes/Develop/*Runtime*` scenes should be exceptional and explicitly requested or justified.
