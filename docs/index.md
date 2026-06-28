@@ -18,6 +18,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 12. [uiwindows-mvp-production-hardening-baseline.md](uiwindows-mvp-production-hardening-baseline.md) - Editor-only baseline evidence, mobile-readiness gaps, and initial production hardening targets.
 13. [uiwindows-mvp-loading-prewarm-policy.md](uiwindows-mvp-loading-prewarm-policy.md) - loading, prewarm, first-show, and residency policy for migrated window families.
 14. [uiwindows-mvp-mobile-ui-audit.md](uiwindows-mvp-mobile-ui-audit.md) - mobile UI layout, raycast, and legacy text audit for migrated prefabs.
+15. [uiwindows-mvp-dynamic-scaling.md](uiwindows-mvp-dynamic-scaling.md) - dynamic shop collection and object indicator update-source scaling decisions.
 
 ## Reference Adoption
 
@@ -48,6 +49,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 - [uiwindows-mvp-production-hardening-baseline.md](uiwindows-mvp-production-hardening-baseline.md) records the `UIW-27` Editor-only baseline evidence, target-device evidence gap, and initial mobile-readiness decision rules.
 - [uiwindows-mvp-loading-prewarm-policy.md](uiwindows-mvp-loading-prewarm-policy.md) records the `UIW-29` loading/prewarm strategy map and Editor-only first-show evidence.
 - [uiwindows-mvp-mobile-ui-audit.md](uiwindows-mvp-mobile-ui-audit.md) records the `UIW-30` prefab raycast/text audit, before/after counts, and remaining mobile UI risks.
+- [uiwindows-mvp-dynamic-scaling.md](uiwindows-mvp-dynamic-scaling.md) records the `UIW-31` shop collection and object indicator scaling decisions, implementation evidence, and deferred device-evidence gap.
 
 ## Code Entry Points
 

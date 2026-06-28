@@ -80,7 +80,11 @@ namespace UiWindowsMvp.SampleSceneWindows
                 return;
             }
 
-            Canvas.ForceUpdateCanvases();
+            if (ScrollRect.content != null)
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(ScrollRect.content);
+            }
+
             ScrollRect.verticalNormalizedPosition = 1f;
         }
 

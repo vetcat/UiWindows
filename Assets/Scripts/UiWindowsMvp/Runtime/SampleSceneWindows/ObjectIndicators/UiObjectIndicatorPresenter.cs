@@ -15,6 +15,7 @@ namespace UiWindowsMvp.SampleSceneWindows
         private readonly IUiObjectIndicatorAnchor indicatorAnchor;
         private readonly IUiWorldToScreenAdapter screenAdapter;
         private readonly IUiFxTargetRegistry fxTargetRegistry;
+        private readonly IUiObjectIndicatorUpdateSource updateSource;
         private readonly Func<UiObjectIndicatorWindow, UiObjectIndicatorView> viewResolver;
 
         private UiObjectIndicatorWindow window;
@@ -28,7 +29,8 @@ namespace UiWindowsMvp.SampleSceneWindows
             IPlayerSettings playerSettings,
             IUiObjectIndicatorAnchor indicatorAnchor,
             IUiWorldToScreenAdapter screenAdapter,
-            IUiFxTargetRegistry fxTargetRegistry)
+            IUiFxTargetRegistry fxTargetRegistry,
+            IUiObjectIndicatorUpdateSource updateSource)
             : this(
                 readModel,
                 playerCommands,
@@ -36,6 +38,7 @@ namespace UiWindowsMvp.SampleSceneWindows
                 indicatorAnchor,
                 screenAdapter,
                 fxTargetRegistry,
+                updateSource,
                 ResolveView)
         {
         }
@@ -47,6 +50,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             IUiObjectIndicatorAnchor indicatorAnchor,
             IUiWorldToScreenAdapter screenAdapter,
             IUiFxTargetRegistry fxTargetRegistry,
+            IUiObjectIndicatorUpdateSource updateSource,
             Func<UiObjectIndicatorWindow, UiObjectIndicatorView> viewResolver)
         {
             this.readModel = readModel ?? throw new ArgumentNullException(nameof(readModel));
@@ -55,6 +59,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             this.indicatorAnchor = indicatorAnchor ?? throw new ArgumentNullException(nameof(indicatorAnchor));
             this.screenAdapter = screenAdapter ?? throw new ArgumentNullException(nameof(screenAdapter));
             this.fxTargetRegistry = fxTargetRegistry ?? throw new ArgumentNullException(nameof(fxTargetRegistry));
+            this.updateSource = updateSource ?? throw new ArgumentNullException(nameof(updateSource));
             this.viewResolver = viewResolver ?? throw new ArgumentNullException(nameof(viewResolver));
         }
 
@@ -93,7 +98,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             }
 
             isShowActive = true;
-            showScope.Add(Observable.EveryUpdate().Subscribe(_ => UpdateIndicatorPosition()));
+            showScope.Add(updateSource.Register(() => UpdateIndicatorPosition()));
             UpdateIndicatorPosition();
         }
 

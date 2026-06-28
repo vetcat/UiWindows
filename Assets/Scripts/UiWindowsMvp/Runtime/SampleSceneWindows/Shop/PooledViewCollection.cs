@@ -34,20 +34,18 @@ namespace UiWindowsMvp.SampleSceneWindows
                 throw new ArgumentNullException(nameof(bind));
             }
 
-            ReleaseActive();
-
             if (data == null)
             {
+                ReleaseActive();
                 return;
             }
 
+            TrimActive(data.Count);
+            EnsureActive(data.Count);
+
             for (var i = 0; i < data.Count; i++)
             {
-                var item = TakeItem();
-                item.transform.SetParent(activeRoot, false);
-                ConfigurePooledState(item, false);
-                activeItems.Add(item);
-                bind(item, data[i], i);
+                bind(activeItems[i], data[i], i);
             }
         }
 
@@ -67,6 +65,34 @@ namespace UiWindowsMvp.SampleSceneWindows
             }
 
             activeItems.Clear();
+        }
+
+        private void TrimActive(int count)
+        {
+            for (var i = activeItems.Count - 1; i >= count; i--)
+            {
+                var item = activeItems[i];
+                activeItems.RemoveAt(i);
+                if (item == null)
+                {
+                    continue;
+                }
+
+                ConfigurePooledState(item, true);
+                item.transform.SetParent(poolRoot, false);
+                pooledItems.Push(item);
+            }
+        }
+
+        private void EnsureActive(int count)
+        {
+            while (activeItems.Count < count)
+            {
+                var item = TakeItem();
+                item.transform.SetParent(activeRoot, false);
+                ConfigurePooledState(item, false);
+                activeItems.Add(item);
+            }
         }
 
         private TView TakeItem()

@@ -12,6 +12,7 @@ namespace UiWindowsMvp.SampleSceneWindows
         private readonly IUiObjectIndicatorAnchor indicatorAnchor;
         private readonly IUiWorldToScreenAdapter screenAdapter;
         private readonly IUiFxTargetRegistry fxTargetRegistry;
+        private readonly IUiObjectIndicatorUpdateSource updateSource;
 
         public UiObjectIndicatorPresenterFactory(
             IPlayerReadModel readModel,
@@ -19,7 +20,8 @@ namespace UiWindowsMvp.SampleSceneWindows
             IPlayerSettings playerSettings,
             IUiObjectIndicatorAnchor indicatorAnchor,
             IUiWorldToScreenAdapter screenAdapter,
-            IUiFxTargetRegistry fxTargetRegistry)
+            IUiFxTargetRegistry fxTargetRegistry,
+            IUiObjectIndicatorUpdateSource updateSource)
         {
             this.readModel = readModel ?? throw new ArgumentNullException(nameof(readModel));
             this.playerCommands = playerCommands ?? throw new ArgumentNullException(nameof(playerCommands));
@@ -27,6 +29,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             this.indicatorAnchor = indicatorAnchor ?? throw new ArgumentNullException(nameof(indicatorAnchor));
             this.screenAdapter = screenAdapter ?? throw new ArgumentNullException(nameof(screenAdapter));
             this.fxTargetRegistry = fxTargetRegistry ?? throw new ArgumentNullException(nameof(fxTargetRegistry));
+            this.updateSource = updateSource ?? throw new ArgumentNullException(nameof(updateSource));
         }
 
         public int CreatedCount { get; private set; }
@@ -40,7 +43,8 @@ namespace UiWindowsMvp.SampleSceneWindows
                 playerSettings,
                 indicatorAnchor,
                 screenAdapter,
-                fxTargetRegistry);
+                fxTargetRegistry,
+                updateSource);
         }
     }
 }

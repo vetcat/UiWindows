@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using ProjectContext.Localization;
 using ProjectContext.Shop;
@@ -198,6 +199,62 @@ namespace UiWindowsMvp.Tests.PlayMode
             }
         }
 
+        [Test]
+        public void View_RebuildShopItems_PreservesActiveRowsAndPoolsOnlySurplusForLargeLists()
+        {
+            var viewObject = new GameObject("UiShop Large List Test View", typeof(RectTransform), typeof(UiShopView));
+
+            try
+            {
+                var view = BuildView(viewObject);
+                var initialItems = CreateItems(32, 101);
+                var replacementItems = CreateItems(32, 201);
+                var smallerItems = CreateItems(10, 301);
+
+                var firstBuild = view.RebuildShopItems(initialItems);
+                var firstRows = new ShopItemView[firstBuild.Count];
+                var firstRowIds = new HashSet<int>();
+                for (var i = 0; i < firstBuild.Count; i++)
+                {
+                    firstRows[i] = firstBuild[i];
+                    firstRowIds.Add(firstBuild[i].GetInstanceID());
+                }
+
+                Assert.That(firstRows, Has.Length.EqualTo(32));
+                Assert.That(view.PooledShopItemCount, Is.Zero);
+
+                var sameSizeRebuild = view.RebuildShopItems(replacementItems);
+                Assert.That(sameSizeRebuild, Has.Count.EqualTo(32));
+                Assert.That(view.PooledShopItemCount, Is.Zero);
+                for (var i = 0; i < sameSizeRebuild.Count; i++)
+                {
+                    Assert.That(sameSizeRebuild[i], Is.SameAs(firstRows[i]));
+                    Assert.That(sameSizeRebuild[i].Type, Is.EqualTo(replacementItems[i].Type));
+                }
+
+                var smallerRebuild = view.RebuildShopItems(smallerItems);
+                Assert.That(smallerRebuild, Has.Count.EqualTo(10));
+                Assert.That(view.PooledShopItemCount, Is.EqualTo(22));
+                for (var i = 0; i < smallerRebuild.Count; i++)
+                {
+                    Assert.That(smallerRebuild[i], Is.SameAs(firstRows[i]));
+                    Assert.That(smallerRebuild[i].Type, Is.EqualTo(smallerItems[i].Type));
+                }
+
+                var growBackRebuild = view.RebuildShopItems(replacementItems);
+                Assert.That(growBackRebuild, Has.Count.EqualTo(32));
+                Assert.That(view.PooledShopItemCount, Is.Zero);
+                for (var i = 0; i < growBackRebuild.Count; i++)
+                {
+                    Assert.That(firstRowIds.Contains(growBackRebuild[i].GetInstanceID()), Is.True);
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(viewObject);
+            }
+        }
+
         internal static UiShopView BuildView(GameObject viewObject)
         {
             var view = viewObject.GetComponent<UiShopView>();
@@ -218,6 +275,20 @@ namespace UiWindowsMvp.Tests.PlayMode
                     System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
             Assert.That(currentValueProperty, Is.Not.Null);
             return (T)currentValueProperty.GetValue(reactiveSurface);
+        }
+
+        private static IReadOnlyList<ShopItemData> CreateItems(int count, int firstTypeValue)
+        {
+            var items = new ShopItemData[count];
+            for (var i = 0; i < items.Length; i++)
+            {
+                items[i] = new ShopItemData(
+                    (ShopItemType)(firstTypeValue + i),
+                    ShopItemGroup.Group_1,
+                    (i + 1) * 10);
+            }
+
+            return items;
         }
 
         private sealed class TrackingShopCommands : IShopCommands

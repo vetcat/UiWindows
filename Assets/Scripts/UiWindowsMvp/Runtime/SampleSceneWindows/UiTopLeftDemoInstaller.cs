@@ -61,6 +61,7 @@ namespace UiWindowsMvp.SampleSceneWindows
             var shopVisibilityState = new UiShopVisibilityState();
             var objectIndicatorTarget = new UiObjectIndicatorDemoTarget();
             var objectIndicatorScreenAdapter = new CameraWorldToScreenAdapter();
+            var objectIndicatorUpdateSource = new R3UiObjectIndicatorUpdateSource();
             var topCenterTimeProvider = new SystemUiTopCenterTimeProvider();
             var topCenterHoldTimer = new R3UiTopCenterHoldTimer();
             var playerService = new PlayerService(playerSettings, feedbackService);
@@ -114,7 +115,8 @@ namespace UiWindowsMvp.SampleSceneWindows
                     playerSettings,
                     objectIndicatorTarget,
                     objectIndicatorScreenAdapter,
-                    fxTargetRegistry);
+                    fxTargetRegistry,
+                    objectIndicatorUpdateSource);
 
             registry.Register<IPlayerSettings>(playerSettings);
             registry.Register<IPlayerReadModel>(playerService);
@@ -143,10 +145,12 @@ namespace UiWindowsMvp.SampleSceneWindows
             registry.Register<IUiShopVisibilityCommands>(shopVisibilityState);
             registry.Register<IUiObjectIndicatorAnchor>(objectIndicatorTarget);
             registry.Register<IUiWorldToScreenAdapter>(objectIndicatorScreenAdapter);
+            registry.Register<IUiObjectIndicatorUpdateSource>(objectIndicatorUpdateSource);
             registry.Register(fxTargetRegistry);
             registry.Register(shopVisibilityState);
             registry.Register(objectIndicatorTarget);
             registry.Register(objectIndicatorScreenAdapter);
+            registry.Register(objectIndicatorUpdateSource);
             registry.Register(presenterFactory);
             registry.Register(topRightPresenterFactory);
             registry.Register(topCenterPresenterFactory);
