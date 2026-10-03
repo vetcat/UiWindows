@@ -1,0 +1,19 @@
+{
+  "name": "CompositionRoot.Tests.PlayMode",
+  "rootNamespace": "CompositionRoot.Tests.PlayMode",
+  "references": [
+    "CompositionRoot.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
