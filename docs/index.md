@@ -25,6 +25,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 
 ## Reference Adoption
 
+- [../UPM/README.md](../UPM/README.md) explains how to install the standalone MVP adapter and CompositionRoot packages without importing reference-project demo content.
 - [reference-adoption-checklist.md](reference-adoption-checklist.md) explains how to transfer the architecture to another Unity project without copying demo code blindly.
 - [ai-agent-reference-prompt.md](ai-agent-reference-prompt.md) gives implementation and review prompts for AI agents using this repository as a source reference.
 - [reference-architecture-diagram.md](reference-architecture-diagram.md) gives Mermaid diagrams for the layer ownership, runtime show flow, request-port flow, and pooled-window rule.
@@ -59,6 +60,8 @@ This index helps humans and AI agents use the repository as a UI architecture re
 
 ## Code Entry Points
 
+- `UPM/com.vetcat.uiwindows.mvp` - distributable presenter lifecycle adapter and focused tests.
+- `UPM/com.vetcat.composition-root` - distributable scene bootstrap helper and focused tests.
 - `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` - reusable presenter lifecycle adapter.
 - `Assets/Scripts/ProjectContext/Runtime` - model/read-model/command/request port examples.
 - `Assets/Scripts/UiWindowsMvp/Runtime/SampleSceneWindows` - UI.Windows MVP view, presenter, launcher, and window examples.

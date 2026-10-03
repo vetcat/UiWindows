@@ -2,7 +2,13 @@
 
 This repository is a Unity reference project for building UI on top of `UI.Windows-submodule` with a project-owned MVP / Model-View-View-Presenter layer and `Cysharp/R3` reactive model ports.
 
-It is intended to be used as an information source for other Unity projects. Treat it as a working architecture sample, pattern library, and migration record rather than as a package that should be copied wholesale.
+It is a working architecture sample, pattern library, and migration record for other Unity projects. The reusable MVP adapter and scene CompositionRoot are also available as [standalone UPM packages](UPM/README.md); sample scenes, models, views, art, and DOTween remain in the reference project.
+
+## Install The Reusable Packages
+
+In a Unity 6.6 project, add the corrected `com.me.ui.windows` fork and `com.vetcat.uiwindows.mvp` using the Git URLs in [UPM/README.md](UPM/README.md). Add `com.vetcat.composition-root` when you want the scene bootstrap helper. R3 is optional for these packages and is installed separately by projects that use it.
+
+The repository root is a reference Unity project. Use the `?path=UPM/<package-name>` URLs to install the standalone packages, and pin a published commit for reproducible imports.
 
 ## Project History
 
@@ -107,6 +113,7 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 
 ## Documentation Map
 
+- [UPM/README.md](UPM/README.md) - standalone package installation, dependencies, and test setup.
 - [docs/index.md](docs/index.md) - documentation index and recommended read order.
 - [docs/reference-adoption-checklist.md](docs/reference-adoption-checklist.md) - step-by-step adoption checklist for another Unity project.
 - [docs/ai-agent-reference-prompt.md](docs/ai-agent-reference-prompt.md) - ready-to-use prompts for implementation and review agents.
@@ -138,7 +145,7 @@ See [docs/r3-mvp-conventions.md](docs/r3-mvp-conventions.md), [docs/ui-windows-f
 
 ## What Not To Copy Blindly
 
-- Do not copy this repository as a drop-in package unless the target project intentionally wants the sample scenes, sample models, and demo UI.
+- Install the standalone packages for reusable runtime infrastructure. Copy sample scenes, models, and demo UI only when the target project needs those examples.
 - Do not import OpenUI runtime infrastructure just because OpenUI inspired the behavior.
 - Do not move SampleScene-specific launcher or demo data into a production game's domain model.
 - Do not treat `UIDevelopScene` as runtime verification; use PlayMode tests and `SampleScene` lifecycle flows.
