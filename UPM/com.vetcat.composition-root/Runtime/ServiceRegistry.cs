@@ -8,9 +8,13 @@ namespace CompositionRoot.Runtime
         private readonly Dictionary<Type, object> services = new Dictionary<Type, object>();
         private readonly List<object> registrationOrder = new List<object>();
         private bool initialized;
+        private bool starting;
+        private bool started;
         private bool disposed;
 
         public bool IsInitialized => initialized;
+
+        public bool IsStarted => started;
 
         public bool IsDisposed => disposed;
 
@@ -75,6 +79,39 @@ namespace CompositionRoot.Runtime
                 {
                     initializable.Initialize();
                 }
+            }
+        }
+
+        public void StartAll()
+        {
+            ThrowIfDisposed();
+
+            if (!initialized)
+            {
+                throw new InvalidOperationException("Services must be initialized before startup.");
+            }
+
+            if (started || starting)
+            {
+                return;
+            }
+
+            starting = true;
+            try
+            {
+                for (var i = 0; i < registrationOrder.Count; i++)
+                {
+                    if (registrationOrder[i] is IStartable startable)
+                    {
+                        startable.Start();
+                    }
+                }
+
+                started = true;
+            }
+            finally
+            {
+                starting = false;
             }
         }
 

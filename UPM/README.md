@@ -21,7 +21,7 @@ Use Unity `6000.6` or later. Add these dependencies to the consumer's
 ```json
 {
   "dependencies": {
-    "com.me.ui.windows": "https://github.com/vetcat/UI.Windows-submodule.git#939e4f4e80a76f76ff608acfb9c2c4e566e268b2",
+    "com.me.ui.windows": "https://github.com/vetcat/UI.Windows-submodule.git#6339d2ecdaaa7b1b0e06d9608497809eeeb9bef7",
     "com.vetcat.uiwindows.mvp": "https://github.com/vetcat/UiWindows.git?path=UPM/com.vetcat.uiwindows.mvp#<UIWINDOWS_COMMIT>",
     "com.vetcat.composition-root": "https://github.com/vetcat/UiWindows.git?path=UPM/com.vetcat.composition-root#<UIWINDOWS_COMMIT>"
   }
@@ -31,7 +31,9 @@ Use Unity `6000.6` or later. Add these dependencies to the consumer's
 Install only packages your project uses. The base package needs a direct Git
 entry because the MVP package declares a package version dependency, which does
 not identify the fork's Git repository. The current MVP package requires base
-UI.Windows `1.2.8`; the example pins its published Unity 6.6 compatibility revision.
+UI.Windows `1.2.8` or a compatible newer version; the example pins `1.2.9`
+with synchronous `WindowSystem.Shutdown()`. Choose a UiWindows revision containing
+CompositionRoot `0.1.1` to use its post-Awake `IStartable` phase.
 Use a verified base compatibility commit;
 see [the fork workflow](../docs/ui-windows-fork-workflow.md).
 

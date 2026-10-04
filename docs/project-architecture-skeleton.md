@@ -40,7 +40,7 @@ ProjectContext contains project/application model ports and services that presen
 
 - `SceneCompositionRoot` owns project service/model construction, initialization, and scene-level disposal.
 - Services are explicitly constructed by `ICompositionInstaller` implementations; there is no generic DI framework, reflection container, Zenject dependency, or UniRx dependency.
-- `ServiceRegistry` initializes `IInitializable` services in registration order and disposes `IDisposable` services once in reverse registration order.
+- `ServiceRegistry` initializes `IInitializable` services in registration order, starts `IStartable` services once after scene Awakes, and disposes `IDisposable` services once in reverse registration order.
 - Failed bootstrap disposes the temporary `ServiceRegistry`, leaves `SceneCompositionRoot` not bootstrapped, and rethrows the original exception.
 - UI.Windows owns windows, layouts, loading, unloading, show/hide lifecycle, pooling, and resource management through `WindowSystem.Show` / `ShowSync`, window/handler hide paths, and package lifecycle hooks.
 - Presenters own UI behavior and model binding for loaded UI.Windows windows. The initial adapter API is implemented in `UiWindowsMvp.UIAdapter`; see `.agents/skills/uiwindows-mvp-architecture/SKILL.md` and `UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md` for current names and lifecycle mapping.
@@ -63,6 +63,15 @@ Startup sequence:
 4. Each installer registers concrete services and models into the registry.
 5. `ServiceRegistry.InitializeAll()` calls `IInitializable.Initialize()` in registration order.
 6. The root stores the initialized registry only after successful initialization.
+7. After active scene objects complete `Awake`, Unity calls the root's `Start`.
+8. `Startup()` calls `ServiceRegistry.StartAll()` and each `IStartable.Start()`
+   once in registration order. `IsStarted` becomes true after successful startup.
+
+Initialization in the early root `Awake` must not assume other scene components
+are initialized. Use `IStartable` for workflows that need them. This phase does
+not wait for other components' `Start` methods or asynchronous initialization.
+Manual startup requires a successful `Bootstrap()` and ready dependencies.
+Shutdown before Unity `Start` prevents the automatic startup phase.
 
 Shutdown sequence:
 
@@ -73,6 +82,10 @@ Shutdown sequence:
 Failure rule:
 
 If installer execution or service initialization throws, `SceneCompositionRoot` disposes the temporary registry, keeps `IsBootstrapped == false`, does not expose the failed registry through `Services`, and rethrows the original exception.
+
+If startup throws, the root shuts down its registry and rethrows the failure.
+Services registered through several interfaces still participate once in every
+lifecycle phase.
 
 ## Bootstrap Path
 

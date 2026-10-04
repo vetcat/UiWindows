@@ -11,7 +11,7 @@ This project uses a project-owned fork of `UI.Windows-submodule` as the Unity Pa
 - Project fork: `https://github.com/vetcat/UI.Windows-submodule`
 - Compatibility branch: `unity6000-compat`
 - Original upstream baseline: `60a4bf6e47c85ad57935f633a53fc3ca8b707167`
-- Current integration commit: `939e4f4e80a76f76ff608acfb9c2c4e566e268b2`, package `1.2.8`
+- Current integration commit: `6339d2ecdaaa7b1b0e06d9608497809eeeb9bef7`, package `1.2.9`
 
 The fork branch was created at the researched baseline commit:
 
@@ -26,7 +26,7 @@ The fork branch was created at the researched baseline commit:
 The current committed-state dependency in `Packages/manifest.json` is:
 
 ```json
-"com.me.ui.windows": "https://github.com/vetcat/UI.Windows-submodule.git#939e4f4e80a76f76ff608acfb9c2c4e566e268b2"
+"com.me.ui.windows": "https://github.com/vetcat/UI.Windows-submodule.git#6339d2ecdaaa7b1b0e06d9608497809eeeb9bef7"
 ```
 
 For committed project state, the revision must be a commit hash or immutable tag, not a floating branch.
@@ -40,6 +40,14 @@ For local investigation only, a branch target is acceptable:
 Do not commit the branch-target form unless the dependency workflow is explicitly changed.
 
 ## Unity 6.6 Compatibility Revision
+
+The current patch adds terminal, idempotent `WindowSystem.Shutdown()` for scene
+owners. Clean owned windows through UI.Windows before shutdown, then destroy the
+system normally. Shutdown releases global ownership synchronously; deferred
+`OnDestroy` of the old object cannot clear a replacement's singleton or pointer
+callbacks. [Fork PR #2](https://github.com/vetcat/UI.Windows-submodule/pull/2)
+contains the patch; verification in both projects is recorded in the package
+workflow. The original compatibility baseline below remains included.
 
 The published integration commit contains compatibility patch
 `cb77d43933409ec1b1525086cc2596e2a74d6e36`, merged through

@@ -56,8 +56,8 @@ The focused source PlayMode baseline is:
 | Assembly | Expected tests |
 | --- | --- |
 | `UiWindowsMvp.UIAdapter.Tests.PlayMode` | 6 |
-| `CompositionRoot.Tests.PlayMode` | 2 |
-| `UiWindowsMvp.Tests.PlayMode` | 33 |
+| `CompositionRoot.Tests.PlayMode` | 4 |
+| `UiWindowsMvp.Tests.PlayMode` | 34 |
 
 Run each assembly separately using the discovered schema, for example:
 
@@ -123,12 +123,28 @@ it does not publish a reusable fix.
 The reference project targets Unity `6000.6.4f1`. Its local package manifest/lock
 entries point at the canonical UPM folders; they do not claim a Git publication.
 An Editor import and tests provide runtime evidence separately from those pins.
-Its base package is UI.Windows `1.2.8`, pinned to the published integration commit
-`939e4f4e80a76f76ff608acfb9c2c4e566e268b2`. The MVP package declares that same
-base version requirement. See [fork compatibility](ui-windows-fork-workflow.md)
+Its base package is UI.Windows `1.2.9`, pinned to the published shutdown commit
+`6339d2ecdaaa7b1b0e06d9608497809eeeb9bef7`. The MVP package retains its compatible
+minimum base version requirement `1.2.8`. See [fork compatibility](ui-windows-fork-workflow.md)
 for the baseline, published patch, and verification record.
 
 ## Reference Verification On Unity 6.6
+
+The post-Awake startup and scene-owner shutdown update passed 44 PlayMode tests
+on Unity `6000.6.4f1`: 4 CompositionRoot, 6 adapter and 34 reference integration
+tests, with no failed/skipped/inconclusive tests. The new reference test proves
+synchronous singleton release, exactly-once module cleanup, and that deferred
+destruction preserves a replacement. PixelLords separately passed 15 tests,
+including real FeelTest pooling, shutdown and scene reload. XML/JSON evidence is
+under ignored `Temp/Codex/FeelTest/` in each project. Source compilation had no
+errors; the existing DOTween teardown warnings remain. Rider's current solution
+did not index source package paths; live Unity compilation is authoritative.
+The static architecture/newline checks passed. The full shell gate still reports
+the pre-existing trailing whitespace in `ProjectSettings.asset`, excluded from
+this change. The original clean `UIDevelopScene` was restored. No device or
+player-build validation is part of this update.
+
+Earlier verification of the compatibility/tooling baseline follows.
 
 Verified on 2026-10-04 in the live source Editor `6000.6.4f1`:
 

@@ -17,7 +17,7 @@
       "hash": "a7c6b49a0141a5bff9b1983e38137522ef61977d"
     },
     "com.me.ui.windows": {
-      "version": "https://github.com/vetcat/UI.Windows-submodule.git#939e4f4e80a76f76ff608acfb9c2c4e566e268b2",
+      "version": "https://github.com/vetcat/UI.Windows-submodule.git#6339d2ecdaaa7b1b0e06d9608497809eeeb9bef7",
       "depth": 0,
       "source": "git",
       "dependencies": {
@@ -28,7 +28,7 @@
         "com.unity.burst": "1.8.13",
         "com.unity.collections": "2.4.3"
       },
-      "hash": "939e4f4e80a76f76ff608acfb9c2c4e566e268b2"
+      "hash": "6339d2ecdaaa7b1b0e06d9608497809eeeb9bef7"
     },
     "com.unity.addressables": {
       "version": "2.11.2",

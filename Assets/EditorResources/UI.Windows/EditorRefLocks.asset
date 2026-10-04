@@ -9,7 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7004b91b8eb94e10b77f6774dd010381, type: 3}
-  m_Name: WindowObjectRegistry
-  m_EditorClassIdentifier: UI.Windows::UnityEngine.UI.Windows.Editor.WindowObjectRegistry
-  items: []
+  m_Script: {fileID: 11500000, guid: 59d01dedaac4465983580e25d4cc65da, type: 3}
+  m_Name: EditorRefLocks
+  m_EditorClassIdentifier: UI.Windows::UnityEngine.UI.Windows.Editor.EditorRefLocks
+  items:
+  - obj: UIWS.Collect
+    directories: []
