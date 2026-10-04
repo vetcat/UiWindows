@@ -21,7 +21,7 @@ If local changes already exist, do not overwrite them. Stop and ask how to proce
 
 ## Human Action Required Blockers
 
-If a required tool is blocked by a visible human action, report `BLOCKED_HUMAN_ACTION_REQUIRED` and stop instead of waiting indefinitely or guessing a fallback. This is especially important for Unity MCP when the Unity Editor requires domain reload, script reload, modal confirmation, PlayMode exit, or test-runner confirmation that MCP cannot accept.
+If a required tool is blocked by a visible human action, report `BLOCKED_HUMAN_ACTION_REQUIRED` and stop instead of waiting indefinitely or guessing a fallback. A Unity example is an Editor modal confirmation that Unity CLI cannot accept. Wait for normal domain reloads/readiness before escalating; the reload itself is not a human-action blocker.
 
 The blocker report must include:
 
@@ -44,6 +44,7 @@ After the Orchestrator resumes you, re-check the editor/tool state before contin
 - If a local context update is required, record durable facts and avoid transient wording such as `review pending`, `implemented on branch`, or `requires closure`; closure facts should be reconciled by the Orchestrator's post-closure documentation drift check unless the task explicitly includes documentation work.
 - Use IDE diagnostics/build/refactor/format tools for changed code when available, and report any skipped or unavailable IDE tooling.
 - Use editor-specific tools for editor refresh/compile, tests, Console state, generated asset state, and live API checks when available.
+- For UiWindows, use exact-project Unity CLI/Pipeline, following `AGENTS.md` and the installed CLI/package-management skills. Discover schemas, inspect compilation and actual Console counts, and poll async tests to a completed nonzero result with evidence. Do not use another Editor's MCP connection as a source fallback.
 - For editor/tool prompts that require human action, use `BLOCKED_HUMAN_ACTION_REQUIRED` instead of silently skipping the check.
 - Do not close the issue unless explicitly asked.
 - Do not merge into the integration branch unless explicitly asked.

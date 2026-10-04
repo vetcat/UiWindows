@@ -221,7 +221,7 @@ Default task flow after the successful `UIW-20` trial:
 - Before launching a Closure Executor, write the authorized closure actions into the selected Linear issue as the latest comment titled `Closure Handoff`.
 - The Orchestrator must not edit the shared task branch while a sub-agent Executor is actively implementing, because sub-agents may work in the same checkout rather than an isolated workspace.
 - The Orchestrator should avoid full context forks unless the task truly needs the whole thread, but must still give the Executor enough context for safe implementation through Linear or a full direct prompt.
-- If the Executor reports `BLOCKED_HUMAN_ACTION_REQUIRED`, for example Unity MCP is blocked by a Unity Editor domain reload or modal confirmation, the Orchestrator must surface the required action in this human-facing chat, wait for confirmation, then resume the same Executor when possible.
+- If the Executor reports `BLOCKED_HUMAN_ACTION_REQUIRED`, for example Unity CLI cannot proceed because the source Editor needs a modal confirmation, the Orchestrator must surface the required action in this human-facing chat, wait for confirmation, then resume the same Executor when possible.
 - The Orchestrator must independently review the Executor result and request follow-up from the same sub-agent when the fix is inside that implementation context.
 - If an Executor `wait_agent` call times out on a Unity-heavy task, the Orchestrator should first use read-only status checks such as `git status --short --branch` and then wait again or request a status update; do not assume failure from one timeout.
 - Executor handoffs must require final text hygiene before reporting: changed `.cs`, `.md`, and other text files should end with a final newline, and `git diff --check main...HEAD` should pass.
@@ -262,7 +262,7 @@ The Executor should:
 
 - Work on exactly one Linear issue.
 - Read the latest Linear comment titled `Executor Handoff` when launched from a short bootstrap prompt; if it is missing or Linear is unavailable, stop and report instead of guessing.
-- If Unity MCP or another required tool is blocked by a visible human action such as Unity domain reload or modal confirmation, report `BLOCKED_HUMAN_ACTION_REQUIRED` with the exact action needed, current branch/status, last successful step, and resume instruction.
+- If Unity CLI or another required tool is blocked by a visible human action such as a modal confirmation, report `BLOCKED_HUMAN_ACTION_REQUIRED` with the exact action needed, current branch/status, last successful step, and resume instruction. A normal domain reload is not a blocker; wait for the source Editor to become ready first.
 - Start from latest `main` and create a dedicated task branch.
 - Do not leave the feature branch misleadingly tracking `origin/main`; unset upstream or push/set upstream to the remote feature branch when appropriate.
 - Stay inside the selected issue scope.
@@ -289,13 +289,13 @@ The Closure Executor should:
 - Stop and report on unexpected dirty working tree, accepted branch/commit mismatch, divergent integration branch, merge conflict, failed push, missing tracker access, or tracker update failure.
 - Return merge result, pushed head, Linear updates, final `git status --short --branch`, and any blockers.
 
-## Local MCP Notes
+## Local Tool Availability
 
-The local `.ai/mcp/mcp.json` file is currently empty, but Linear, Rider, Unity MCP, and multi-agent tools may still be available from the session environment. Before Orchestrator, Executor, or Closure Executor work, verify actual tool availability through the active tool list/resource discovery instead of inferring availability from `.ai/mcp/mcp.json`.
+The local `.ai/mcp/mcp.json` file is currently empty, but Linear MCP, Rider MCP, and multi-agent tools may still be available from the session environment. Verify them through the active tool list/resource discovery instead of inferring availability from that file. Source Unity Editor operations use Unity CLI with the project-owned `com.unity.pipeline` package at `0.8.0-exp.1`; `com.coplaydev.unity-mcp` is not installed in this project. Do not remove or retarget global MCP configuration or other projects' Editors.
 
 If Linear, Rider, Unity, multi-agent, or another expected tool is unavailable, times out, or does not see this project, report the exact limitation in the prompt, review, Executor result, or Closure Executor result.
 
-## IDE And Unity MCP Verification
+## IDE And Unity CLI Verification
 
 When Rider MCP is available, prefer it for IDE-indexed project navigation and C#-aware operations:
 
@@ -312,9 +312,11 @@ When changing project-owned C# code, use Rider MCP when it is available:
 - Use Rider `rename_refactoring` for programmatic symbol renames instead of manual text replacement.
 - Use Rider `reformat_file` for edited C# files when formatting changed and the file belongs to the opened solution.
 
-Unity MCP remains the source of truth for Unity editor refresh/compile, PlayMode verification, Unity Console state, and reflection against live Unity/UI.Windows APIs. If Rider MCP or Unity MCP is unavailable, times out, or does not see the opened project, report that limitation in the Executor result.
+Use the installed `unity-cli` and `unity-package-management` skills for source Editor operations. Unity CLI/Pipeline provides live refresh/compile, PlayMode tests, Console state, and Unity/UI.Windows API checks. Check CLI version/latest without automatically upgrading, then run `unity status --until-ready --timeout 40 --project-path /Users/vitaly/Projects/UiWindows --format json`. Verify the reported path, PID, and Unity `6000.6.4f1`; do not open a duplicate Editor or drive another project.
 
-Before using Unity MCP tools, read `mcpforunity://custom-tools`, `mcpforunity://instances`, and `mcpforunity://editor/state` when available so the active Unity instance and editor readiness are explicit.
+Pass `--project-path /Users/vitaly/Projects/UiWindows` on every Editor-driving CLI call. Discover current command schemas with `unity command --query <term> --detail full` using the same project selector; use `command eval` for focused public Editor APIs when no registered command covers the check. Package changes must use asynchronous Package Manager operations, not manual manifest/lock edits or main-thread busy loops.
+
+Use `unity recompile` and discovered `console_status`/`console` commands; inspect compilation failure and actual Console errors/warnings separately from an up-to-date compile summary. Run focused PlayMode suites with discovered `run_tests --mode playmode --filter_type assembly --filter <assembly> --async_tests true`, then poll `test_status` until completed. An accepted dispatch or zero tests is not a pass. Preserve nonzero result counts and XML/JSON evidence, scene state, and any test-modified preferences. See `docs/upm-package-workflow.md` and `docs/uiwindows-mvp-validation-gates.md` for the source baseline and gates. Report unavailable or timed-out Rider/CLI tooling explicitly.
 
 ## Skill Validation
 

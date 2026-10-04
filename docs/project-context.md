@@ -12,6 +12,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 
 - Local project path: `/Users/vitaly/Projects/UiWindows`.
 - Unity target: `6000.6.4f1` from `ProjectSettings/ProjectVersion.txt`. Source Editor verification on 2026-10-04 passed 41 focused package/reference PlayMode tests; see `docs/upm-package-workflow.md` for scope and warning limitations. Historical snapshots below describe the earlier Unity `6000.4.4f1` baseline.
+- Source Editor tooling uses Unity CLI with intentional `com.unity.pipeline` `0.8.0-exp.1`. The source no longer installs `com.coplaydev.unity-mcp`; Linear/Rider MCP and other projects' tooling remain independent.
 - Current repository is a Unity reference project with local CompositionRoot/MVP packages, R3 integration, R3-backed player/settings/localization/shop model services, and modal/hint/FX request ports.
 - The repository is also intended to serve as a reference source for UI architecture work in other Unity projects. `README.md` is the public entry point, and `docs/index.md` is the curated documentation map for humans and AI agents.
 - Standalone Unity 6.6 packages are canonical under `UPM/com.vetcat.uiwindows.mvp` and `UPM/com.vetcat.composition-root`; the reference project imports them through local `file:` dependencies and enables their focused tests. They distribute the reusable adapter and scene bootstrap helper without sample models, scenes, views, R3, or DOTween.
@@ -72,10 +73,10 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - Use `.agents/skills/uiwindows-view-prefab-porting/SKILL.md` before porting, creating, reviewing, or fixing UI.Windows view prefab assets, OpenUI visual prefab ports, serialized Unity UI refs, RectTransform layout, CanvasScaler/font readability, or `UIDevelopScene` layout-preview behavior.
 - The prefab-porting skill records the `UIW-15` asset workflow: keep prefabs and visual assets outside `Assets/Scripts`, use `Assets/Scenes/Develop/UIDevelopScene.unity` as a static layout-check scene, use `Assets/Scenes/SampleScene.unity` for runtime integration slices, apply correct root RectTransform values to prefab assets rather than scene-only overrides, and separate UI.Windows editor-generated noise from task changes.
 
-## IDE And Unity MCP Verification
+## IDE And Unity CLI Verification
 
-- Local `.ai/mcp/mcp.json` can be empty while session-provided MCP tools are still available. Future chats should verify actual Linear, Rider, and Unity MCP availability through the active tool list/resource discovery before implementation or review work.
-- If an expected MCP or multi-agent tool is unavailable, times out, or does not see this project, report the exact limitation in the Executor or Orchestrator result instead of assuming the tool is globally unavailable.
+- Local `.ai/mcp/mcp.json` can be empty while session-provided Linear/Rider MCP and multi-agent tools are still available. Verify their actual availability rather than relying on that file. Unity Editor access uses CLI/Pipeline, not source Unity MCP.
+- If an expected tool is unavailable, times out, or does not see this project, report the exact limitation in the Executor or Orchestrator result instead of assuming the tool is globally unavailable.
 - When Rider MCP is available, prefer it for IDE-indexed project navigation and C#-aware operations: use Rider search tools to locate files/usages when indexed search is sufficient; use `rename_refactoring` for C# symbol renames; use `reformat_file`, `get_file_problems`, and `build_solution` for C# formatting and validation when practical.
 - Do not force Rider MCP for every file operation. Use shell, `rg`, `apply_patch`, and git tools for raw file reads, diffs, git state, broad scripted inspection, Unity serialized assets, docs, package files, and edits that are clearer as patches.
 - If Rider MCP is unavailable, stale, slow, or does not see this project, fall back to normal filesystem tools and report that limitation explicitly.
@@ -84,9 +85,11 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 - Run Rider `build_solution` after C# changes when practical, or explicitly report why Unity compile was used instead.
 - Use Rider `rename_refactoring` for programmatic symbol renames instead of manual text replacement.
 - Use Rider `reformat_file` for edited C# files when formatting changed and the file belongs to the opened solution.
-- Unity MCP remains the source of truth for Unity editor refresh/compile, PlayMode verification, Unity Console state, and reflection against live Unity/UI.Windows APIs.
-- Before using Unity MCP tools, read `mcpforunity://custom-tools`, `mcpforunity://instances`, and `mcpforunity://editor/state` when available.
-- If Rider MCP or Unity MCP is unavailable, times out, or does not see the opened project, report that limitation in the Executor result.
+- Use the installed Unity CLI and package-management skills for live refresh/compile, PlayMode tests, Console state, and Unity/UI.Windows API reflection. Source tooling is Pipeline `0.8.0-exp.1`; neither reusable UPM package depends on it.
+- Check CLI version/latest without automatically upgrading. Run `unity status --until-ready --timeout 40 --project-path /Users/vitaly/Projects/UiWindows --format json` and verify path, PID, and Unity `6000.6.4f1` before driving the Editor. Pass that exact `--project-path` on every Editor command; do not drive another project or open a duplicate source Editor.
+- Discover live command schemas with `unity command --query <term> --detail full` using the same selector. Use `command eval` for focused public Editor APIs when needed. Package operations must go through Package Manager asynchronously; let Unity write manifest/lock.
+- Run `unity recompile`, inspect `console_status`/`console`, and distinguish compile summaries from actual Console warnings. For focused PlayMode suites, use discovered `run_tests` with `--async_tests true`, poll `test_status` to completion, and retain nonzero XML/JSON results. Preserve loaded scenes and preferences; a dispatch or zero-test run is not success. See `docs/upm-package-workflow.md`.
+- Report unavailable or timed-out Rider/CLI tooling explicitly. Do not change global MCP/client configuration or other projects' tooling to repair source access.
 
 UIW-14 local workflow check on 2026-06-13:
 
@@ -111,7 +114,7 @@ Current local Unity packages from `Packages/manifest.json`:
 - `com.unity.ugui`: `2.0.0`
 - `com.unity.test-framework`: `1.6.0`
 - `com.unity.ai.navigation`: `2.0.13`
-- `com.coplaydev.unity-mcp`: Git dependency `https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main`
+- `com.unity.pipeline`: `0.8.0-exp.1`, intentional source Editor tooling for Unity CLI; not a reusable package dependency
 - `com.me.ui.windows`: package `1.2.8`, Git dependency `https://github.com/vetcat/UI.Windows-submodule.git#939e4f4e80a76f76ff608acfb9c2c4e566e268b2`
 - `com.vetcat.uiwindows.mvp`: canonical local package `file:../UPM/com.vetcat.uiwindows.mvp`, requiring UI.Windows `1.2.8`
 - `com.vetcat.composition-root`: canonical local package `file:../UPM/com.vetcat.composition-root`
@@ -283,7 +286,7 @@ UIW-20 sub-agent Executor flow trial on 2026-06-22:
 - If Linear is unavailable or the handoff comment cannot be created/read, do not use a link-only handoff; either pass the full prompt directly or stop and report the blocker.
 - The Orchestrator should avoid forking the full conversation context unless the task truly needs the full thread, but must still give the Executor enough context for safe implementation through Linear or a full direct prompt.
 - Sub-agent Executors may work in the same repository checkout. While the Executor is implementing, the Orchestrator should treat the task branch as write-locked and avoid parallel edits in that workspace.
-- If a sub-agent Executor is blocked by a required human-visible tool action, use `BLOCKED_HUMAN_ACTION_REQUIRED`. The main Unity case is Unity MCP blocked by a Unity Editor domain reload, script reload, modal confirmation, PlayMode exit, or test-runner confirmation that MCP cannot accept. The Executor should report the exact action needed, current branch/status, last successful step, and resume instruction; the Orchestrator must surface that in the human-facing chat and resume the same Executor after Vitaly confirms when possible.
+- If a sub-agent Executor is blocked by a required human-visible tool action, use `BLOCKED_HUMAN_ACTION_REQUIRED`. A Unity example is a source Editor modal confirmation that Unity CLI cannot accept. Wait through normal domain reloads before declaring a blocker. Report the exact action needed, current branch/status, last successful step, and resume instruction; the Orchestrator must surface that in the human-facing chat and resume the same Executor after Vitaly confirms when possible.
 - A first `wait_agent` timeout does not prove failure; for larger Unity tasks, the Orchestrator should either wait again or inspect repo status before intervening.
 - The first Executor result may be workable but not closure-ready. In `UIW-20`, Orchestrator review found dispose-order and newline hygiene issues; the Orchestrator sent a narrow follow-up to the same sub-agent, which fixed and committed the result.
 - Executors should commit task changes before final report unless explicitly blocked. Uncommitted changes are reviewable, but not closure-ready.
@@ -658,8 +661,8 @@ Executor mode:
 - Stay within the issue scope.
 - Do not update `AGENTS.md` or other local rules docs merely to record task progress; Linear holds progress state. If a local context update is required, record durable facts and avoid transient language such as `review pending`, `implemented on branch`, or `requires closure`.
 - If the issue is a child of a parent plan, report which parent acceptance target was advanced and which known parent gaps remain outside this issue's scope.
-- Run verification from the issue and project context, including Rider MCP for changed C# files when available and Unity MCP for Unity editor/Console/test state.
-- Report unavailable, timed-out, or skipped MCP tooling explicitly.
+- Run verification from the issue and project context, including Rider MCP for changed C# files when available and exact-project Unity CLI/Pipeline for Editor/Console/test state.
+- Report unavailable, timed-out, or skipped tooling explicitly.
 - Update Linear with implementation notes and verification results.
 - Commit completed task changes before final report unless blocked or explicitly told not to commit.
 - Return changed files, branch name, commits, verification results, final repository status, and unresolved risks.

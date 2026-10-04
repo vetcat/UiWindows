@@ -10,6 +10,17 @@ In a Unity 6.6 project, add the corrected `com.me.ui.windows` fork and `com.vetc
 
 The repository root is a reference Unity project. Use the `?path=UPM/<package-name>` URLs to install the standalone packages, and pin a published commit for reproducible imports.
 
+## Source Editor Tooling
+
+Open this reference project with Unity `6000.6.4f1`. Editor automation uses Unity CLI
+and the intentionally pinned `com.unity.pipeline` `0.8.0-exp.1`; the source does not
+install Unity MCP. Pipeline is source tooling, not a dependency of the reusable
+MVP/CompositionRoot packages. Linear and Rider MCP remain separate tools.
+
+See [source CLI setup and checks](docs/upm-package-workflow.md#source-editor-tooling)
+for exact-project readiness, command discovery, compile/Console checks, and the
+focused nonzero test-result gate. Do not target another open project's Editor.
+
 ## Project History
 
 This project was created as a synthesis of two existing UI architecture references:
@@ -141,6 +152,7 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 - NuGet `R3`: `1.3.1`, restored under `Packages/nuget-packages`.
 - NuGetForUnity: `v4.5.0`.
 - DOTween Free `1.2.825` under `Assets/Plugins/Demigiant/DOTween`.
+- Source Editor automation: Unity CLI with Pipeline `0.8.0-exp.1`, excluded from reusable package dependencies.
 
 See [docs/r3-mvp-conventions.md](docs/r3-mvp-conventions.md), [docs/ui-windows-fork-workflow.md](docs/ui-windows-fork-workflow.md), and [docs/dotween-ui-fx-dependency.md](docs/dotween-ui-fx-dependency.md) for setup details.
 

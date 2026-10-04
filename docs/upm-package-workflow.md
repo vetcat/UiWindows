@@ -20,6 +20,60 @@ require CompositionRoot, R3, DOTween, FMOD, or URP. The CompositionRoot assembly
 depends only on Unity. Applications decide how to construct presenters, supply
 reactive model ports, and render effects.
 
+## Source Editor Tooling
+
+Use the installed Unity CLI and package-management skills for Editor automation.
+Open this source project with Unity `6000.6.4f1`; avoid launching a second Editor
+for the same path. `com.unity.pipeline` `0.8.0-exp.1` is the intentional source
+tooling dependency and is retained in the manifest/lock. `com.coplaydev.unity-mcp`
+is not installed here. Linear/Rider MCP and other projects' tooling are unchanged.
+Neither reusable UPM package depends on Pipeline, Unity MCP, R3, or DOTween.
+
+Check installed CLI version/latest without automatically upgrading. Set the path
+to this checkout, and retain the explicit selector on every Editor-driving call:
+
+```bash
+task_project=/Users/vitaly/Projects/UiWindows
+unity version --format json
+unity self-update --check --format json
+unity status --until-ready --timeout 40 --project-path "$task_project" --format json
+unity command --query run_tests --detail full --project-path "$task_project" --format json
+unity recompile --project-path "$task_project" --format json
+unity command console_status --project-path "$task_project" --format json
+```
+
+Verify the selected path, PID, and Editor version before mutations. Discover live
+schemas for additional commands (`console`, package/asset commands, `test_status`)
+with `command --query <term> --detail full` and the same project selector. Automation
+calls should also identify `--caller plugin --skill unity-cli`. Use `command eval`
+for focused public Editor APIs when a registered command does not cover the check.
+Change packages through asynchronous Package Manager commands/`Client` requests,
+poll completion, and let Unity write manifest/lock; do not edit them by hand or
+busy-loop on the Editor main thread.
+
+The focused source PlayMode baseline is:
+
+| Assembly | Expected tests |
+| --- | --- |
+| `UiWindowsMvp.UIAdapter.Tests.PlayMode` | 6 |
+| `CompositionRoot.Tests.PlayMode` | 2 |
+| `UiWindowsMvp.Tests.PlayMode` | 33 |
+
+Run each assembly separately using the discovered schema, for example:
+
+```bash
+unity command run_tests --mode playmode --filter_type assembly --filter UiWindowsMvp.UIAdapter.Tests.PlayMode --async_tests true --project-path "$task_project" --format json
+unity command test_status --project-path "$task_project" --format json
+```
+
+Poll until completed before starting the next run. Inspect the nonzero inventory,
+passed/failed/skipped/inconclusive counts, and named results; an accepted dispatch
+or zero-test result is not a pass. Preserve JSON plus actual NUnit XML exported
+through the source Test Runner API/window under ignored `Logs/QP1-validation/`.
+Inspect `scriptCompilationFailed` and actual Console errors/warnings separately
+from an up-to-date compile summary. Preserve the original loaded scene state and
+any test-modified preferences. This gate does not run player/WebGL builds.
+
 ## Local Development
 
 1. Read `AGENTS.md`, [project context](project-context.md), and the relevant
@@ -108,13 +162,36 @@ as Unity Console errors; warning cleanup is outside this package ownership pass.
 This verification does not establish warning-free runtime behavior or player-build
 compatibility.
 
-Unity MCP exposed only the separate QuantumAsteroids Editor, and Rider did not
-index this source project. Validation used the live source Editor through temporary
-Pipeline `0.8.0-exp.1`; it was removed through `Client.Remove` afterwards and is
-absent from the final manifest/lock. Local test and Editor evidence is retained
-under ignored `Logs/QP1-validation/`; the durable task checkpoint is in
+During the initial import-validation pass, Unity MCP exposed only the separate
+QuantumAsteroids Editor, and Rider did not index this source project. That pass
+used temporary Pipeline `0.8.0-exp.1`, then removed it through `Client.Remove`.
+The subsequent source tooling migration intentionally retains that same Pipeline
+version for Unity CLI and removes source Unity MCP through Package Manager.
+The active tooling baseline is defined above; the earlier removal is historical.
+Local test and Editor evidence is retained under ignored `Logs/QP1-validation/`;
+the durable task checkpoint is in
 [QP-1](https://linear.app/qpixelstudio/issue/QP-1/naladit-obshij-upm-workflow-uiwindows-dlya-pixellords-i).
 No player or WebGL builds were run.
+
+The post-migration CLI-only rerun used CLI `1.0.0-beta.12` (also the latest version
+reported by its non-mutating check), source Unity `6000.6.4f1`, and Pipeline
+`0.8.0-exp.1`. After Package Manager completed Unity MCP removal, all three suites
+passed again: 6/6 adapter, 2/2 CompositionRoot, and 33/33 reference tests, with zero
+failed/skipped/inconclusive. Fresh actual NUnit XML and completed CLI JSON are
+`Logs/QP1-validation/cli-{mvp-binding,composition-root,reference}-playmode.{xml,json}`.
+The clean `SampleScene` and the three test-modified PlayerPrefs keys were restored.
+Final `recompile` was up to date (0 errors/warnings in that summary), while live
+Console ground truth reported compilation failure false, 0 errors, and 15 DOTween
+warnings. Pipeline's retained buffer also contains one earlier sample compiler
+warning; this is not a warning-free runtime claim.
+
+The five icons retain their Unity 6.6 TextureImporter migration (version 13 and iOS
+platform naming). Original GUIDs, Single Sprite mode, existing import settings,
+Sprite local file IDs `21300000`, and all five prefab Image references remain
+unchanged, including the captured forced-import check. No reusable runtime,
+prefab, scene, or package API changes were needed for the tooling migration.
+Unrelated default ProjectAuditor settings were quarantined recoverably under
+ignored `Logs/QP1-validation/generated-noise/`, rather than published.
 
 Architecture guidance is retained in ordinary [project context](project-context.md),
 the [documentation index](index.md), and independent `.agents/skills` for issue
