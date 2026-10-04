@@ -19,6 +19,7 @@ TEXT_EXTENSIONS = {
     ".cs",
     ".json",
     ".md",
+    ".meta",
     ".prefab",
     ".sh",
     ".txt",
@@ -81,6 +82,10 @@ SCAN_RULES = (
                 exclude_segments=frozenset({"Tests"}),
             ),
             ScanScope(
+                "UPM",
+                exclude_segments=frozenset({"Tests"}),
+            ),
+            ScanScope(
                 "Assets/Prefabs/UiWindowsMvp",
                 include_extensions=frozenset({".prefab"}),
             ),
@@ -135,7 +140,7 @@ SCAN_RULES = (
             "infrastructure, independent from UI/MVP/reactive framework concerns."
         ),
         scopes=(
-            ScanScope("Assets/Scripts/CompositionRoot/Runtime"),
+            ScanScope("UPM/com.vetcat.composition-root/Runtime"),
         ),
         tokens=(
             "DG.Tweening",
@@ -421,8 +426,16 @@ def run_self_tests() -> int:
             "using DG.Tweening;\n",
         )
         write_file(
-            root / "Assets/Scripts/CompositionRoot/Runtime/BadReactive.cs",
+            root / "UPM/com.vetcat.composition-root/Runtime/BadReactive.cs",
             "using R3;\n",
+        )
+        write_file(
+            root / "UPM/com.vetcat.uiwindows.mvp/Runtime/BadPackageLifecycle.cs",
+            "public class BadPackageLifecycle { void Hide() { gameObject.SetActive(false); } }\n",
+        )
+        write_file(
+            root / "UPM/com.vetcat.uiwindows.mvp/Tests/PlayMode/AllowedTest.cs",
+            "public class AllowedTest { void Hide() { gameObject.SetActive(false); } }\n",
         )
 
         violations = collect_scan_violations(root, SCAN_RULES)
@@ -449,6 +462,10 @@ def run_self_tests() -> int:
             print("[fail] self-test did not exclude test-only SetActive usage")
             return 1
 
+        if not any("BadPackageLifecycle.cs" in str(item.path) for item in violations):
+            print("[fail] self-test did not scan canonical package runtime")
+            return 1
+
         hygiene_expectations = {
             Path("tools/validate-uiwindows-hardening"): True,
             Path("tools/helper-script"): True,
@@ -456,6 +473,7 @@ def run_self_tests() -> int:
             Path("tools/__pycache__/validate-uiwindows-hardening.cpython-314.pyc"): False,
             Path("tools/generated.pyc"): False,
             Path("docs/uiwindows-mvp-validation-gates.md"): True,
+            Path("UPM/com.vetcat.uiwindows.mvp/Runtime/IUiPresenter.cs.meta"): True,
             Path("Assets/Content/UiWindowsMvp/Icon.png"): False,
         }
 

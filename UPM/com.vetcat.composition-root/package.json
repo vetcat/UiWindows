@@ -1,0 +1,11 @@
+{
+  "name": "com.vetcat.composition-root",
+  "version": "0.1.0",
+  "displayName": "Composition Root",
+  "description": "Small scene composition root with explicit installers, initialization and disposal.",
+  "unity": "6000.6",
+  "author": {
+    "name": "vetcat"
+  },
+  "dependencies": {}
+}

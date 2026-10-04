@@ -213,11 +213,11 @@ namespace UiWindowsMvp.Tests.PlayMode
 
                 var firstBuild = view.RebuildShopItems(initialItems);
                 var firstRows = new ShopItemView[firstBuild.Count];
-                var firstRowIds = new HashSet<int>();
+                var firstRowIds = new HashSet<EntityId>();
                 for (var i = 0; i < firstBuild.Count; i++)
                 {
                     firstRows[i] = firstBuild[i];
-                    firstRowIds.Add(firstBuild[i].GetInstanceID());
+                    firstRowIds.Add(firstBuild[i].GetEntityId());
                 }
 
                 Assert.That(firstRows, Has.Length.EqualTo(32));
@@ -246,7 +246,7 @@ namespace UiWindowsMvp.Tests.PlayMode
                 Assert.That(view.PooledShopItemCount, Is.Zero);
                 for (var i = 0; i < growBackRebuild.Count; i++)
                 {
-                    Assert.That(firstRowIds.Contains(growBackRebuild[i].GetInstanceID()), Is.True);
+                    Assert.That(firstRowIds.Contains(growBackRebuild[i].GetEntityId()), Is.True);
                 }
             }
             finally

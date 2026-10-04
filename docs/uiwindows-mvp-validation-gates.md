@@ -49,9 +49,9 @@ tools/validate-uiwindows-hardening --self-test
 
 | Check | Scope | Fails on |
 | --- | --- | --- |
-| Forbidden runtime dependencies and lifecycle bypasses | Production code under `Assets/Scripts` excluding test folders, `Assets/Prefabs/UiWindowsMvp`, `Assets/Scenes/SampleScene.unity`, and `Assets/Scenes/Develop/UIDevelopScene.unity` | `UniRx`, `Zenject`, `Libs.OpenUI`, `OpenUI`, `DiContainer`, `SignalBus`, or `SetActive(` |
+| Forbidden runtime dependencies and lifecycle bypasses | Production code under `Assets/Scripts` and canonical `UPM` packages excluding test folders, `Assets/Prefabs/UiWindowsMvp`, `Assets/Scenes/SampleScene.unity`, and `Assets/Scenes/Develop/UIDevelopScene.unity` | `UniRx`, `Zenject`, `Libs.OpenUI`, `OpenUI`, `DiContainer`, `SignalBus`, or `SetActive(` |
 | `ProjectContext` dependency boundary | `Assets/Scripts/ProjectContext/Runtime` | DOTween, Unity UI/EventSystems, UI.Windows, `UiWindowsMvp`, presenter/binder/window-system types, OpenUI, Zenject, or UniRx |
-| `CompositionRoot.Runtime` dependency boundary | `Assets/Scripts/CompositionRoot/Runtime` | DOTween, Unity UI/EventSystems, UI.Windows, `UiWindowsMvp`, presenter/binder/window-system types, OpenUI, Zenject, UniRx, or R3 |
+| `CompositionRoot.Runtime` dependency boundary | `UPM/com.vetcat.composition-root/Runtime` | DOTween, Unity UI/EventSystems, UI.Windows, `UiWindowsMvp`, presenter/binder/window-system types, OpenUI, Zenject, UniRx, or R3 |
 | Diff whitespace | `main...HEAD`, staged diff, and worktree diff | trailing whitespace, conflict markers, and other `git diff --check` findings |
 | Final newline | Changed text files from `main...HEAD`, staged diff, worktree diff, and untracked files | non-empty changed text files that do not end with a newline |
 
@@ -74,7 +74,7 @@ Every implementation issue should run or account for:
 3. `git diff --check main...HEAD` before final report. The validation command runs
    this, but the explicit command remains acceptable evidence in handoffs and review.
 4. Final-newline hygiene for changed text files. The validation command checks this
-   for changed `.cs`, `.md`, `.asmdef`, `.json`, `.yaml`, `.yml`, `.sh`, `.prefab`,
+   for changed `.cs`, `.md`, `.meta`, `.asmdef`, `.json`, `.yaml`, `.yml`, `.sh`, `.prefab`,
    `.unity`, and other known text files.
 5. `tools/quick-validate-skill .agents/skills/<skill-name>` when a project-owned
    skill is changed.

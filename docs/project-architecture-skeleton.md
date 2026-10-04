@@ -4,13 +4,13 @@ This document records the architecture boundary for reusable scene composition a
 
 ## Code Root
 
-All project-owned C# code belongs under `Assets/Scripts`.
+Reusable C# code and focused tests are canonical under `UPM/com.vetcat.composition-root` and `UPM/com.vetcat.uiwindows.mvp`. The reference project consumes those directories through local `file:` packages, using the same source that Git UPM consumers install.
 
-Use `Assets/Scripts` as the default search and edit scope for project logic. Keep view assets, prefabs, art, textures, scenes, settings, and other non-code Unity assets outside this tree.
+Demo/application C# code stays under `Assets/Scripts`. Keep view assets, prefabs, art, textures, scenes, settings, and other non-code Unity assets outside the C# trees. See [upm-package-workflow.md](upm-package-workflow.md) for source ownership, install, and publish/update steps.
 
 CompositionRoot is reusable infrastructure. It must not depend on UI, MVP, UI.Windows, OpenUI, Zenject, UniRx, or R3.
 
-UiWindowsMvp is the UI.Windows-specific layer. It may depend on `CompositionRoot.Runtime`; `CompositionRoot.Runtime` must not depend on `UiWindowsMvp`.
+The reusable MVP adapter depends on UI.Windows. CompositionRoot and R3 remain optional for consuming projects; demo installers/presenters may use them explicitly.
 
 ProjectContext contains project/application model ports and services that presenters can consume through narrow contracts. Player model code may depend on R3 for read-model state and events, but it must not depend on UI.Windows, Unity UI views, presenter interfaces, OpenUI, Zenject, or UniRx.
 
@@ -25,14 +25,16 @@ ProjectContext contains project/application model ports and services that presen
 
 | Folder | Assembly | Namespace | Ownership |
 | --- | --- | --- | --- |
-| `Assets/Scripts/CompositionRoot/Runtime` | `CompositionRoot.Runtime` | `CompositionRoot.Runtime` | Scene service/model construction and lifetime. |
+| `UPM/com.vetcat.composition-root/Runtime` | `CompositionRoot.Runtime` | `CompositionRoot.Runtime` | Scene service/model construction and lifetime. |
 | `Assets/Scripts/CompositionRoot/Samples` | `CompositionRoot.Samples` | `CompositionRoot.Samples` | Minimal sample scene services that do not depend on OpenUI or UI.Windows. |
-| `Assets/Scripts/CompositionRoot/Tests/PlayMode` | `CompositionRoot.Tests.PlayMode` | `CompositionRoot.Tests.PlayMode` | PlayMode verification for CompositionRoot lifecycle. |
+| `UPM/com.vetcat.composition-root/Tests/PlayMode` | `CompositionRoot.Tests.PlayMode` | `CompositionRoot.Tests.PlayMode` | PlayMode verification for CompositionRoot lifecycle. |
 | `Assets/Scripts/ProjectContext/Runtime/Player` | `ProjectContext.Player` | `ProjectContext.Player` | R3-backed player settings, read-model, command ports, XP progression, and service behavior ported from OpenUI without UI/presenter dependencies. |
 | `Assets/Scripts/ProjectContext/Runtime/UiRequests` | `ProjectContext.UiRequests` | `ProjectContext.UiRequests` | R3-backed modal, hint, and UI FX request ports/services. No UI.Windows, Unity UI, presenter, DOTween, OpenUI, Zenject, or UniRx dependency. |
 | `Assets/Scripts/ProjectContext/Tests/PlayMode` | `ProjectContext.Player.Tests.PlayMode` | `ProjectContext.Player.Tests.PlayMode` | PlayMode/unit verification for player commands, reactive updates, XP progression, level-up events, and subscription disposal. |
 | `Assets/Scripts/UiWindowsMvp/Runtime/R3Integration` | `UiWindowsMvp.Reactive` | `UiWindowsMvp.Reactive` | Minimal R3 compile boundary and conventions support. No presenter adapter or model behavior exists in this assembly. |
-| `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` | `UiWindowsMvp.UIAdapter` | `UiWindowsMvp.UIAdapter` | UI.Windows presenter lifecycle adapter code: presenter contracts, binding, lifecycle event forwarding, and show-scoped subscription ownership. |
+| `UPM/com.vetcat.uiwindows.mvp/Runtime` | `UiWindowsMvp.UIAdapter` | `UiWindowsMvp.UIAdapter` | UI.Windows presenter lifecycle adapter code: presenter contracts, binding, lifecycle event forwarding, and show-scoped subscription ownership. |
+| `UPM/com.vetcat.uiwindows.mvp/Tests/PlayMode` | `UiWindowsMvp.UIAdapter.Tests.PlayMode` | `UiWindowsMvp.Tests.PlayMode` | Focused adapter binding/show-scope tests, independent from demo assemblies. |
+| `Assets/Scripts/UiWindowsMvp/Tests/PlayMode` | `UiWindowsMvp.Tests.PlayMode` | `UiWindowsMvp.Tests.PlayMode` | Demo presenters, real window lifecycle, and integrated scene verification. |
 
 ## Ownership Rules
 
@@ -41,7 +43,7 @@ ProjectContext contains project/application model ports and services that presen
 - `ServiceRegistry` initializes `IInitializable` services in registration order and disposes `IDisposable` services once in reverse registration order.
 - Failed bootstrap disposes the temporary `ServiceRegistry`, leaves `SceneCompositionRoot` not bootstrapped, and rethrows the original exception.
 - UI.Windows owns windows, layouts, loading, unloading, show/hide lifecycle, pooling, and resource management through `WindowSystem.Show` / `ShowSync`, window/handler hide paths, and package lifecycle hooks.
-- Presenters own UI behavior and model binding for loaded UI.Windows windows. The initial adapter API is implemented in `UiWindowsMvp.UIAdapter`; see `.agents/skills/uiwindows-mvp-architecture/SKILL.md` and `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md` for current names and lifecycle mapping.
+- Presenters own UI behavior and model binding for loaded UI.Windows windows. The initial adapter API is implemented in `UiWindowsMvp.UIAdapter`; see `.agents/skills/uiwindows-mvp-architecture/SKILL.md` and `UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md` for current names and lifecycle mapping.
 - Project code must not instantiate or destroy UI.Windows windows directly when that would bypass UI.Windows lifecycle, loading, pooling, or resource cleanup.
 - Project model services expose narrow read/command ports to presenters and future adapters. They should publish state or request streams instead of depending on UI presenter implementations. Modal, hint, and UI FX requests use `ProjectContext.UiRequests` ports.
 - R3 is the deliberate reactive foundation for MVP work. Public ports should prefer read-only reactive surfaces and command methods; mutable subjects/properties stay inside their owning object.

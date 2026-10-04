@@ -49,10 +49,10 @@ The workflow loads `SampleScene`, resolves services and launchers through `Scene
 | --- | --- | --- | --- |
 | Pinned UI.Windows dependency workflow | `Packages/manifest.json`, `Packages/packages-lock.json`, `docs/ui-windows-fork-workflow.md` | `UIW-12` / `UIW-2` closure notes; Unity compile on pinned `com.me.ui.windows` commit | Done |
 | UI.Windows package integration on Unity 6000.4.4f1 | `com.me.ui.windows` UPM dependency, package lock, project Unity settings | `UIW-2` closure notes; Unity refresh/compile with zero Console errors/warnings | Done |
-| CompositionRoot without Zenject/OpenUI/UI.Windows/R3 coupling | `Assets/Scripts/CompositionRoot/Runtime`, `docs/project-architecture-skeleton.md` | CompositionRoot PlayMode tests; assembly reference boundaries; project context rules | Done |
+| CompositionRoot without Zenject/OpenUI/UI.Windows/R3 coupling | `UPM/com.vetcat.composition-root/Runtime`, `docs/project-architecture-skeleton.md` | CompositionRoot PlayMode tests; assembly reference boundaries; project context rules | Done |
 | R3 reactive foundation replacing UniRx/custom Rx baseline | `Packages/manifest.json`, `Packages/nuget-packages`, `docs/r3-mvp-conventions.md`, R3-backed ports | `UIW-13` closure; R3 compile smoke; model/read-model tests | Done |
 | DOTween UI/effects dependency boundary | `Assets/Plugins/Demigiant/DOTween`, `Assets/Resources/DOTweenSettings.asset`, `docs/dotween-ui-fx-dependency.md` | `UIW-17` closure; DOTween smoke tests; ProjectContext DOTween scans | Done |
-| MVP presenter lifecycle adapter over UI.Windows | `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` | `WindowPresenterBindingTests`; `UIW-5` and `UIW-8` verification | Done |
+| MVP presenter lifecycle adapter over UI.Windows | `UPM/com.vetcat.uiwindows.mvp/Runtime` | `WindowPresenterBindingTests`; `UIW-5` and `UIW-8` verification | Done |
 | UI.Windows pooling/show-scope proof | Pooled runtime sources, `IUiShowScope`, lifecycle tests for each major window family | `docs/uiwindows-mvp-pooling-lifecycle.md`; full `UiWindowsMvp.Tests.PlayMode`; integrated SampleScene acceptance test | Done |
 | Player model/service from OpenUI | `Assets/Scripts/ProjectContext/Runtime/Player` | `PlayerServiceTests`; no UI.Windows/Unity UI/presenter dependencies in ProjectContext player layer | Done |
 | `UiTopLeft` player HUD | `UiTopLeftView.prefab`, `UiTopLeftWindow`, `UiTopLeftPresenter`, `SampleScene` wiring | `UiTopLeftPresenterTests`; `UiTopLeftWindowLifecycleTests`; integrated acceptance test | Done |

@@ -236,7 +236,7 @@ If Linear is unavailable, the issue cannot be opened, or that handoff comment is
 
 Hard rules:
 - Work only on this issue.
-- Follow AGENTS.md and _bmad-output/project-context.md.
+- Follow AGENTS.md and docs/project-context.md.
 - Start from latest main and create the required feature branch.
 - Do not merge or close the issue.
 - If Unity/editor tooling requires human confirmation, report `BLOCKED_HUMAN_ACTION_REQUIRED` with the exact action needed, current branch/status, last successful step, and resume instruction.

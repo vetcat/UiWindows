@@ -108,3 +108,7 @@ InitTestScene*.unity*
 # Local IDE and AI agent settings
 /.idea/
 /.ai/
+
+# Unity package documentation uses this folder suffix; override global backup ignores.
+!UPM/*/Documentation~/
+!UPM/*/Documentation~/**

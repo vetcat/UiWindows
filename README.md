@@ -2,7 +2,13 @@
 
 This repository is a Unity reference project for building UI on top of `UI.Windows-submodule` with a project-owned MVP / Model-View-View-Presenter layer and `Cysharp/R3` reactive model ports.
 
-It is intended to be used as an information source for other Unity projects. Treat it as a working architecture sample, pattern library, and migration record rather than as a package that should be copied wholesale.
+It is a working architecture sample, pattern library, and migration record for other Unity projects. The reusable MVP adapter and scene CompositionRoot are also available as [standalone UPM packages](UPM/README.md); sample scenes, models, views, art, and DOTween remain in the reference project.
+
+## Install The Reusable Packages
+
+In a Unity 6.6 project, add the corrected `com.me.ui.windows` fork and `com.vetcat.uiwindows.mvp` using the Git URLs in [UPM/README.md](UPM/README.md). Add `com.vetcat.composition-root` when you want the scene bootstrap helper. R3 is optional for these packages and is installed separately by projects that use it.
+
+The repository root is a reference Unity project. Use the `?path=UPM/<package-name>` URLs to install the standalone packages, and pin a published commit for reproducible imports.
 
 ## Project History
 
@@ -47,7 +53,7 @@ For humans:
 3. Read [docs/uiwindows-mvp-openui-migration-guide.md](docs/uiwindows-mvp-openui-migration-guide.md) for the core architecture rules.
 4. Read [docs/reference-adoption-checklist.md](docs/reference-adoption-checklist.md) before applying the pattern to another project.
 5. Read [docs/reference-architecture-diagram.md](docs/reference-architecture-diagram.md) for the layer and lifecycle diagrams.
-6. Read [Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md](Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md) before copying presenter lifecycle code.
+6. Read [the presenter lifecycle](UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md) before binding presenters through the installed adapter package.
 7. Inspect one complete vertical slice before porting the pattern, for example `UiTopLeft`, `UiSettings`, `UiShop`, or `UiModal`.
 
 For AI agents in another project, provide this repository link and an instruction like:
@@ -68,9 +74,9 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 
 | Layer | Location | Responsibility |
 | --- | --- | --- |
-| Composition root | `Assets/Scripts/CompositionRoot` | Scene service construction, initialization, disposal, and explicit dependency wiring. No UI.Windows, MVP, OpenUI, or R3 dependency in the reusable runtime assembly. |
+| Composition root | `UPM/com.vetcat.composition-root` | Scene service construction, initialization, disposal, and explicit dependency wiring. No UI.Windows, MVP, OpenUI, or R3 dependency in the reusable runtime assembly. |
 | Model and ports | `Assets/Scripts/ProjectContext` | Project/application services and explicit read-model/command/request ports. May expose read-only R3 state or streams. Must not depend on UI.Windows windows, Unity UI views, presenters, DOTween, or OpenUI. |
-| UI adapter | `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` | Presenter contracts, UI.Windows window binding, lifecycle event forwarding, and show-scoped subscription ownership. |
+| UI adapter | `UPM/com.vetcat.uiwindows.mvp/Runtime` | Presenter contracts, UI.Windows window binding, lifecycle event forwarding, and show-scoped subscription ownership. |
 | UI implementation | `Assets/Scripts/UiWindowsMvp/Runtime/SampleSceneWindows` | UI.Windows windows, views, presenters, launcher examples, DOTween UI/effects rendering, and SampleScene-specific wiring. |
 | Prefabs | `Assets/Prefabs/UiWindowsMvp` | UI.Windows-compatible view prefabs with serialized Unity UI references. |
 | Runtime scene | `Assets/Scenes/SampleScene.unity` | Canonical integration scene for runtime lifecycle and workflow verification. |
@@ -95,7 +101,7 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 
 | Use case | Primary files |
 | --- | --- |
-| Presenter adapter lifecycle | `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/WindowPresenterBinding.cs`, `WindowPresenterBinder.cs`, `WindowPresenterShowScope.cs` |
+| Presenter adapter lifecycle | `UPM/com.vetcat.uiwindows.mvp/Runtime/WindowPresenterBinding.cs`, `WindowPresenterBinder.cs`, `WindowPresenterShowScope.cs` |
 | Simple HUD binding | `UiTopLeftPresenter.cs`, `UiTopLeftWindow.cs`, `UiRuntimeWindowSource.cs`, `UiRuntimeWindowHandle.cs`, `UiTopLeftDemoLauncher.cs` |
 | Currency HUD and FX target | `UiTopRightPresenter.cs`, `UiFxTargetRegistry.cs`, `UiFxPresenter.cs` |
 | Settings and localization | `UiSettingsPresenter.cs`, `UiDownRightPresenter.cs`, `ProjectContext/Runtime/Settings`, `ProjectContext/Runtime/Localization` |
@@ -107,12 +113,14 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 
 ## Documentation Map
 
+- [UPM/README.md](UPM/README.md) - standalone package installation, dependencies, and test setup.
+- [docs/upm-package-workflow.md](docs/upm-package-workflow.md) - canonical source ownership and publication/update workflow.
 - [docs/index.md](docs/index.md) - documentation index and recommended read order.
 - [docs/reference-adoption-checklist.md](docs/reference-adoption-checklist.md) - step-by-step adoption checklist for another Unity project.
 - [docs/ai-agent-reference-prompt.md](docs/ai-agent-reference-prompt.md) - ready-to-use prompts for implementation and review agents.
 - [docs/reference-architecture-diagram.md](docs/reference-architecture-diagram.md) - layer, dependency, runtime show, and request-port diagrams.
 - [docs/project-architecture-skeleton.md](docs/project-architecture-skeleton.md) - folder, assembly, scene, and ownership boundaries.
-- [Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md](Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md) - current presenter/window adapter API and lifecycle mapping.
+- [UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md](UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md) - current presenter/window adapter API and lifecycle mapping.
 - [docs/r3-mvp-conventions.md](docs/r3-mvp-conventions.md) - R3 dependency pins, public-port rules, and lifetime rules.
 - [docs/uiwindows-mvp-pooling-lifecycle.md](docs/uiwindows-mvp-pooling-lifecycle.md) - pooled UI.Windows window lifecycle and verification checklist.
 - [docs/uiwindows-mvp-openui-migration-guide.md](docs/uiwindows-mvp-openui-migration-guide.md) - final OpenUI-to-UI.Windows MVP migration rules.
@@ -127,8 +135,8 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 
 ## Dependency Baseline
 
-- Unity `6000.4.4f1`.
-- `com.me.ui.windows`: `https://github.com/vetcat/UI.Windows-submodule.git#60a4bf6e47c85ad57935f633a53fc3ca8b707167`.
+- Unity target `6000.6.4f1`.
+- `com.me.ui.windows`: `https://github.com/vetcat/UI.Windows-submodule.git#939e4f4e80a76f76ff608acfb9c2c4e566e268b2` (package `1.2.8`).
 - `R3.Unity`: `https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.3.1`.
 - NuGet `R3`: `1.3.1`, restored under `Packages/nuget-packages`.
 - NuGetForUnity: `v4.5.0`.
@@ -138,7 +146,7 @@ See [docs/r3-mvp-conventions.md](docs/r3-mvp-conventions.md), [docs/ui-windows-f
 
 ## What Not To Copy Blindly
 
-- Do not copy this repository as a drop-in package unless the target project intentionally wants the sample scenes, sample models, and demo UI.
+- Install the standalone packages for reusable runtime infrastructure. Copy sample scenes, models, and demo UI only when the target project needs those examples.
 - Do not import OpenUI runtime infrastructure just because OpenUI inspired the behavior.
 - Do not move SampleScene-specific launcher or demo data into a production game's domain model.
 - Do not treat `UIDevelopScene` as runtime verification; use PlayMode tests and `SampleScene` lifecycle flows.
@@ -149,7 +157,7 @@ See [docs/r3-mvp-conventions.md](docs/r3-mvp-conventions.md), [docs/ui-windows-f
 The strongest current verification path is:
 
 - `tools/validate-uiwindows-hardening` for local architecture/dependency, lifecycle shortcut, diff whitespace, and final-newline gates.
-- Presenter and model PlayMode tests under `Assets/Scripts/UiWindowsMvp/Tests/PlayMode` and `Assets/Scripts/ProjectContext/Tests/PlayMode`.
+- Focused adapter/CompositionRoot PlayMode tests in the canonical UPM packages, plus reference presenters/lifecycle tests under `Assets/Scripts/UiWindowsMvp/Tests/PlayMode` and model tests under `Assets/Scripts/ProjectContext/Tests/PlayMode`.
 - Real `WindowSystem.Show -> Hide -> Reopen` lifecycle tests for pooled windows.
 - `SampleSceneIntegratedAcceptanceTests.SampleScene_RunIntegratedMigratedWorkflowAndRepresentativeShowScopeCleanup`.
 - Static dependency and lifecycle scans recorded in the final reconciliation docs.

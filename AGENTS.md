@@ -4,7 +4,7 @@
 
 Before planning or editing code, read the project context file:
 
-- `_bmad-output/project-context.md`
+- `docs/project-context.md`
 
 That file contains the current project goal, repository research summary, proposed architecture direction, migration plan, acceptance targets, known risks, and implementation rules for future AI agents.
 
@@ -35,17 +35,15 @@ Do not build a parallel custom Rx-like framework now that R3 is integrated.
 
 ## Code Organization And CompositionRoot
 
-All project-owned C# code belongs under `Assets/Scripts`. This is the explicit code search scope for programmers and AI agents.
+Reusable package C# code is canonical under `UPM/com.vetcat.composition-root` and `UPM/com.vetcat.uiwindows.mvp`. The reference project imports these folders through local `file:` dependencies; do not recreate their code under `Assets/Scripts`.
+
+Demo/application C# code belongs under `Assets/Scripts`. Search the owning package for reusable behavior and `Assets/Scripts` for reference-scene logic.
 
 Keep view assets, prefabs, art, textures, scenes, settings, and other non-code Unity assets outside `Assets/Scripts`.
 
-Reusable scene composition infrastructure lives in:
+Reusable scene composition infrastructure lives in `UPM/com.vetcat.composition-root`; sample installers remain under `Assets/Scripts/CompositionRoot/Samples`.
 
-- `Assets/Scripts/CompositionRoot`
-
-UI.Windows-specific MVP adapter code lives in:
-
-- `Assets/Scripts/UiWindowsMvp`
+The reusable UI.Windows MVP adapter lives in `UPM/com.vetcat.uiwindows.mvp`. Demo windows, presenters, launchers, and the reactive compile smoke remain under `Assets/Scripts/UiWindowsMvp`.
 
 Project/application model and domain ports live in:
 
@@ -66,6 +64,7 @@ This layer may use R3 for read-model state and events, but must not depend on UI
 Before changing `CompositionRoot`, scene bootstrap behavior, or code folder organization, read:
 
 - `docs/project-architecture-skeleton.md`
+- `docs/upm-package-workflow.md`
 
 ## R3 Reactive Foundation
 
@@ -124,7 +123,7 @@ The skill records the project-wide MVP interpretation and current `UIW-5` adapte
 - Presenters own view binding and UI behavior.
 - Models may be saves, services, controllers, ECS adapters, or combinations exposed through explicit ports.
 - R3 show-scoped subscriptions must be cleaned on hide or pool return.
-- The initial adapter lives under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter`.
+- The initial adapter lives under `UPM/com.vetcat.uiwindows.mvp/Runtime`.
 
 ## UI.Windows View Prefab Porting Skill
 
@@ -184,7 +183,7 @@ Completed follow-up Linear task-plan:
 - Supporting plan doc: `docs/uiwindows-mvp-production-hardening-plan.md`
 - Purpose: harden the completed MVP migration for production-scale Unity/mobile use without reopening the already accepted migration scope.
 - Future agents should treat `UIW-26` as historical/completed context, not as an active task queue. If Vitaly starts a new iteration, identify the new active parent from Linear or explicit user direction before selecting work.
-- Linear child issue status is the source of truth for task progress. Local files such as `AGENTS.md` and `_bmad-output/project-context.md` may record issue order, durable context, and recent snapshots, but must not be treated as the authoritative progress ledger when Linear is available.
+- Linear child issue status is the source of truth for task progress. Local files such as `AGENTS.md` and `docs/project-context.md` may record issue order, durable context, and recent snapshots, but must not be treated as the authoritative progress ledger when Linear is available.
 - Closing child issues is not enough to close or accept the parent plan. For parent/umbrella issues, run a parent reconciliation review against the original parent description, comments, project context, and current repository state before recommending parent closure.
 - Broad parent wording such as "production", "hardening", "mobile readiness", "complete", or "migration" requires an explicit coverage list or traceability matrix: parent target -> implemented artifact -> verification evidence -> status (`Done`, `Partial`, `Deferred`, `Missing`).
 
@@ -227,7 +226,7 @@ Default task flow after the successful `UIW-20` trial:
 - If an Executor `wait_agent` call times out on a Unity-heavy task, the Orchestrator should first use read-only status checks such as `git status --short --branch` and then wait again or request a status update; do not assume failure from one timeout.
 - Executor handoffs must require final text hygiene before reporting: changed `.cs`, `.md`, and other text files should end with a final newline, and `git diff --check main...HEAD` should pass.
 - Verification scope in Executor handoffs should be focused: require issue-specific tests plus directly relevant existing suites; broad unrelated suites should be run only when touched, cheap, or specifically justified.
-- After a Closure Executor reports success, the Orchestrator must run a post-closure documentation drift check before the final human report. At minimum, scan `AGENTS.md`, `_bmad-output/project-context.md`, and relevant docs for the closed issue id/title and stale transient language such as `Todo`, `In Progress`, `review pending`, `implemented on branch`, or `requires closure`.
+- After a Closure Executor reports success, the Orchestrator must run a post-closure documentation drift check before the final human report. At minimum, scan `AGENTS.md`, `docs/project-context.md`, and relevant docs for the closed issue id/title and stale transient language such as `Todo`, `In Progress`, `review pending`, `implemented on branch`, or `requires closure`.
 - If post-closure drift is found, the Orchestrator should make a small context-only commit on `main`, push it, and report that commit. Do not ask the Closure Executor to perform judgment-heavy documentation updates.
 - The Orchestrator closes the sub-agent after accepting or abandoning its result.
 
@@ -237,7 +236,7 @@ Use this mode when the user says the chat is an orchestrator, asks to delegate a
 
 The Orchestrator should:
 
-- Read `AGENTS.md`, `_bmad-output/project-context.md`, the active parent issue when one exists, and the relevant child issue.
+- Read `AGENTS.md`, `docs/project-context.md`, the active parent issue when one exists, and the relevant child issue.
 - Pick the first child issue under the active parent that is not `Done` or `Canceled`, unless Vitaly chooses another task. `UIW-26` is closed and should not be used as the active parent for new work.
 - Map the selected child issue to the parent acceptance target it advances and note parent targets that remain open or intentionally deferred.
 - Verify blocker status before preparing implementation work.

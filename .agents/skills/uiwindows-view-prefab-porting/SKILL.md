@@ -16,7 +16,7 @@ This skill does not replace `.agents/skills/uiwindows-mvp-architecture/SKILL.md`
 Before editing, read:
 
 - `AGENTS.md`
-- `_bmad-output/project-context.md`
+- `docs/project-context.md`
 - `.agents/skills/uiwindows-mvp-architecture/SKILL.md` when the prefab has a UI.Windows view component or the task mentions presenters/MVP/OpenUI ports
 - The relevant Linear issue and comments when the work is issue-tracked
 - The source prefab and source view scripts named by the task

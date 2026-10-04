@@ -56,7 +56,7 @@ This was the execution flow used while `UIW-26` was active. Future Orchestrator 
 
 For each child issue:
 
-1. Read `AGENTS.md` and `_bmad-output/project-context.md`.
+1. Read `AGENTS.md` and `docs/project-context.md`.
 2. Read the relevant project-specific skills before architecture or prefab work.
 3. Create an `Executor Handoff` in Linear when delegating.
 4. Work on a dedicated `feature/<issue-slug>` branch.
