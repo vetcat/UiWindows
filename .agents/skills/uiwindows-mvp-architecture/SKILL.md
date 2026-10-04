@@ -13,7 +13,7 @@ Treat this as architecture guidance. `UIW-5` established the initial adapter API
 
 ## Current Adapter API
 
-The minimal project-owned adapter lives under `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` in assembly `UiWindowsMvp.UIAdapter`.
+The minimal project-owned adapter lives under `UPM/com.vetcat.uiwindows.mvp/Runtime` in assembly `UiWindowsMvp.UIAdapter`.
 
 - `IUiPresenter` defines presenter initialization, show/hide hooks, and final `IDisposable` cleanup.
 - `IWindowPresenter<TWindow>` binds a presenter to a concrete `WindowBase` subtype.
@@ -38,7 +38,7 @@ The adapter uses `IDisposable` as the runtime subscription boundary rather than 
 Before making UI MVP decisions, read the local project instructions and these docs if they are relevant to the change:
 
 - `AGENTS.md`
-- `_bmad-output/project-context.md`
+- `docs/project-context.md`
 - `docs/project-architecture-skeleton.md`
 - `docs/r3-mvp-conventions.md`
 - `docs/uiwindows-mvp-pooling-lifecycle.md`

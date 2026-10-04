@@ -561,6 +561,20 @@
         "com.unity.modules.jsonserialize": "1.0.0",
         "com.unity.modules.subsystems": "1.0.0"
       }
+    },
+    "com.vetcat.composition-root": {
+      "version": "file:../UPM/com.vetcat.composition-root",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
+    "com.vetcat.uiwindows.mvp": {
+      "version": "file:../UPM/com.vetcat.uiwindows.mvp",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.me.ui.windows": "1.2.7"
+      }
     }
   }
 }

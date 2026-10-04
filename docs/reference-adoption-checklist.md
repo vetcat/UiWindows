@@ -21,7 +21,7 @@ Read these in order:
 2. [index.md](index.md)
 3. [project-architecture-skeleton.md](project-architecture-skeleton.md)
 4. [uiwindows-mvp-openui-migration-guide.md](uiwindows-mvp-openui-migration-guide.md)
-5. [../Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md](../Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md)
+5. [../UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md](../UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md)
 6. [r3-mvp-conventions.md](r3-mvp-conventions.md)
 7. [uiwindows-mvp-pooling-lifecycle.md](uiwindows-mvp-pooling-lifecycle.md)
 8. [reference-architecture-diagram.md](reference-architecture-diagram.md)
@@ -29,7 +29,7 @@ Read these in order:
 ## Adoption Steps
 
 1. Establish code boundaries.
-   - Create or identify equivalents for `CompositionRoot`, `ProjectContext`, and `UiWindowsMvp`.
+   - Install the [reusable UPM packages](../UPM/README.md) your project uses; retain its own model/application boundary and scene installers.
    - Keep reusable scene composition independent from UI.Windows, Unity UI, presenter implementations, OpenUI, Zenject, UniRx, and R3 unless the target project intentionally chooses a different boundary.
 
 2. Establish model/read-model ports.
@@ -39,7 +39,7 @@ Read these in order:
    - Route mutations through explicit command methods.
 
 3. Add the presenter lifecycle adapter.
-   - Use `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` as the reference implementation.
+   - Install `com.vetcat.uiwindows.mvp` from the published Git revision; its canonical implementation is under `UPM/com.vetcat.uiwindows.mvp/Runtime`.
    - Bind presenters after UI.Windows creates the window instance.
    - Keep one presenter binding per pooled window instance.
    - Create a fresh show scope on show.
@@ -73,10 +73,8 @@ Read these in order:
 
 ## Copy Deliberately
 
-Good candidates to adapt:
+Install the reusable adapter and CompositionRoot through UPM. Good candidates to adapt:
 
-- `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter`
-- `Assets/Scripts/CompositionRoot/Runtime`
 - `Assets/Scripts/ProjectContext/Runtime/*` port shapes
 - `Assets/Scripts/UiWindowsMvp/Tests/PlayMode/*LifecycleTests.cs`
 - `Assets/Scripts/UiWindowsMvp/Tests/PlayMode/SampleSceneIntegratedAcceptanceTests.cs`

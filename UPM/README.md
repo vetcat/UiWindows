@@ -1,10 +1,61 @@
 # Standalone UPM packages
 
-These package folders can be used as embedded packages or imported from this
-repository using `?path=UPM/<package-name>#<commit>` after publishing this branch.
-The reference project's Assets remain unchanged, so the original demo still works.
-Do not install both the old Assets scripts and these packages into the same project.
+These folders are the canonical reusable source. This reference project's
+`Packages/manifest.json` consumes them through local `file:` dependencies.
+Git UPM imports the same folders; no export or source copying is needed.
 
-`com.vetcat.uiwindows.mvp` requires `com.me.ui.windows` to be installed first.
-Unity 6000.6 requires the corresponding UI.Windows compatibility fixes.
-`com.vetcat.composition-root` is independent of UI.Windows and R3.
+| Package | Responsibility | Dependencies |
+| --- | --- | --- |
+| `com.vetcat.uiwindows.mvp` | Presenter binding, lifecycle forwarding, and show-scoped subscription cleanup. | Base `com.me.ui.windows` fork. |
+| `com.vetcat.composition-root` | Explicit scene installers, service initialization, and disposal. | Unity only. |
+
+Sample scenes, game models, demo windows/views/presenters, reactive smoke code,
+and DOTween stay in the reference project. R3 and CompositionRoot are optional
+for users of the MVP adapter.
+
+## Install In Another Project
+
+Use Unity `6000.6` or later. Add these dependencies to the consumer's
+`Packages/manifest.json`, replacing both placeholders with published commits:
+
+```json
+{
+  "dependencies": {
+    "com.me.ui.windows": "https://github.com/vetcat/UI.Windows-submodule.git#<BASE_UIWINDOWS_COMMIT>",
+    "com.vetcat.uiwindows.mvp": "https://github.com/vetcat/UiWindows.git?path=UPM/com.vetcat.uiwindows.mvp#<UIWINDOWS_COMMIT>",
+    "com.vetcat.composition-root": "https://github.com/vetcat/UiWindows.git?path=UPM/com.vetcat.composition-root#<UIWINDOWS_COMMIT>"
+  }
+}
+```
+
+Install only packages your project uses. The base package needs a direct Git
+entry because the MVP package declares a package version dependency, which does
+not identify the fork's Git repository. Use a verified base compatibility commit;
+see [the fork workflow](../docs/ui-windows-fork-workflow.md).
+
+Remove previous embedded copies and duplicate runtime scripts when switching
+to Git UPM. Preserve their `.meta` GUIDs when moving project-specific assets;
+the published reusable runtime retains its original script/asmdef GUIDs.
+
+## Package Tests
+
+To include focused tests in the Unity Test Runner, add these entries beside the
+`dependencies` object in the consumer manifest:
+
+```json
+"testables": [
+  "com.vetcat.composition-root",
+  "com.vetcat.uiwindows.mvp"
+]
+```
+
+The suites are `CompositionRoot.Tests.PlayMode` and
+`UiWindowsMvp.UIAdapter.Tests.PlayMode`. The reference scene's additional
+presenter, pooling, and integrated workflow tests remain in
+`UiWindowsMvp.Tests.PlayMode` under `Assets/Scripts`.
+
+Read the [MVP API](com.vetcat.uiwindows.mvp/README.md),
+[presenter lifecycle](com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md),
+and [CompositionRoot API](com.vetcat.composition-root/README.md) before integration.
+See [source and publication workflow](../docs/upm-package-workflow.md) for local
+development, verification, and consumer revision updates.

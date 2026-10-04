@@ -16,7 +16,7 @@ Before designing or editing code, read these reference files from the UiWindows 
 2. docs/index.md
 3. docs/project-architecture-skeleton.md
 4. docs/uiwindows-mvp-openui-migration-guide.md
-5. Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md
+5. UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md
 6. docs/r3-mvp-conventions.md
 7. docs/uiwindows-mvp-pooling-lifecycle.md
 8. docs/reference-adoption-checklist.md
@@ -58,7 +58,7 @@ Use the UiWindows repository as the reference for UI.Windows MVP architecture.
 Read README.md, docs/index.md, docs/reference-adoption-checklist.md,
 docs/reference-architecture-diagram.md, docs/uiwindows-mvp-openui-migration-guide.md,
 docs/r3-mvp-conventions.md, docs/uiwindows-mvp-pooling-lifecycle.md, and
-Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md.
+UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md.
 
 Apply the lifecycle, boundary, and testing patterns to the target project.
 Do not copy demo scenes/data blindly, do not import OpenUI infrastructure, do not add Zenject or UniRx, and do not bypass UI.Windows lifecycle with GameObject.SetActive.

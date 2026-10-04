@@ -1,6 +1,6 @@
 # Composition Root
 
-Extracted from vetcat/UiWindows, commit `7b89105`. Assembly: `CompositionRoot.Runtime`.
+Canonical reusable source in vetcat/UiWindows. Assembly: `CompositionRoot.Runtime`.
 
 Add `SceneCompositionRoot` to the scene bootstrap GameObject. Installers implement
 `ICompositionInstaller` and register service instances in `Install(IServiceRegistry)`.
@@ -17,4 +17,5 @@ Keep service resolution at the composition boundary. A scene root owns scene
 services; persistent application services need a separately owned persistent root.
 There are no UI.Windows, R3 or Quantum dependencies in this package.
 
-Tests: `CompositionRoot.Tests.PlayMode`.
+Tests: `CompositionRoot.Tests.PlayMode`; enable this package in the consumer
+manifest's `testables`. See [installation](https://github.com/vetcat/UiWindows/blob/main/UPM/README.md).

@@ -10,7 +10,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 4. [reference-architecture-diagram.md](reference-architecture-diagram.md) - layer, dependency, runtime show, and request-port diagrams.
 5. [project-architecture-skeleton.md](project-architecture-skeleton.md) - folder, assembly, scene, and ownership boundaries.
 6. [uiwindows-mvp-openui-migration-guide.md](uiwindows-mvp-openui-migration-guide.md) - core UI.Windows MVP migration rules and request-port patterns.
-7. [../Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md](../Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md) - presenter/window adapter API and lifecycle mapping.
+7. [../UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md](../UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md) - presenter/window adapter API and lifecycle mapping.
 8. [r3-mvp-conventions.md](r3-mvp-conventions.md) - R3 dependency pins, public-port rules, and subscription lifetime conventions.
 9. [uiwindows-mvp-pooling-lifecycle.md](uiwindows-mvp-pooling-lifecycle.md) - pooled window lifecycle, show-scope cleanup, and verification checklist.
 10. [uiwindows-mvp-final-reconciliation.md](uiwindows-mvp-final-reconciliation.md) - completed `UIW-1` traceability matrix and migration evidence.
@@ -33,7 +33,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 ## Architecture And Boundaries
 
 - [project-architecture-skeleton.md](project-architecture-skeleton.md) defines the repository's architectural layers and scene roles.
-- [../Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md](../Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter/README.md) defines the current presenter/window adapter API.
+- [../UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md](../UPM/com.vetcat.uiwindows.mvp/Documentation~/presenter-lifecycle.md) defines the current presenter/window adapter API.
 - [reference-architecture-diagram.md](reference-architecture-diagram.md) gives a compact visual map of the same boundaries.
 - [r3-mvp-conventions.md](r3-mvp-conventions.md) defines the reactive state and subscription ownership rules.
 - [uiwindows-mvp-pooling-lifecycle.md](uiwindows-mvp-pooling-lifecycle.md) defines show-scoped lifecycle behavior for pooled UI.Windows windows.
@@ -41,6 +41,8 @@ This index helps humans and AI agents use the repository as a UI architecture re
 
 ## Dependency And Setup Notes
 
+- [upm-package-workflow.md](upm-package-workflow.md) records canonical package source ownership, local `file:` imports, publication, and consumer Git revision updates.
+- [project-context.md](project-context.md) preserves project rules, technology decisions, and historical implementation/verification context.
 - [ui-windows-fork-workflow.md](ui-windows-fork-workflow.md) records the pinned UI.Windows fork workflow.
 - [dotween-ui-fx-dependency.md](dotween-ui-fx-dependency.md) records DOTween source/version/setup and usage boundaries.
 - [r3-mvp-conventions.md](r3-mvp-conventions.md) records R3 and NuGetForUnity restore rules.
@@ -62,7 +64,7 @@ This index helps humans and AI agents use the repository as a UI architecture re
 
 - `UPM/com.vetcat.uiwindows.mvp` - distributable presenter lifecycle adapter and focused tests.
 - `UPM/com.vetcat.composition-root` - distributable scene bootstrap helper and focused tests.
-- `Assets/Scripts/UiWindowsMvp/Runtime/UIAdapter` - reusable presenter lifecycle adapter.
+- `UPM/com.vetcat.uiwindows.mvp/Runtime` - reusable presenter lifecycle adapter.
 - `Assets/Scripts/ProjectContext/Runtime` - model/read-model/command/request port examples.
 - `Assets/Scripts/UiWindowsMvp/Runtime/SampleSceneWindows` - UI.Windows MVP view, presenter, launcher, and window examples.
 - `Assets/Scripts/UiWindowsMvp/Tests/PlayMode` - presenter, lifecycle, pooling, and integrated workflow tests.

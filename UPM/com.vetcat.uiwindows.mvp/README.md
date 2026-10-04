@@ -1,6 +1,6 @@
 # UiWindows MVP
 
-Extracted from vetcat/UiWindows, commit `7b89105`. Assembly: `UiWindowsMvp.UIAdapter`.
+Canonical reusable source in vetcat/UiWindows. Assembly: `UiWindowsMvp.UIAdapter`.
 This package contains the reusable adapter, with no sample game models or views.
 UI.Windows owns loading, layouts, show/hide, pooling and resource cleanup.
 
@@ -32,4 +32,6 @@ loading, cache selectively, release rare/heavy windows, and measure first-open
 and repeated-open costs on the target device. A package import is not a mobile
 performance measurement.
 
-Tests: `UiWindowsMvp.Tests.PlayMode`.
+Tests: `UiWindowsMvp.UIAdapter.Tests.PlayMode`; enable this package in the
+consumer manifest's `testables`. See [installation](https://github.com/vetcat/UiWindows/blob/main/UPM/README.md) and
+[presenter lifecycle details](Documentation~/presenter-lifecycle.md).
