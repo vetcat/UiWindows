@@ -57,6 +57,8 @@ This layer may use R3 for read-model state and events, but must not depend on UI
 - `SceneCompositionRoot` is intended to be reusable for any scene.
 - Each scene should provide scene-specific `ICompositionInstaller` components.
 - `ServiceRegistry` initializes `IInitializable` services in registration order.
+- `SceneCompositionRoot.Start` starts registered `IStartable` services once after
+  active scene Awakes. Initialize remains early; asynchronous readiness is explicit.
 - `ServiceRegistry` disposes `IDisposable` services once in reverse registration order.
 - Failed bootstrap must dispose the temporary registry, leave the root not bootstrapped, and rethrow the original exception.
 - `CompositionRoot.Runtime` must not depend on `UiWindowsMvp`, `UI.Windows`, OpenUI, Zenject, UniRx, or R3.

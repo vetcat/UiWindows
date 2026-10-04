@@ -11,11 +11,15 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 ## Current Project State
 
 - Local project path: `/Users/vitaly/Projects/UiWindows`.
-- Unity target: `6000.6.4f1` from `ProjectSettings/ProjectVersion.txt`. Source Editor verification on 2026-10-04 passed 41 focused package/reference PlayMode tests; see `docs/upm-package-workflow.md` for scope and warning limitations. Historical snapshots below describe the earlier Unity `6000.4.4f1` baseline.
+- Unity target: `6000.6.4f1` from `ProjectSettings/ProjectVersion.txt`. Source Editor verification on 2026-10-04 passed 44 focused package/reference PlayMode tests; see `docs/upm-package-workflow.md` for scope and warning limitations. Historical snapshots below describe the earlier Unity `6000.4.4f1` baseline.
 - Source Editor tooling uses Unity CLI with intentional `com.unity.pipeline` `0.8.0-exp.1`. The source no longer installs `com.coplaydev.unity-mcp`; Linear/Rider MCP and other projects' tooling remain independent.
 - Current repository is a Unity reference project with local CompositionRoot/MVP packages, R3 integration, R3-backed player/settings/localization/shop model services, and modal/hint/FX request ports.
 - The repository is also intended to serve as a reference source for UI architecture work in other Unity projects. `README.md` is the public entry point, and `docs/index.md` is the curated documentation map for humans and AI agents.
 - Standalone Unity 6.6 packages are canonical under `UPM/com.vetcat.uiwindows.mvp` and `UPM/com.vetcat.composition-root`; the reference project imports them through local `file:` dependencies and enables their focused tests. They distribute the reusable adapter and scene bootstrap helper without sample models, scenes, views, R3, or DOTween.
+- CompositionRoot `0.1.1` adds a root-owned startup phase: `IStartable.Start()`
+  runs once from Unity `Start` after active scene Awakes. Install/Initialize
+  remain in early `Awake`; startup failures shut down the registry. The package
+  remains independent of UI and R3; see its README and architecture skeleton.
 - Reusable runtime and focused tests have one source under `UPM`; demo/application models, windows, presenters, scene integration tests, and reactive smoke code remain under `Assets/Scripts`. See `docs/upm-package-workflow.md` for installation, ownership, GUID preservation, and publication/update rules.
 - Reference-adoption docs now include `docs/reference-adoption-checklist.md`, `docs/ai-agent-reference-prompt.md`, and `docs/reference-architecture-diagram.md` for external project adoption, AI-agent handoff prompts, and architecture/lifecycle diagrams.
 - `README.md` records the project history: the repository is a synthesis of OpenUI (`https://github.com/vetcat/OpenUI`) for MVP/MVVP concepts and usage examples plus UI.Windows-submodule (`https://github.com/chromealex/UI.Windows-submodule`) for lifecycle/loading/pooling/resource management. It also records that project-owned implementation and documentation were produced end-to-end with OpenAI Codex as the LLM coding agent under Vitaly's direction and review.
@@ -115,7 +119,7 @@ Current local Unity packages from `Packages/manifest.json`:
 - `com.unity.test-framework`: `1.6.0`
 - `com.unity.ai.navigation`: `2.0.13`
 - `com.unity.pipeline`: `0.8.0-exp.1`, intentional source Editor tooling for Unity CLI; not a reusable package dependency
-- `com.me.ui.windows`: package `1.2.8`, Git dependency `https://github.com/vetcat/UI.Windows-submodule.git#939e4f4e80a76f76ff608acfb9c2c4e566e268b2`
+- `com.me.ui.windows`: package `1.2.9`, Git dependency `https://github.com/vetcat/UI.Windows-submodule.git#6339d2ecdaaa7b1b0e06d9608497809eeeb9bef7`; scene owners clean their windows, call `WindowSystem.Shutdown()`, then destroy the system GameObject so deferred destruction cannot block or reset a replacement.
 - `com.vetcat.uiwindows.mvp`: canonical local package `file:../UPM/com.vetcat.uiwindows.mvp`, requiring UI.Windows `1.2.8`
 - `com.vetcat.composition-root`: canonical local package `file:../UPM/com.vetcat.composition-root`
 

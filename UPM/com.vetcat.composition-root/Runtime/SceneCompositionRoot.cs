@@ -17,6 +17,8 @@ namespace CompositionRoot.Runtime
 
         public bool IsBootstrapped => registry != null && registry.IsInitialized && !registry.IsDisposed;
 
+        public bool IsStarted => IsBootstrapped && registry.IsStarted;
+
         public IServiceResolver Services
         {
             get
@@ -56,6 +58,24 @@ namespace CompositionRoot.Runtime
             }
         }
 
+        public void Startup()
+        {
+            if (!IsBootstrapped)
+            {
+                throw new InvalidOperationException("SceneCompositionRoot must be bootstrapped before startup.");
+            }
+
+            try
+            {
+                registry.StartAll();
+            }
+            catch
+            {
+                Shutdown();
+                throw;
+            }
+        }
+
         public void Shutdown()
         {
             if (registry == null)
@@ -70,6 +90,14 @@ namespace CompositionRoot.Runtime
         private void Awake()
         {
             Bootstrap();
+        }
+
+        private void Start()
+        {
+            if (IsBootstrapped)
+            {
+                Startup();
+            }
         }
 
         private void OnDestroy()

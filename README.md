@@ -85,7 +85,7 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 
 | Layer | Location | Responsibility |
 | --- | --- | --- |
-| Composition root | `UPM/com.vetcat.composition-root` | Scene service construction, initialization, disposal, and explicit dependency wiring. No UI.Windows, MVP, OpenUI, or R3 dependency in the reusable runtime assembly. |
+| Composition root | `UPM/com.vetcat.composition-root` | Scene service construction, initialization, post-Awake startup, disposal, and explicit dependency wiring. No UI.Windows, MVP, OpenUI, or R3 dependency in the reusable runtime assembly. |
 | Model and ports | `Assets/Scripts/ProjectContext` | Project/application services and explicit read-model/command/request ports. May expose read-only R3 state or streams. Must not depend on UI.Windows windows, Unity UI views, presenters, DOTween, or OpenUI. |
 | UI adapter | `UPM/com.vetcat.uiwindows.mvp/Runtime` | Presenter contracts, UI.Windows window binding, lifecycle event forwarding, and show-scoped subscription ownership. |
 | UI implementation | `Assets/Scripts/UiWindowsMvp/Runtime/SampleSceneWindows` | UI.Windows windows, views, presenters, launcher examples, DOTween UI/effects rendering, and SampleScene-specific wiring. |
@@ -147,7 +147,7 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 ## Dependency Baseline
 
 - Unity target `6000.6.4f1`.
-- `com.me.ui.windows`: `https://github.com/vetcat/UI.Windows-submodule.git#939e4f4e80a76f76ff608acfb9c2c4e566e268b2` (package `1.2.8`).
+- `com.me.ui.windows`: `https://github.com/vetcat/UI.Windows-submodule.git#6339d2ecdaaa7b1b0e06d9608497809eeeb9bef7` (package `1.2.9`, synchronous owner shutdown).
 - `R3.Unity`: `https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.3.1`.
 - NuGet `R3`: `1.3.1`, restored under `Packages/nuget-packages`.
 - NuGetForUnity: `v4.5.0`.
