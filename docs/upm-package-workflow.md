@@ -94,7 +94,7 @@ Verified on 2026-10-04 in the live source Editor `6000.6.4f1`:
   and was removed through the Editor's Package Manager Client API. The final
   resolver lock records Unity 6.6 built-ins, including URP `17.6.0` and uGUI
   `2.6.0`, with the matching Editor-generated project/URP settings migrations.
-- Unity's API Updater migrated sample test identity comparisons from
+- Sample test identity comparisons were migrated from
   `GetInstanceID()`/`int` to `GetEntityId()`/`EntityId`. Reusable runtime contracts
   and GUIDs did not change. Five icon sprites and their actual prefab Image
   references resolved with the existing GUIDs and local file ID `21300000`,
