@@ -58,8 +58,12 @@ covered Editor compilation, six binding tests, two real show/hide/reopen and R3
 frame tests, prefab save/reimport, optional URP inclusion, and comparison of 407
 existing metadata files without GUID mismatches. Current verification artifacts
 are recorded in [QP-1](https://linear.app/qpixelstudio/issue/QP-1/naladit-obshij-upm-workflow-uiwindows-dlya-pixellords-i).
-Reference-project and other consumer verification must be recorded separately;
-the older `UIW-12` snapshot below remains historical evidence.
+The source reference project separately passed 41 focused package/reference
+PlayMode tests on the same Editor version, including real `SampleScene`
+show/hide/reopen flows; its resolver/settings migration and remaining warnings
+are recorded in [source verification](upm-package-workflow.md#reference-verification-on-unity-66).
+Other consumer verification must be recorded separately; the older `UIW-12`
+snapshot below remains historical evidence.
 
 ## Fork Setup
 

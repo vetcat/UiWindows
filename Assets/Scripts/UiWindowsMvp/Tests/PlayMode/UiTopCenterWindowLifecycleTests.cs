@@ -52,7 +52,7 @@ namespace UiWindowsMvp.Tests.PlayMode
                 Assert.That(window.TryGetView(out var view), Is.True);
                 Assert.That(hintsLauncher.CurrentWindow.TryGetView(out var hintsView), Is.True);
 
-                var initialInstanceId = window.GetInstanceID();
+                var initialInstanceId = window.GetEntityId();
                 var initialView = view;
 
                 localization.ChangeLanguage(SystemLanguage.English);
@@ -86,7 +86,7 @@ namespace UiWindowsMvp.Tests.PlayMode
                     () => launcher.CurrentWindow != null && launcher.CurrentWindow.GetState() == ObjectState.Shown,
                     "top-center reopen");
 
-                Assert.That(launcher.CurrentWindow.GetInstanceID(), Is.EqualTo(initialInstanceId));
+                Assert.That(launcher.CurrentWindow.GetEntityId(), Is.EqualTo(initialInstanceId));
                 Assert.That(WindowPresenterBinder.TryGetBinding(launcher.CurrentWindow, out var reopenedBinding),
                     Is.True);
                 Assert.That(reopenedBinding, Is.SameAs(binding));

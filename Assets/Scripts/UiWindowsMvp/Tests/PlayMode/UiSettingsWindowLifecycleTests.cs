@@ -63,7 +63,7 @@ namespace UiWindowsMvp.Tests.PlayMode
                 Assert.That(presenterFactory.CreatedCount, Is.EqualTo(1));
                 Assert.That(window.TryGetView(out var view), Is.True);
 
-                var initialInstanceId = window.GetInstanceID();
+                var initialInstanceId = window.GetEntityId();
                 var initialView = view;
 
                 for (var cycle = 0; cycle < 3; cycle++)
@@ -114,7 +114,7 @@ namespace UiWindowsMvp.Tests.PlayMode
                         () => launcher.CurrentWindow != null && launcher.CurrentWindow.GetState() == ObjectState.Shown,
                         $"reopen cycle {cycle}");
 
-                    Assert.That(launcher.CurrentWindow.GetInstanceID(), Is.EqualTo(initialInstanceId));
+                    Assert.That(launcher.CurrentWindow.GetEntityId(), Is.EqualTo(initialInstanceId));
                     Assert.That(WindowPresenterBinder.TryGetBinding(launcher.CurrentWindow, out var reopenedBinding),
                         Is.True);
                     Assert.That(reopenedBinding, Is.SameAs(binding));

@@ -152,13 +152,13 @@ namespace UiWindowsMvp.Tests.PlayMode
                 Assert.That(fxWindow.TryGetView(out var fxView), Is.True);
                 Assert.That(objectIndicatorWindow.TryGetView(out var objectIndicatorView), Is.True);
 
-                var topRightInstanceId = topRightWindow.GetInstanceID();
-                var topCenterInstanceId = topCenterWindow.GetInstanceID();
-                var downRightInstanceId = downRightWindow.GetInstanceID();
-                var downLeftInstanceId = downLeftWindow.GetInstanceID();
-                var hintsInstanceId = hintsWindow.GetInstanceID();
-                var fxInstanceId = fxWindow.GetInstanceID();
-                var objectIndicatorInstanceId = objectIndicatorWindow.GetInstanceID();
+                var topRightInstanceId = topRightWindow.GetEntityId();
+                var topCenterInstanceId = topCenterWindow.GetEntityId();
+                var downRightInstanceId = downRightWindow.GetEntityId();
+                var downLeftInstanceId = downLeftWindow.GetEntityId();
+                var hintsInstanceId = hintsWindow.GetEntityId();
+                var fxInstanceId = fxWindow.GetEntityId();
+                var objectIndicatorInstanceId = objectIndicatorWindow.GetEntityId();
 
                 player.SetHealth(82);
                 player.SetCoins(123);
@@ -226,7 +226,7 @@ namespace UiWindowsMvp.Tests.PlayMode
                     () => IsShown(downLeftLauncher.CurrentWindow),
                     "down-left launcher restored after shop hide");
 
-                Assert.That(downLeftLauncher.CurrentWindow.GetInstanceID(), Is.EqualTo(downLeftInstanceId));
+                Assert.That(downLeftLauncher.CurrentWindow.GetEntityId(), Is.EqualTo(downLeftInstanceId));
                 Assert.That(WindowPresenterBinder.TryGetBinding(downLeftLauncher.CurrentWindow, out var downLeftAgain),
                     Is.True);
                 Assert.That(downLeftAgain, Is.SameAs(downLeftBinding));
@@ -265,7 +265,7 @@ namespace UiWindowsMvp.Tests.PlayMode
 
                 topRightLauncher.Show();
                 yield return WaitUntil(() => IsShown(topRightLauncher.CurrentWindow), "top-right reopened");
-                Assert.That(topRightLauncher.CurrentWindow.GetInstanceID(), Is.EqualTo(topRightInstanceId));
+                Assert.That(topRightLauncher.CurrentWindow.GetEntityId(), Is.EqualTo(topRightInstanceId));
                 Assert.That(WindowPresenterBinder.TryGetBinding(topRightLauncher.CurrentWindow, out var topRightAgain),
                     Is.True);
                 Assert.That(topRightAgain, Is.SameAs(topRightBinding));
@@ -291,8 +291,8 @@ namespace UiWindowsMvp.Tests.PlayMode
                 yield return WaitUntil(
                     () => IsShown(hintsLauncher.CurrentWindow) && IsShown(fxLauncher.CurrentWindow),
                     "feedback overlays reopened");
-                Assert.That(hintsLauncher.CurrentWindow.GetInstanceID(), Is.EqualTo(hintsInstanceId));
-                Assert.That(fxLauncher.CurrentWindow.GetInstanceID(), Is.EqualTo(fxInstanceId));
+                Assert.That(hintsLauncher.CurrentWindow.GetEntityId(), Is.EqualTo(hintsInstanceId));
+                Assert.That(fxLauncher.CurrentWindow.GetEntityId(), Is.EqualTo(fxInstanceId));
                 Assert.That(WindowPresenterBinder.TryGetBinding(hintsLauncher.CurrentWindow, out var hintsAgain),
                     Is.True);
                 Assert.That(WindowPresenterBinder.TryGetBinding(fxLauncher.CurrentWindow, out var fxAgain), Is.True);
@@ -314,7 +314,7 @@ namespace UiWindowsMvp.Tests.PlayMode
                 yield return WaitUntil(
                     () => IsShown(objectIndicatorLauncher.CurrentWindow),
                     "object indicator reopened");
-                Assert.That(objectIndicatorLauncher.CurrentWindow.GetInstanceID(),
+                Assert.That(objectIndicatorLauncher.CurrentWindow.GetEntityId(),
                     Is.EqualTo(objectIndicatorInstanceId));
                 Assert.That(
                     WindowPresenterBinder.TryGetBinding(
@@ -335,7 +335,7 @@ namespace UiWindowsMvp.Tests.PlayMode
 
                 topCenterLauncher.Show();
                 yield return WaitUntil(() => IsShown(topCenterLauncher.CurrentWindow), "top-center reopened");
-                Assert.That(topCenterLauncher.CurrentWindow.GetInstanceID(), Is.EqualTo(topCenterInstanceId));
+                Assert.That(topCenterLauncher.CurrentWindow.GetEntityId(), Is.EqualTo(topCenterInstanceId));
                 Assert.That(
                     WindowPresenterBinder.TryGetBinding(topCenterLauncher.CurrentWindow, out var topCenterAgain),
                     Is.True);
@@ -350,7 +350,7 @@ namespace UiWindowsMvp.Tests.PlayMode
 
                 downRightLauncher.Show();
                 yield return WaitUntil(() => IsShown(downRightLauncher.CurrentWindow), "down-right reopened");
-                Assert.That(downRightLauncher.CurrentWindow.GetInstanceID(), Is.EqualTo(downRightInstanceId));
+                Assert.That(downRightLauncher.CurrentWindow.GetEntityId(), Is.EqualTo(downRightInstanceId));
                 Assert.That(
                     WindowPresenterBinder.TryGetBinding(downRightLauncher.CurrentWindow, out var downRightAgain),
                     Is.True);

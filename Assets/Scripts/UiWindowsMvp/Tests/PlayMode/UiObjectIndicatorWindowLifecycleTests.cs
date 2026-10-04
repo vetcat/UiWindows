@@ -59,7 +59,7 @@ namespace UiWindowsMvp.Tests.PlayMode
                 Assert.That(fxLauncher.CurrentWindow.TryGetView(out var fxView), Is.True);
                 Assert.That(topRightLauncher.CurrentWindow.TryGetView(out var topRightView), Is.True);
 
-                var initialInstanceId = window.GetInstanceID();
+                var initialInstanceId = window.GetEntityId();
                 var initialView = view;
                 var initialPosition = view.LastAnchoredPosition;
 
@@ -100,7 +100,7 @@ namespace UiWindowsMvp.Tests.PlayMode
                     () => launcher.CurrentWindow != null && launcher.CurrentWindow.GetState() == ObjectState.Shown,
                     "object indicator reopen");
 
-                Assert.That(launcher.CurrentWindow.GetInstanceID(), Is.EqualTo(initialInstanceId));
+                Assert.That(launcher.CurrentWindow.GetEntityId(), Is.EqualTo(initialInstanceId));
                 Assert.That(WindowPresenterBinder.TryGetBinding(launcher.CurrentWindow, out var reopenedBinding),
                     Is.True);
                 Assert.That(reopenedBinding, Is.SameAs(binding));

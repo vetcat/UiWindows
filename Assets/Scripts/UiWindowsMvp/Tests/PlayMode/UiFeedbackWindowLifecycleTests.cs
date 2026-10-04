@@ -60,8 +60,8 @@ namespace UiWindowsMvp.Tests.PlayMode
 
                 Assert.That(hintsWindow.TryGetView(out var hintsView), Is.True);
                 Assert.That(fxWindow.TryGetView(out var fxView), Is.True);
-                var hintsInstanceId = hintsWindow.GetInstanceID();
-                var fxInstanceId = fxWindow.GetInstanceID();
+                var hintsInstanceId = hintsWindow.GetEntityId();
+                var fxInstanceId = fxWindow.GetEntityId();
 
                 feedback.ShowHint("Open the shop", UiHintAnchor.Top, 0.1f);
                 player.AddCoinsWithFx(25);
@@ -103,8 +103,8 @@ namespace UiWindowsMvp.Tests.PlayMode
                           fxLauncher.CurrentWindow.GetState() == ObjectState.Shown,
                     "feedback overlays reopen");
 
-                Assert.That(hintsLauncher.CurrentWindow.GetInstanceID(), Is.EqualTo(hintsInstanceId));
-                Assert.That(fxLauncher.CurrentWindow.GetInstanceID(), Is.EqualTo(fxInstanceId));
+                Assert.That(hintsLauncher.CurrentWindow.GetEntityId(), Is.EqualTo(hintsInstanceId));
+                Assert.That(fxLauncher.CurrentWindow.GetEntityId(), Is.EqualTo(fxInstanceId));
                 Assert.That(WindowPresenterBinder.TryGetBinding(hintsLauncher.CurrentWindow, out var reopenedHints),
                     Is.True);
                 Assert.That(WindowPresenterBinder.TryGetBinding(fxLauncher.CurrentWindow, out var reopenedFx),

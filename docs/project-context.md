@@ -11,7 +11,7 @@ This file exists so a new AI chat can quickly recover the project goal, current 
 ## Current Project State
 
 - Local project path: `/Users/vitaly/Projects/UiWindows`.
-- Unity target: `6000.6.4f1` from `ProjectSettings/ProjectVersion.txt`. Historical snapshots below describe the earlier Unity `6000.4.4f1` baseline; a version-file update alone does not establish new Editor verification.
+- Unity target: `6000.6.4f1` from `ProjectSettings/ProjectVersion.txt`. Source Editor verification on 2026-10-04 passed 41 focused package/reference PlayMode tests; see `docs/upm-package-workflow.md` for scope and warning limitations. Historical snapshots below describe the earlier Unity `6000.4.4f1` baseline.
 - Current repository is a Unity reference project with local CompositionRoot/MVP packages, R3 integration, R3-backed player/settings/localization/shop model services, and modal/hint/FX request ports.
 - The repository is also intended to serve as a reference source for UI architecture work in other Unity projects. `README.md` is the public entry point, and `docs/index.md` is the curated documentation map for humans and AI agents.
 - Standalone Unity 6.6 packages are canonical under `UPM/com.vetcat.uiwindows.mvp` and `UPM/com.vetcat.composition-root`; the reference project imports them through local `file:` dependencies and enables their focused tests. They distribute the reusable adapter and scene bootstrap helper without sample models, scenes, views, R3, or DOTween.
@@ -326,7 +326,7 @@ UIW-3 architecture skeleton snapshot on 2026-06-07:
 - Failed bootstrap disposes the temporary `ServiceRegistry`, leaves `SceneCompositionRoot` not bootstrapped, and rethrows the original exception.
 - Sample bootstrap code lives under `Assets/Scripts/CompositionRoot/Samples` and does not depend on OpenUI or UI.Windows.
 - PlayMode lifecycle verification lives under `UPM/com.vetcat.composition-root/Tests/PlayMode` in assembly `CompositionRoot.Tests.PlayMode`.
-- UI.Windows presenter adapter code lives under `UPM/com.vetcat.uiwindows.mvp/Runtime` in assembly `UiWindowsMvp.UIAdapter`; this assembly may depend on `CompositionRoot.Runtime` and `UI.Windows`, while `CompositionRoot.Runtime` must not depend on `UiWindowsMvp` or `UI.Windows`.
+- UI.Windows presenter adapter code lives under `UPM/com.vetcat.uiwindows.mvp/Runtime` in assembly `UiWindowsMvp.UIAdapter`; this reusable assembly depends on `UI.Windows`, not `CompositionRoot.Runtime`. Application installers may use both, while `CompositionRoot.Runtime` must not depend on `UiWindowsMvp` or `UI.Windows`.
 - R3 compile/convention plumbing lives under `Assets/Scripts/UiWindowsMvp/Runtime/R3Integration` in assembly `UiWindowsMvp.Reactive`; this assembly may depend on `R3` and `R3.Unity`.
 - Code organization, CompositionRoot mechanics, bootstrap path, failure behavior, and ownership rules are documented in `docs/project-architecture-skeleton.md`.
 - R3 MVP usage boundaries, dependency pins, and restore workflow are documented in `docs/r3-mvp-conventions.md`.
