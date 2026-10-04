@@ -113,4 +113,5 @@ When changing presenter, view, model-port, or R3 UI binding C# files:
 - Use Rider `get_file_problems` on changed `.cs` files when Rider MCP is available.
 - Use Rider `build_solution` after C# changes when practical, or report why Unity compile was used instead.
 - Use Rider `rename_refactoring` for programmatic symbol renames.
-- Use Unity MCP for Unity editor refresh/compile, PlayMode verification, and live UI.Windows API reflection.
+- Use Unity CLI/Pipeline for Unity refresh/compile, PlayMode verification, and live UI.Windows API reflection. Follow the installed CLI skill and source preflight in `AGENTS.md`; pass `--project-path /Users/vitaly/Projects/UiWindows` on every Editor-driving call.
+- Discover live command schemas before use. Inspect compile failure and actual Console errors/warnings, then poll asynchronous focused tests to completed, nonzero results. Preserve XML/JSON evidence; a dispatch is not a pass. Tooling must not become a reusable adapter dependency.

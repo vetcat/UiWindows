@@ -60,7 +60,7 @@ Important lessons from the `UIW-20` trial:
 
 ## Human Action Required Escalation
 
-Use `BLOCKED_HUMAN_ACTION_REQUIRED` when the Executor cannot continue because a visible tool/editor action must be performed by the human. The common Unity case is Unity MCP waiting on an Editor domain reload, script reload, modal confirmation, or PlayMode/test-runner state that cannot be accepted through MCP.
+Use `BLOCKED_HUMAN_ACTION_REQUIRED` when the Executor cannot continue because a visible tool/editor action must be performed by the human. A Unity example is an Editor modal confirmation that Unity CLI cannot accept. Normal domain reloads should be handled by readiness polling, not escalated as human-action blockers.
 
 Require the Executor to report:
 
@@ -257,6 +257,7 @@ When the Executor reports back:
 - Check acceptance criteria one by one.
 - Check the child-to-parent traceability note: what parent target was advanced, what remains open, and whether any parent goal was narrowed by the implementation.
 - Confirm the Executor discovered available tools and reported any fallback.
+- For UiWindows Editor checks, require exact-project Unity CLI/Pipeline ownership, live compile/Console evidence, and completed nonzero focused test results. Do not accept a test dispatch as success or use a consumer Editor's MCP state as source evidence.
 - Inspect verification evidence, not just claims.
 - Check issue tracker comments/status.
 - Run an independent Orchestrator spot-check proportional to risk, such as `git diff --check`, a final-newline check for changed text files, targeted diagnostics, focused tests, or forbidden dependency scans. The Orchestrator does not need to rerun every expensive Executor check when the evidence is credible, but must verify enough to make acceptance defensible.

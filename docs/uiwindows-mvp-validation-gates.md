@@ -93,9 +93,24 @@ Run these checks when the touched files make them relevant:
 | UI.Windows lifecycle, presenter binding, R3 subscriptions, pooling, or request streams | Focused PlayMode tests for the affected presenter/window path, plus broader relevant suites when the touched surface is shared. |
 | Skill files | `tools/quick-validate-skill` through the repository wrapper. Do not change cached system skill permissions as a task fix. |
 
-Before using Unity MCP tools, read `mcpforunity://custom-tools`,
-`mcpforunity://instances`, and `mcpforunity://editor/state`. If Unity reports
-external changes dirty, refresh before compile or scene/prefab validation.
+Use Unity CLI with the source's pinned Pipeline `0.8.0-exp.1`, following the
+installed CLI/package-management skills. Before driving the Editor, run
+`unity status --until-ready --timeout 40 --project-path /Users/vitaly/Projects/UiWindows --format json`
+and verify the exact path, PID, and Unity `6000.6.4f1`. Retain that explicit project
+selector on every Editor command; do not use a consumer Editor or stale MCP state.
+
+Discover current schemas with `unity command --query <term> --detail full` using
+the same selector. Refresh through the Editor API when assets change; use
+`unity recompile` and discovered `console_status`/`console` commands for diagnostics.
+Check compilation failure and actual Console counts, not only an up-to-date compile
+summary. Use public Editor APIs through `command eval` for focused missing-script,
+serialized-reference, GUID/local-file-ID, and scene/prefab checks when needed.
+
+Run focused PlayMode tests with discovered `run_tests --mode playmode --filter_type assembly --filter <assembly> --async_tests true`,
+then poll `test_status` until completed. Require the expected nonzero inventory and
+inspect failed/skipped/inconclusive counts; dispatch success is not test success.
+Preserve XML/JSON evidence and restore loaded scenes/test-modified preferences.
+See [source tooling and suite baseline](upm-package-workflow.md#source-editor-tooling).
 
 ## Mobile Evidence Boundary
 
