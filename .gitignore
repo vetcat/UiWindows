@@ -112,3 +112,8 @@ InitTestScene*.unity*
 # Unity package documentation uses this folder suffix; override global backup ignores.
 !UPM/*/Documentation~/
 !UPM/*/Documentation~/**
+
+# Generated editor state
+/ProjectSettings/ProjectAuditorSettings.asset
+/Assets/EditorResources/UI.Windows/WindowObjectRegistry.asset
+/Assets/EditorResources/UI.Windows/WindowObjectRegistry.asset.meta
