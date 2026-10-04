@@ -136,7 +136,7 @@ For a longer ready-to-use prompt, see [docs/ai-agent-reference-prompt.md](docs/a
 ## Dependency Baseline
 
 - Unity target `6000.6.4f1`.
-- `com.me.ui.windows`: `https://github.com/vetcat/UI.Windows-submodule.git#60a4bf6e47c85ad57935f633a53fc3ca8b707167`.
+- `com.me.ui.windows`: `https://github.com/vetcat/UI.Windows-submodule.git#939e4f4e80a76f76ff608acfb9c2c4e566e268b2` (package `1.2.8`).
 - `R3.Unity`: `https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.3.1`.
 - NuGet `R3`: `1.3.1`, restored under `Packages/nuget-packages`.
 - NuGetForUnity: `v4.5.0`.

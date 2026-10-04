@@ -112,13 +112,11 @@ Current local Unity packages from `Packages/manifest.json`:
 - `com.unity.test-framework`: `1.6.0`
 - `com.unity.ai.navigation`: `2.0.13`
 - `com.coplaydev.unity-mcp`: Git dependency `https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main`
-- `com.me.ui.windows`: Git dependency `https://github.com/vetcat/UI.Windows-submodule.git#60a4bf6e47c85ad57935f633a53fc3ca8b707167`
+- `com.me.ui.windows`: package `1.2.8`, Git dependency `https://github.com/vetcat/UI.Windows-submodule.git#939e4f4e80a76f76ff608acfb9c2c4e566e268b2`
+- `com.vetcat.uiwindows.mvp`: canonical local package `file:../UPM/com.vetcat.uiwindows.mvp`, requiring UI.Windows `1.2.8`
+- `com.vetcat.composition-root`: canonical local package `file:../UPM/com.vetcat.composition-root`
 
-Unity-resolved transitive packages for `com.me.ui.windows` include:
-
-- `com.unity.addressables`: resolved to `2.9.1`
-- `com.unity.localization`: resolved to `1.5.8`
-- `com.unity.ui`: resolved to built-in `2.0.0`
+The base package declares minimum Localization `1.5.10`, Addressables `1.25.0`, Input System `1.19.0`, uGUI `2.0.0`, Burst `1.8.13`, and Collections `2.4.3`. `Packages/packages-lock.json` records selected transitive versions; Unity may resolve newer compatible registry or built-in versions. See `docs/ui-windows-fork-workflow.md` for the published compatibility revision and verification boundary.
 
 NuGetForUnity-restored packages for R3 include:
 
@@ -692,9 +690,9 @@ The future implementation should preserve these OpenUI behaviors where practical
 
 ## Known Risks And First Checks
 
-- `UI.Windows-submodule` package metadata is old: `unity` is `2019.1`, Addressables is `1.19.4`, Localization is `0.11.1-preview`. Unity `6000.4.4f1` resolved newer compatible registry versions during `UIW-2`.
-- `UI.Windows` runtime asmdef references `FMODUnity`; this did not block compilation during `UIW-2`, but if it blocks later, patch the fork rather than adding FMOD by default.
-- `OpenUI/main` is Unity `2022.3.39f1`; local project is Unity `6000.4.4f1`.
+- UI.Windows `1.2.8` declares Unity `6000.0` and stable package dependencies; the reference targets `6000.6.4f1`. Older API paths remain guarded, but current compatibility evidence does not establish validation of every older Editor version.
+- FMOD and URP are optional base integrations. URP is enabled automatically by its installed package; `FMOD_SUPPORT` projects must supply their FMOD assembly reference. Do not add either integration solely to satisfy the reusable MVP adapter.
+- The studied OpenUI baseline uses Unity `2022.3.39f1`; this reference project targets `6000.6.4f1`.
 - OpenUI view prefabs use MonoBehaviours derived from `UiView`; these must be adapted to UI.Windows roots/components before they can be used directly.
 - Zenject replacement is straightforward but touches constructors, factories, installer assets, initialization order, and tests.
 - UniRx replacement is broader because it touches model properties, button observables, signal streams, timers, frame updates, and subscription disposal.
@@ -703,7 +701,9 @@ The future implementation should preserve these OpenUI behaviors where practical
 - LeoECS classic (`https://github.com/Leopotam/ecs`) is marked by its author as discontinued; use it as a lifecycle reference only unless Vitaly explicitly chooses it despite that status.
 - OpenUI contains useful behavior examples but also contains a domain-to-UI dependency in `PlayerService` for FX. Preserve the behavior through events/ports, not the dependency direction.
 
-## UIW-2 Compatibility Policy
+## Historical UIW-2 Compatibility Policy
+
+This section preserves the original integration procedure and evidence. Current pins and source ownership are defined above and in `docs/upm-package-workflow.md`.
 
 When starting `UIW-2`, add the fork-pinned Unity Package Manager dependency first and use Unity Package Manager resolution plus Unity Console/compiler output as the source of truth.
 

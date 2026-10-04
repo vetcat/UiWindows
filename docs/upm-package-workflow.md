@@ -69,6 +69,10 @@ it does not publish a reusable fix.
 The reference project targets Unity `6000.6.4f1`. Its local package manifest/lock
 entries point at the canonical UPM folders; they do not claim a Git publication.
 An Editor import and tests provide runtime evidence separately from those pins.
+Its base package is UI.Windows `1.2.8`, pinned to the published integration commit
+`939e4f4e80a76f76ff608acfb9c2c4e566e268b2`. The MVP package declares that same
+base version requirement. See [fork compatibility](ui-windows-fork-workflow.md)
+for the baseline, published patch, and verification record.
 
 Architecture guidance is retained in ordinary [project context](project-context.md),
 the [documentation index](index.md), and independent `.agents/skills` for issue

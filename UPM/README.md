@@ -16,12 +16,12 @@ for users of the MVP adapter.
 ## Install In Another Project
 
 Use Unity `6000.6` or later. Add these dependencies to the consumer's
-`Packages/manifest.json`, replacing both placeholders with published commits:
+`Packages/manifest.json`, replacing `<UIWINDOWS_COMMIT>` with a published UiWindows commit:
 
 ```json
 {
   "dependencies": {
-    "com.me.ui.windows": "https://github.com/vetcat/UI.Windows-submodule.git#<BASE_UIWINDOWS_COMMIT>",
+    "com.me.ui.windows": "https://github.com/vetcat/UI.Windows-submodule.git#939e4f4e80a76f76ff608acfb9c2c4e566e268b2",
     "com.vetcat.uiwindows.mvp": "https://github.com/vetcat/UiWindows.git?path=UPM/com.vetcat.uiwindows.mvp#<UIWINDOWS_COMMIT>",
     "com.vetcat.composition-root": "https://github.com/vetcat/UiWindows.git?path=UPM/com.vetcat.composition-root#<UIWINDOWS_COMMIT>"
   }
@@ -30,7 +30,9 @@ Use Unity `6000.6` or later. Add these dependencies to the consumer's
 
 Install only packages your project uses. The base package needs a direct Git
 entry because the MVP package declares a package version dependency, which does
-not identify the fork's Git repository. Use a verified base compatibility commit;
+not identify the fork's Git repository. The current MVP package requires base
+UI.Windows `1.2.8`; the example pins its published Unity 6.6 compatibility revision.
+Use a verified base compatibility commit;
 see [the fork workflow](../docs/ui-windows-fork-workflow.md).
 
 Remove previous embedded copies and duplicate runtime scripts when switching

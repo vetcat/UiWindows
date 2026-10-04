@@ -8,6 +8,6 @@
     "name": "vetcat"
   },
   "dependencies": {
-    "com.me.ui.windows": "1.2.7"
+    "com.me.ui.windows": "1.2.8"
   }
 }

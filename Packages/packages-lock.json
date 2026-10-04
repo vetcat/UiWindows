@@ -34,15 +34,18 @@
       "hash": "a7c6b49a0141a5bff9b1983e38137522ef61977d"
     },
     "com.me.ui.windows": {
-      "version": "https://github.com/vetcat/UI.Windows-submodule.git#60a4bf6e47c85ad57935f633a53fc3ca8b707167",
+      "version": "https://github.com/vetcat/UI.Windows-submodule.git#939e4f4e80a76f76ff608acfb9c2c4e566e268b2",
       "depth": 0,
       "source": "git",
       "dependencies": {
-        "com.unity.localization": "0.11.1-preview",
-        "com.unity.addressables": "1.19.4",
-        "com.unity.ui": "1.0.0-preview.18"
+        "com.unity.localization": "1.5.10",
+        "com.unity.addressables": "1.25.0",
+        "com.unity.inputsystem": "1.19.0",
+        "com.unity.ugui": "2.0.0",
+        "com.unity.burst": "1.8.13",
+        "com.unity.collections": "2.4.3"
       },
-      "hash": "60a4bf6e47c85ad57935f633a53fc3ca8b707167"
+      "hash": "939e4f4e80a76f76ff608acfb9c2c4e566e268b2"
     },
     "com.unity.addressables": {
       "version": "2.9.1",
@@ -71,7 +74,7 @@
     },
     "com.unity.burst": {
       "version": "1.8.29",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.2.1",
@@ -88,7 +91,7 @@
     },
     "com.unity.collections": {
       "version": "6.4.0",
-      "depth": 2,
+      "depth": 1,
       "source": "builtin",
       "dependencies": {
         "com.unity.burst": "1.8.23",
@@ -132,7 +135,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.localization": {
-      "version": "1.5.8",
+      "version": "1.5.10",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -274,12 +277,6 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       }
-    },
-    "com.unity.ui": {
-      "version": "2.0.0",
-      "depth": 1,
-      "source": "builtin",
-      "dependencies": {}
     },
     "nuget-packages": {
       "version": "file:nuget-packages",
@@ -573,7 +570,7 @@
       "depth": 0,
       "source": "local",
       "dependencies": {
-        "com.me.ui.windows": "1.2.7"
+        "com.me.ui.windows": "1.2.8"
       }
     }
   }
